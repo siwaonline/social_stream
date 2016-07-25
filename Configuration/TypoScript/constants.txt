@@ -1,0 +1,66 @@
+
+plugin.tx_socialstream_pi1 {
+	view {
+		# cat=social_stream/file; type=string; label=Path to template root (FE)
+		templateRootPath = EXT:social_stream/Resources/Private/Templates/
+		# cat=social_stream/file; type=string; label=Path to template partials (FE)
+		partialRootPath = EXT:social_stream/Resources/Private/Partials/
+		# cat=social_stream/file; type=string; label=Path to template layouts (FE)
+		layoutRootPath = EXT:social_stream/Resources/Private/Layouts/
+	}
+	persistence {
+		# cat=social_stream//a; type=string; label=Default storage PID
+		storagePid =
+	}
+	settings{
+		# cat=social_stream//a; type=string; label= Notification E-Mail
+		sysmail =
+		# cat=social_stream//d; type=int; label= Limit for Posts to fetch
+		limitPosts = 5
+		# cat=social_stream//e; type=int; label= Limit for Galleries to fetch
+		limitGalleries = 15
+		# cat=social_stream//f; type=int; label= Maximum Text Length
+		maxText = 120
+		# cat=social_stream//g; type=int; label= Maximum Image Width
+		maxWidth = 360
+		# cat=social_stream//h; type=int; label= Maximum Image Height
+		maxHeight = 290
+		# cat=social_stream//i; type=string; label= tmp Folder
+		tmp = /tmp/
+		# cat=social_stream_keys/keys/a; type=string; label= Facebook App ID
+		fbappid =
+		# cat=social_stream_keys/keys/b; type=string; label= Facebook App Secret
+		fbappsecret =
+		# cat=social_stream_keys/keys/c; type=string; label= Instagram App ID
+		instaappid =
+		# cat=social_stream_keys/keys/d; type=string; label= Instagram App Secret
+		instaappsecret =
+		# cat=social_stream_keys/keys/e; type=string; label= YouTube App ID
+		ytappid =
+		# cat=social_stream_keys/keys/f; type=string; label= YouTube App Secret
+		ytappsecret =
+		# cat=social_stream_keys/keys/g; type=string; label= Twitter App ID
+		twappid =
+		# cat=social_stream_keys/keys/h; type=string; label= Twitter App Secret
+		twappsecret =
+		# cat=social_stream_keys/keys/i; type=string; label= Xing Consumer Key
+		xingappid =
+		# cat=social_stream_keys/keys/j; type=string; label= Xing Consumer Secret
+		xingappsecret =
+		# cat=social_stream_keys/keys/k; type=string; label= LinkedIn App ID
+		liappid =
+		# cat=social_stream_keys/keys/l; type=string; label= LinkedIn App Secret
+		liappsecret =
+	}
+}
+
+module.tx_socialstream_be1 {
+	view {
+		# cat=social_stream_module/file; type=string; label=Path to template root (BE)
+		templateRootPath = EXT:social_stream/Resources/Private/Backend/Templates/
+		# cat=social_stream_module/file; type=string; label=Path to template partials (BE)
+		partialRootPath = EXT:social_stream/Resources/Private/Backend/Partials/
+		# cat=social_stream_module/file; type=string; label=Path to template layouts (BE)
+		layoutRootPath = EXT:social_stream/Resources/Private/Backend/Layouts/
+	}
+}

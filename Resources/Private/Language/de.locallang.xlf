@@ -1,0 +1,326 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<xliff version="1.0">
+	<file source-language="en" datatype="plaintext" original="messages" date="2016-02-01T07:45:55Z" product-name="social_stream">
+		<header/>
+		<body>
+			<trans-unit id="tx_socialstream_domain_model_page">
+				<target>Seite</target>
+			</trans-unit>
+			<trans-unit id="tx_socialstream_domain_model_page.id">
+				<target>Id</target>
+			</trans-unit>
+			<trans-unit id="tx_socialstream_domain_model_page.me">
+				<target>User?</target>
+			</trans-unit>
+			<trans-unit id="tx_socialstream_domain_model_page.streamtype">
+				<target>Stream Typ</target>
+			</trans-unit>
+			<trans-unit id="tx_socialstream_domain_model_page.token">
+				<target>Token</target>
+			</trans-unit>
+			<trans-unit id="tx_socialstream_domain_model_page.tokensecret">
+                <target>Token Secret</target>
+            </trans-unit>
+			<trans-unit id="tx_socialstream_domain_model_page.expires">
+				<target>Gültig bis</target>
+			</trans-unit>
+			<trans-unit id="tx_socialstream_domain_model_page.name">
+				<target>Name</target>
+			</trans-unit>
+			<trans-unit id="tx_socialstream_domain_model_page.about">
+				<target>Kurztext</target>
+			</trans-unit>
+			<trans-unit id="tx_socialstream_domain_model_page.description">
+				<target>Beschreibung</target>
+			</trans-unit>
+			<trans-unit id="tx_socialstream_domain_model_page.link">
+				<target>Link</target>
+			</trans-unit>
+			<trans-unit id="tx_socialstream_domain_model_page.picture_url">
+				<target>Bild Url</target>
+			</trans-unit>
+			<trans-unit id="tx_socialstream_domain_model_page.picture">
+				<target>Bild</target>
+			</trans-unit>
+			<trans-unit id="tx_socialstream_domain_model_page.cover_url">
+				<target>Cover-Bild Url</target>
+			</trans-unit>
+			<trans-unit id="tx_socialstream_domain_model_page.cover">
+				<target>Cover-Bild</target>
+			</trans-unit>
+			<trans-unit id="tx_socialstream_domain_model_post">
+				<target>Post</target>
+			</trans-unit>
+			<trans-unit id="tx_socialstream_domain_model_post.id">
+				<target>Id</target>
+			</trans-unit>
+			<trans-unit id="tx_socialstream_domain_model_post.object_id">
+				<target>Objekt Id</target>
+			</trans-unit>
+			<trans-unit id="tx_socialstream_domain_model_post.created_time">
+				<target>Zeit</target>
+			</trans-unit>
+			<trans-unit id="tx_socialstream_domain_model_post.link">
+				<target>Link</target>
+			</trans-unit>
+			<trans-unit id="tx_socialstream_domain_model_post.type">
+				<target>Typ</target>
+			</trans-unit>
+			<trans-unit id="tx_socialstream_domain_model_post.name">
+				<target>Name</target>
+			</trans-unit>
+			<trans-unit id="tx_socialstream_domain_model_post.caption">
+				<target>Kurztext</target>
+			</trans-unit>
+			<trans-unit id="tx_socialstream_domain_model_post.description">
+				<target>Beschreibung</target>
+			</trans-unit>
+			<trans-unit id="tx_socialstream_domain_model_post.message">
+				<target>Nachricht</target>
+			</trans-unit>
+			<trans-unit id="tx_socialstream_domain_model_post.story">
+				<target>Geschichte</target>
+			</trans-unit>
+			<trans-unit id="tx_socialstream_domain_model_post.metatitle">
+				<target>Meta-Titel</target>
+			</trans-unit>
+			<trans-unit id="tx_socialstream_domain_model_post.metadesc">
+				<target>Meta-Beschreibung</target>
+			</trans-unit>
+			<trans-unit id="tx_socialstream_domain_model_post.picture_url">
+				<target>Bild Url</target>
+			</trans-unit>
+			<trans-unit id="tx_socialstream_domain_model_post.picture">
+				<target>Bild</target>
+			</trans-unit>
+			<trans-unit id="tx_socialstream_domain_model_post.video_url">
+				<target>Video Url</target>
+			</trans-unit>
+			<trans-unit id="tx_socialstream_domain_model_post.video">
+				<target>Video</target>
+			</trans-unit>
+			<trans-unit id="tx_socialstream_domain_model_post.page">
+				<target>Social Stream Seite</target>
+			</trans-unit>
+			<trans-unit id="tx_socialstream_domain_model_gallery">
+				<target>Gallerie-Bild</target>
+			</trans-unit>
+			<trans-unit id="tx_socialstream_domain_model_gallery.id">
+				<target>Id</target>
+			</trans-unit>
+			<trans-unit id="tx_socialstream_domain_model_gallery.picture_url">
+				<target>Bild Url</target>
+			</trans-unit>
+			<trans-unit id="tx_socialstream_domain_model_gallery.picture">
+				<target>Bild</target>
+			</trans-unit>
+			<trans-unit id="tx_socialstream_domain_model_gallery.created_time">
+				<target>Zeit</target>
+			</trans-unit>
+			<trans-unit id="tx_socialstream_domain_model_gallery.page">
+				<target>Social Stream Seite</target>
+			</trans-unit>
+			<trans-unit id="tx_socialstream_domain_model_event">
+                <target>Veranstaltung</target>
+            </trans-unit>
+            <trans-unit id="tx_socialstream_domain_model_event.id">
+                <target>Id</target>
+            </trans-unit>
+            <trans-unit id="tx_socialstream_domain_model_event.start_time">
+                <target>Start Zeit</target>
+            </trans-unit>
+            <trans-unit id="tx_socialstream_domain_model_event.end_time">
+                <target>End Zeit</target>
+            </trans-unit>
+            <trans-unit id="tx_socialstream_domain_model_event.name">
+                <target>Name</target>
+            </trans-unit>
+            <trans-unit id="tx_socialstream_domain_model_event.description">
+                <target>Beschreibung</target>
+            </trans-unit>
+            <trans-unit id="tx_socialstream_domain_model_event.place_name">
+                <target>Ort Name</target>
+            </trans-unit>
+            <trans-unit id="tx_socialstream_domain_model_event.place_street">
+                <target>Straße</target>
+            </trans-unit>
+            <trans-unit id="tx_socialstream_domain_model_event.place_zip">
+                <target>PLZ</target>
+            </trans-unit>
+            <trans-unit id="tx_socialstream_domain_model_event.place_city">
+                <target>Stadt</target>
+            </trans-unit>
+            <trans-unit id="tx_socialstream_domain_model_event.place_country">
+                <target>Land</target>
+            </trans-unit>
+            <trans-unit id="tx_socialstream_domain_model_event.lat">
+                <target>Latitude</target>
+            </trans-unit>
+            <trans-unit id="tx_socialstream_domain_model_event.lng">
+                <target>Longitude</target>
+            </trans-unit>
+            <trans-unit id="tx_socialstream_domain_model_event.picture_url">
+                <target>Bild Url</target>
+            </trans-unit>
+            <trans-unit id="tx_socialstream_domain_model_event.picture">
+                <target>Bild</target>
+            </trans-unit>
+            <trans-unit id="tx_socialstream_domain_model_event.page">
+                <target>Social Stream Seite</target>
+            </trans-unit>
+			<trans-unit id="flex.view">
+				<target>Ansicht</target>
+			</trans-unit>
+			<trans-unit id="flex.view1">
+				<target>Gemischte Post Ansicht</target>
+			</trans-unit>
+			<trans-unit id="flex.view2">
+				<target>Post Übersicht</target>
+			</trans-unit>
+			<trans-unit id="flex.view3">
+				<target>Gemischte Gallery Ansicht</target>
+			</trans-unit>
+			<trans-unit id="flex.view4">
+				<target>Gallery Übersicht</target>
+			</trans-unit>
+			<trans-unit id="flex.view5">
+                <target>Gemischte Event Ansicht</target>
+            </trans-unit>
+            <trans-unit id="flex.view6">
+                <target>Event Übersicht</target>
+            </trans-unit>
+			<trans-unit id="flex.view7">
+				<target>Detail Ansicht</target>
+			</trans-unit>
+			<trans-unit id="flex.pages">
+				<target>Social Stream Seiten</target>
+			</trans-unit>
+			<trans-unit id="flex.maxcount">
+				<target>max. Einträge zum anzeigen</target>
+			</trans-unit>
+			<trans-unit id="flex.maxposts">
+				<target>max. Einträge pro Seite</target>
+			</trans-unit>
+			<trans-unit id="flex.pagination">
+				<target>Pagination verwenden</target>
+			</trans-unit>
+			<trans-unit id="flex.style">
+				<target>Style auswählen</target>
+			</trans-unit>
+			<trans-unit id="flex.style1">
+				<target>Artikel Style</target>
+			</trans-unit>
+			<trans-unit id="flex.style2">
+				<target>Listen Style</target>
+			</trans-unit>
+			<trans-unit id="flex.open">
+				<target>Link öffnen mit</target>
+			</trans-unit>
+			<trans-unit id="flex.open1">
+				<target>Social Media Seite</target>
+			</trans-unit>
+			<trans-unit id="flex.open2">
+				<target>eigener Seite</target>
+			</trans-unit>
+			<trans-unit id="flex.showPage">
+				<target>Detail Seite</target>
+			</trans-unit>
+			<trans-unit id="flex.backPage">
+				<target>Zurück Seite</target>
+			</trans-unit>
+			<trans-unit id="flex.nextprev">
+				<target>nächsten/vorherigen Beitrag anzeigen</target>
+			</trans-unit>
+			<trans-unit id="labels.pages">
+				<target>Social Stream Seiten</target>
+			</trans-unit>
+			<trans-unit id="labels.singleview">
+				<target>Einzelansicht für Social Stream Seite</target>
+			</trans-unit>
+			<trans-unit id="labels.back">
+				<target>zurück</target>
+			</trans-unit>
+			<trans-unit id="labels.newToken">
+                <target>neuen Token erstellen</target>
+            </trans-unit>
+			<trans-unit id="labels.overview">
+				<target>zur Übersicht</target>
+			</trans-unit>
+			<trans-unit id="labels.lastPosts">
+				<target>letzte Posts synchronisieren</target>
+			</trans-unit>
+			<trans-unit id="labels.allPosts">
+				<target>alle Posts synchronisieren</target>
+			</trans-unit>
+			<trans-unit id="labels.create">
+				<target>erstellen und importieren</target>
+			</trans-unit>
+			<trans-unit id="labels.open">
+				<target>Post anzeigen</target>
+			</trans-unit>
+			<trans-unit id="labels.novideo">
+				<target>Ihr Browser unterstützt dieses Video nicht.</target>
+			</trans-unit>
+			<trans-unit id="labels.getFbToken">
+				<target>Token holen</target>
+			</trans-unit>
+			<trans-unit id="labels.closeWindow">
+				<target>Fenster schließen</target>
+			</trans-unit>
+			<trans-unit id="labels.tokenSuccess">
+				<target>Ihr Token wurde erfolgreich erstellt</target>
+			</trans-unit>
+			<trans-unit id="labels.refresh">
+				<target>bitte laden Sie die Ansicht erneut</target>
+			</trans-unit>
+			<trans-unit id="labels.wait">
+				<target>bitte warten</target>
+			</trans-unit>
+			<trans-unit id="msg.noname">
+				<target>kein Name für eine Seite angegeben</target>
+			</trans-unit>
+			<trans-unit id="msg.nodata">
+				<target>keine Daten für diese Seite gefunden</target>
+			</trans-unit>
+			<trans-unit id="msg.nopage">
+				<target>diese Seite existiert nicht</target>
+			</trans-unit>
+			<trans-unit id="msg.already">
+				<target>diese Seite wurde bereits erstellt</target>
+			</trans-unit>
+			<trans-unit id="msg.error">
+				<target>Fehler</target>
+			</trans-unit>
+			<trans-unit id="msg.success">
+				<target>Erfolgreich</target>
+			</trans-unit>
+			<trans-unit id="msg.imported">
+				<target>die Daten wurden importiert</target>
+			</trans-unit>
+			<trans-unit id="msg.created">
+				<target>der Seiten-Eintrag wurde erstellt, die ersten Posts wurden geladen</target>
+			</trans-unit>
+			<trans-unit id="msg.noapp">
+				<target>keine app id oder app secret angegeben</target>
+			</trans-unit>
+			<trans-unit id="msg.nostorage">
+				<target>keine storagePid angegeben</target>
+			</trans-unit>
+			<trans-unit id="msg.already">
+				<target>diese Seite wurde bereits angelegt</target>
+			</trans-unit>
+			<trans-unit id="widget.pagination.previous">
+				<target>vorherige</target>
+			</trans-unit>
+			<trans-unit id="widget.pagination.next">
+				<target>nächste</target>
+			</trans-unit>
+			<trans-unit id="mail.subject_token">
+                <target>Access Token läuft ab</target>
+            </trans-unit>
+            <trans-unit id="mail.body_token">
+                <target>Ihr Access Token für Ihren Social Stream läuft bald ab. <br/>Bitte erneuern Sie diesen mit Hilfe des Social Stream Backend Plugins:</target>
+            </trans-unit>
+		</body>
+	</file>
+</xliff>

@@ -1,0 +1,28 @@
+<f:link.action action="showSinglePost" arguments="{post : post}" pageUid="{showpage}" title="{f:if(condition:'{post.metatitle}',then:'{post.metatitle}',else:'{f:format.date(date: post.createdTime, format: \'d.m.Y H:i\')}')}">
+    <f:if condition="{post.metatitle}">
+        <f:then>
+            <f:format.html><f:if condition="{prev}">&lt;-</f:if> {post.metatitle} <f:if condition="{next}">-&gt;</f:if></f:format.html>
+        </f:then>
+        <f:else>
+            <f:if condition="{post.story}">
+                <f:then>
+                    <f:format.html><f:if condition="{prev}">&lt;-</f:if> {post.story} <f:if condition="{next}">-&gt;</f:if></f:format.html>
+                </f:then>
+                <f:else>
+                    <f:format.html><f:if condition="{prev}">&lt;-</f:if> {post.name} <f:if condition="{next}">-&gt;</f:if></f:format.html>
+                </f:else>
+            </f:if>
+        </f:else>
+    </f:if>
+    <div class="tx-social-stream-nextprev-imgwrap">
+        <f:if condition="{post.picture.originalResource.publicUrl}">
+            <f:then>
+                <f:image src="{post.picture.originalResource.publicUrl}" title="{f:if(condition:'{post.picture.originalResource.title}',then:'{post.picture.originalResource.title}',else:'{post.name}')}" alt="{f:if(condition:'{post.picture.originalResource.alternative}',then:'{post.picture.originalResource.alternative}',else:'{post.name}')}" width="200" height="150c" maxHeight="150"/>
+            </f:then>
+            <f:else>
+                <f:image src="EXT:social_stream/Resources/Public/dummy/<f:if condition='{post.page.streamtype}==1'>facebook</f:if><f:if condition='{post.page.streamtype}==2'>instagram</f:if><f:if condition='{post.page.streamtype}==3'>youtube</f:if><f:if condition='{post.page.streamtype}==4'>twitter</f:if><f:if condition='{post.page.streamtype}==5'>xing</f:if><f:if condition='{post.page.streamtype}==6'>linkedin</f:if>.jpg" title="{f:if(condition:'{post.name}',then:'{post.name}',else:'{post.metatitle}')}" alt="{f:if(condition:'{post.name}',then:'{post.name}',else:'{post.metatitle}')}" width="200" height="150c" maxHeight="150"/>
+            </f:else>
+        </f:if>
+    </div>
+    <span class="date"><f:format.date format="d.m.Y, H:i">{post.createdTime}</f:format.date></span>
+</f:link.action>

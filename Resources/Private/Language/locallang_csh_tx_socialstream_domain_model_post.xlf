@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<xliff version="1.0">
+	<file source-language="en" datatype="plaintext" original="messages" date="2016-02-01T07:45:55Z" product-name="social_stream">
+		<header/>
+		<body>
+			<trans-unit id="id.description">
+				<source>id</source>
+			</trans-unit>
+			<trans-unit id="object_id.description">
+				<source>objectId</source>
+			</trans-unit>
+			<trans-unit id="created_time.description">
+				<source>createdTime</source>
+			</trans-unit>
+			<trans-unit id="link.description">
+				<source>link</source>
+			</trans-unit>
+			<trans-unit id="type.description">
+				<source>type</source>
+			</trans-unit>
+			<trans-unit id="name.description">
+				<source>name</source>
+			</trans-unit>
+			<trans-unit id="caption.description">
+				<source>caption</source>
+			</trans-unit>
+			<trans-unit id="description.description">
+				<source>description</source>
+			</trans-unit>
+			<trans-unit id="message.description">
+				<source>message</source>
+			</trans-unit>
+			<trans-unit id="story.description">
+				<source>story</source>
+			</trans-unit>
+			<trans-unit id="metatitle.description">
+				<source>metatitle</source>
+			</trans-unit>
+			<trans-unit id="metadesc.description">
+				<source>metadesc</source>
+			</trans-unit>
+			<trans-unit id="picture_url.description">
+				<source>pictureUrl</source>
+			</trans-unit>
+			<trans-unit id="picture.description">
+				<source>picture</source>
+			</trans-unit>
+			<trans-unit id="video_url.description">
+				<source>video_url</source>
+			</trans-unit>
+			<trans-unit id="video.description">
+				<source>video</source>
+			</trans-unit>
+			<trans-unit id="page.description">
+				<source>page</source>
+			</trans-unit>
+		</body>
+	</file>
+</xliff>

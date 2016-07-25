@@ -1,0 +1,23 @@
+<div class="tx-facebook-stream-text-wrap">
+    <span class="date"><f:format.date format="d.m.Y, H:i">{post.startTime}</f:format.date></span>
+
+    <f:if condition="{post.name}">
+        <f:then>
+            <f:format.raw><p><f:format.crop maxCharacters="{maxText}">{post.name}</f:format.crop></p></f:format.raw>
+        </f:then>
+        <f:else>
+            <f:format.raw><p><f:format.crop maxCharacters="{maxText}">{post.description}</f:format.crop></p></f:format.raw>
+        </f:else>
+    </f:if>
+</div>
+<div class="tx-facebook-stream-img-wrap">
+    <f:if condition="{post.picture.originalResource.publicUrl}">
+        <f:then>
+            <f:image src="{post.picture.originalResource.publicUrl}" title="{f:if(condition:'{post.picture.originalResource.title}',then:'{post.picture.originalResource.title}',else:'{post.name}')}" alt="{f:if(condition:'{post.picture.originalResource.alternative}',then:'{post.picture.originalResource.alternative}',else:'{post.name}')}" width="{maxWidth}" height="{maxHeight}c" maxHeight="{maxHeight}"/>
+        </f:then>
+        <f:else>
+            <f:image src="EXT:social_stream/Resources/Public/dummy/<f:if condition='{post.page.streamtype}==1'>facebook</f:if><f:if condition='{post.page.streamtype}==2'>instagram</f:if><f:if condition='{post.page.streamtype}==3'>youtube</f:if><f:if condition='{post.page.streamtype}==4'>twitter</f:if><f:if condition='{post.page.streamtype}==5'>xing</f:if><f:if condition='{post.page.streamtype}==6'>linkedin</f:if>.jpg" title="{f:if(condition:'{post.name}',then:'{post.name}',else:'{post.metatitle}')}" alt="{f:if(condition:'{post.name}',then:'{post.name}',else:'{post.metatitle}')}" width="{maxWidth}" height="{maxHeight}c" maxHeight="{maxHeight}"/>
+        </f:else>
+    </f:if>
+    <f:image class="type_icon" src="EXT:social_stream/Resources/Public/dummy/<f:if condition='{post.page.streamtype}==1'>facebook</f:if><f:if condition='{post.page.streamtype}==2'>instagram</f:if><f:if condition='{post.page.streamtype}==3'>youtube</f:if><f:if condition='{post.page.streamtype}==4'>twitter</f:if><f:if condition='{post.page.streamtype}==5'>xing</f:if><f:if condition='{post.page.streamtype}==6'>linkedin</f:if>.png" alt="Dummy Image" width="50"  />
+</div>

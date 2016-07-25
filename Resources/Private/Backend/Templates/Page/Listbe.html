@@ -1,0 +1,56 @@
+
+<f:layout name="Default" />
+
+This Template is responsible for creating a table of domain objects.
+
+If you modify this template, do not forget to change the overwrite settings
+in /Configuration/ExtensionBuilder/settings.yaml:
+  Resources:
+    Private:
+      Templates:
+        List.html: keep
+
+Otherwise your changes will be overwritten the next time you save the extension in the extension builder
+
+<f:section name="content">
+
+	<h1><f:translate key="labels.pages" /></h1>
+
+	<f:flashMessages />
+
+	<f:render partial="FormErrors" />
+
+	<f:form action="token" controller="Facebook" enctype="multipart/form-data"  name="page" object="{page}" id="token-create-form">
+		<label for="streamtype">
+			<f:translate key="tx_socialstream_domain_model_page.streamtype" />
+		</label><br />
+		<select name="streamtype" onchange="document.getElementById('token-create-form').action = this.value;console.log(this.value)">
+			<option value="{f:uri.action(action: 'token', controller: 'Facebook')}">Facebook</option>
+			<option value="2">Instagram</option>
+			<option value="3">YouTube</option>
+			<option value="4">Twitter</option>
+			<option value="{f:uri.action(action: 'token', controller: 'Xing')}">Xing</option>
+			<option value="{f:uri.action(action: 'token', controller: 'LinkedIn')}">LinkedIn</option>
+		</select><br/>
+		<label for="name">
+			<f:translate key="tx_socialstream_domain_model_page.id" /> / <f:translate key="tx_socialstream_domain_model_page.name" />
+		</label><br />
+		<f:form.textfield property="name" required="reqired" /><br />
+		<f:form.submit value='<f:translate key="labels.create" />' />
+	</f:form>
+
+	<br/>
+	<br/>
+
+	<div id="refresh" style="display: none">
+		<f:translate key="labels.refresh" />!!!
+		<f:link.action action="listbe"><f:translate key="labels.refresh" />!!!</f:link.action><br />
+		<br/><br/>
+	</div>
+
+	<b><f:translate key="tx_socialstream_domain_model_page.name" /></b><br/>
+	<f:for each="{pages}" as="page">
+		<f:link.action action="showbe" arguments="{page : page}"><f:if condition='{page.streamtype}==1'>Facebook</f:if><f:if condition='{page.streamtype}==2'>Instagram</f:if><f:if condition='{page.streamtype}==3'>YouTube</f:if><f:if condition='{page.streamtype}==4'>Twitter</f:if><f:if condition='{page.streamtype}==5'>Xing</f:if><f:if condition='{page.streamtype}==6'>LinkedIn</f:if>: {page.name}</f:link.action><br/>
+	</f:for>
+
+</f:section>

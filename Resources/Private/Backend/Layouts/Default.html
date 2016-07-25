@@ -1,0 +1,41 @@
+
+<f:be.container>
+	<div class="typo3-fullDoc">
+		<div id="typo3-docheader">
+			<div class="typo3-docheader-functions">
+				<div class="left">
+					<f:be.buttons.csh />
+					<f:be.menus.actionMenu>
+						<f:be.menus.actionMenuItem label="Social Stream" controller="" action="list" />
+					</f:be.menus.actionMenu>
+				</div>
+				<div class="right">
+					<f:be.pagePath />
+					<f:be.pageInfo />
+				</div>
+			</div>
+			<div class="typo3-docheader-buttons">
+				<div class="left">
+
+				</div>
+				<div class="right">
+					<f:be.buttons.shortcut />
+				</div>
+			</div>
+
+		</div>
+		<div id="typo3-docbody">
+			<style>
+				.tx-social-stream td:first-of-type{
+					font-weight: 600;
+					padding-right: 20px;
+					padding-bottom: 5px;
+				}
+			</style>
+			<div id="typo3-inner-docbody">
+				<f:flashMessages />
+				<f:render section="content" />
+			</div>
+		</div>
+	</div>
+</f:be.container>

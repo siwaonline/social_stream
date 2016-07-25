@@ -1,0 +1,71 @@
+<f:layout name="Default" />
+
+This Template is responsible for creating a table of domain objects.
+
+If you modify this template, do not forget to change the overwrite settings
+in /Configuration/ExtensionBuilder/settings.yaml:
+  Resources:
+    Private:
+      Templates:
+        List.html: keep
+
+Otherwise your changes will be overwritten the next time you save the extension in the extension builder
+
+<f:section name="main">
+	<div class="tx-social-stream-wrap tx-social-stream-wrap-view{viewType} tx-social-stream-wrap-style{postStyle}">
+		<f:if condition="{pagination} == 1">
+			<f:then>
+				<f:if condition="{f:count(subject: posts)} > {maxposts}">
+					<f:then>
+						<f:if condition="{postStyle} == 1">
+							<p:widget.pagination objects="{posts}" as="paginatedPosts" configuration="{itemsPerPage: maxposts, insertAbove: 1, insertBelow: 1, maximumNumberOfLinks: 5}">
+								<f:for each="{paginatedPosts}" as="post">
+									<f:render partial="Views/View{viewType}Style1" arguments="{post:post,viewType:viewType,showpage:showpage,maxText:maxText,maxWidth:maxWidth,maxHeight:maxHeight,open:open}" />
+								</f:for>
+							</p:widget.pagination>
+						</f:if>
+						<f:if condition="{postStyle} == 2">
+							<ul class="stream-list-style">
+								<p:widget.pagination objects="{posts}" as="paginatedPosts" configuration="{itemsPerPage: maxposts, insertAbove: 1, insertBelow: 1, maximumNumberOfLinks: 5}">
+									<f:for each="{paginatedPosts}" as="post">
+										<f:render partial="Views/View{viewType}Style2" arguments="{post:post,viewType:viewType,showpage:showpage,maxText:maxText,maxWidth:maxWidth,maxHeight:maxHeight,open:open}" />
+									</f:for>
+								</p:widget.pagination>
+							</ul>
+						</f:if>
+					</f:then>
+					<f:else>
+						<f:if condition="{postStyle} == 1">
+							<f:for each="{posts}" as="post">
+								<f:render partial="Views/View{viewType}Style1" arguments="{post:post,viewType:viewType,showpage:showpage,maxText:maxText,maxWidth:maxWidth,maxHeight:maxHeight,open:open}" />
+							</f:for>
+						</f:if>
+						<f:if condition="{postStyle} == 2">
+							<ul class="stream-list-style">
+								<f:for each="{posts}" as="post">
+									<f:render partial="Views/View{viewType}Style2" arguments="{post:post,viewType:viewType,showpage:showpage,maxText:maxText,maxWidth:maxWidth,maxHeight:maxHeight,open:open}" />
+								</f:for>
+							</ul>
+						</f:if>
+					</f:else>
+				</f:if>
+			</f:then>
+			<f:else>
+				<f:if condition="{postStyle} == 1">
+					<f:for each="{posts}" as="post">
+						<f:render partial="Views/View{viewType}Style1" arguments="{post:post,viewType:viewType,showpage:showpage,maxText:maxText,maxWidth:maxWidth,maxHeight:maxHeight,open:open}" />
+					</f:for>
+				</f:if>
+				<f:if condition="{postStyle} == 2">
+					<ul class="stream-list-style">
+						<f:for each="{posts}" as="post">
+							<f:render partial="Views/View{viewType}Style2" arguments="{post:post,viewType:viewType,showpage:showpage,maxText:maxText,maxWidth:maxWidth,maxHeight:maxHeight,open:open}" />
+						</f:for>
+					</ul>
+				</f:if>
+			</f:else>
+		</f:if>
+
+	</div>
+
+</f:section>

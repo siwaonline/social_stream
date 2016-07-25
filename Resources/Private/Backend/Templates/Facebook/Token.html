@@ -1,0 +1,56 @@
+<f:layout name="Default" />
+
+This Template is responsible for creating a table of domain objects.
+
+If you modify this template, do not forget to change the overwrite settings
+in /Configuration/ExtensionBuilder/settings.yaml:
+  Resources:
+    Private:
+      Templates:
+        List.html: keep
+
+Otherwise your changes will be overwritten the next time you save the extension in the extension builder
+
+<f:section name="content">
+
+	<h1><f:translate key="labels.pages" /></h1>
+
+	<f:flashMessages />
+
+	<f:render partial="FormErrors" />
+
+
+	<f:if condition="{close} == 1">
+		<f:then>
+			<p><f:translate key="labels.tokenSuccess" /></p>
+			<a href="javascript:window.close();">x <f:translate key="labels.closeWindow" /> x</a>
+		</f:then>
+		<f:else>
+
+				<f:if condition="{accessurl}">
+					<f:then>
+						<br/>
+						<f:link.action action="listbe" controller="Page"><f:translate key="labels.refresh" />!!!</f:link.action>
+						<br/>
+						<script>
+							var url = "<f:format.htmlentitiesDecode>{accessurl}</f:format.htmlentitiesDecode><f:format.urlencode>{f:uri.action(action: 'token', absolute: 1, additionalParams: {name:name})}</f:format.urlencode>";
+							window.open(url,'_blank');
+						</script>
+					</f:then>
+					<f:else>
+						<br/>
+						<f:translate key="labels.wait" />!
+						<br/>
+						<script>
+							var typourl = "{f:uri.action(action: 'token', absolute: 1, additionalParams: {name:name})}";
+							var url = window.location.hash;
+							var hash = url.substring(1);
+							window.location.replace(typourl+"&"+hash);
+						</script>
+					</f:else>
+				</f:if>
+
+		</f:else>
+	</f:if>
+
+</f:section>

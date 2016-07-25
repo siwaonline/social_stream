@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<xliff version="1.0">
+	<file source-language="en" datatype="plaintext" original="messages" date="2016-02-01T07:45:55Z" product-name="social_stream">
+		<header/>
+		<body>
+			<trans-unit id="id.description">
+				<source>id</source>
+			</trans-unit>
+			<trans-unit id="picture_url.description">
+				<source>pictureUrl</source>
+			</trans-unit>
+			<trans-unit id="picture.description">
+				<source>picture</source>
+			</trans-unit>
+			<trans-unit id="created_time.description">
+				<source>createdTime</source>
+			</trans-unit>
+			<trans-unit id="page.description">
+				<source>page</source>
+			</trans-unit>
+		</body>
+	</file>
+</xliff>

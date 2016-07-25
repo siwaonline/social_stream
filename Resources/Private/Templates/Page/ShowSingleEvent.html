@@ -1,0 +1,107 @@
+
+<f:layout name="Default" />
+
+This Template is responsible for displaying a single view for a domain object
+
+If you modify this template, do not forget to change the overwrite settings
+in /Configuration/ExtensionBuilder/settings.yaml:
+Resources:
+Private:
+Templates:
+Show.html: keep
+
+Otherwise your changes will be overwritten the next time you save the extension in the extension builder
+
+<f:section name="main">
+  <article class="tx-social-stream-singleElement">
+    <f:if condition="{post.metatitle}">
+      <f:then>
+        <h1><f:format.raw>{post.metatitle}</f:format.raw></h1>
+      </f:then>
+      <f:else>
+        <h1><f:format.raw>{post.name}</f:format.raw></h1>
+      </f:else>
+    </f:if>
+
+    <f:if condition="{post.video.originalResource.publicUrl}">
+      <f:then>
+        <video controls>
+          <source src="{post.video.originalResource.publicUrl}" type="video/mp4"/>
+          <f:translate key="labels.novideo" />
+        </video>
+      </f:then>
+      <f:else>
+        <f:if condition="{post.picture.originalResource.publicUrl}">
+          <f:image src="{post.picture.originalResource.publicUrl}" title="{f:if(condition:'{post.picture.originalResource.title}',then:'{post.picture.originalResource.title}',else:'{post.name}')}" alt="{f:if(condition:'{post.picture.originalResource.alternative}',then:'{post.picture.originalResource.alternative}',else:'{post.name}')}" maxWidth="1200" />
+        </f:if>
+      </f:else>
+    </f:if>
+
+    <div class="tx-social-stream-caption">
+      <f:image class="type_icon" src="EXT:social_stream/Resources/Public/dummy/<f:if condition='{post.page.streamtype}==1'>facebook</f:if><f:if condition='{post.page.streamtype}==2'>instagram</f:if><f:if condition='{post.page.streamtype}==3'>youtube</f:if><f:if condition='{post.page.streamtype}==4'>twitter</f:if><f:if condition='{post.page.streamtype}==5'>xing</f:if><f:if condition='{post.page.streamtype}==6'>linkedin</f:if>.png" alt="Dummy Image" width="40"  />
+      <span class="date">
+        <f:if condition='<f:format.date format="d.m.Y">{post.startTime}</f:format.date> == <f:format.date format="d.m.Y">{post.endTime}</f:format.date>'>
+          <f:then>
+            <f:format.date format="d.m.Y, H:i">{post.startTime}</f:format.date> - <f:format.date format="H:i">{post.endTime}</f:format.date>
+          </f:then>
+          <f:else>
+            <f:format.date format="d.m.Y, H:i">{post.startTime}</f:format.date> - <f:format.date format="d.m.Y, H:i">{post.endTime}</f:format.date>
+          </f:else>
+        </f:if>
+      </span><br/>
+      <f:if condition="{post.caption}">{post.caption}</f:if>
+    </div>
+
+    <f:if condition="{post.description}">
+      <f:format.html><p>{post.description}</p></f:format.html>
+    </f:if>
+
+    <f:if condition="{post.placeName}">
+      <p><b><f:translate key="tx_facebookstream_domain_model_event.place_name" />:</b>
+      {post.placeName}
+      <f:if condition="{post.placeStreet}"> - {post.placeStreet}, {post.placeZip} {post.placeCity}</f:if></p>
+    </f:if>
+    <br/>
+
+    <f:if condition="{post.placeStreet}">
+      <f:then>
+        <br/>
+        <iframe width="1170" height="300" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="https://maps.google.com/maps?q={post.placeStreet}, {post.placeZip} {post.placeCity}&hl=es;z=14&amp;output=embed"></iframe>
+      </f:then>
+      <f:else>
+        <f:if condition="{post.lat}">
+          <br/>
+          <iframe width="1170" height="300" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="https://maps.google.com/maps?q={post.lat},{post.lng}&hl=es;z=14&amp;output=embed"></iframe>
+        </f:if>
+      </f:else>
+    </f:if>
+
+    <br/>
+    <br/>
+    <f:if condition="{nextprev}">
+      <f:then>
+        <f:link.page pageUid="{backpage}">&lt;- <f:translate key="labels.overview" /></f:link.page>
+      </f:then>
+      <f:else>
+        <a href=" javascript: history.go(-1); " rel="nofollow">&lt;- <f:translate key="labels.back" /></a>
+      </f:else>
+    </f:if>
+
+    <f:if condition="{nextprev}">
+      <br/><br/><br/><br/>
+      <div class="tx-social-stream-nextprev">
+        <f:if condition="{prev}">
+          <div class="tx-social-stream-prev">
+            <f:render partial="Page/NextPrev" arguments="{post:prev,showpost:showpost,prev:1}" />
+          </div>
+        </f:if>
+        <f:if condition="{next}">
+          <div class="tx-social-stream-next">
+            <f:render partial="Page/NextPrev" arguments="{post:next,showpost:showpost,next:1}" />
+          </div>
+        </f:if>
+      </div>
+    </f:if>
+
+  </article>
+</f:section>

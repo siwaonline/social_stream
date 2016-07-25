@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<xliff version="1.0">
+	<file source-language="en" datatype="plaintext" original="messages" date="2016-02-01T07:45:55Z" product-name="social_stream">
+		<header/>
+		<body>
+			<trans-unit id="id.description">
+				<source>id</source>
+			</trans-unit>
+			<trans-unit id="me.description">
+				<source>me</source>
+			</trans-unit>
+			<trans-unit id="streamtype.description">
+				<source>streamtype</source>
+			</trans-unit>
+			<trans-unit id="token.description">
+				<source>token</source>
+			</trans-unit>
+			<trans-unit id="tokensecret.description">
+                <source>tokensecret</source>
+            </trans-unit>
+			<trans-unit id="expires.description">
+				<source>expires</source>
+			</trans-unit>
+			<trans-unit id="name.description">
+				<source>name</source>
+			</trans-unit>
+			<trans-unit id="about.description">
+				<source>about</source>
+			</trans-unit>
+			<trans-unit id="description.description">
+				<source>description</source>
+			</trans-unit>
+			<trans-unit id="link.description">
+				<source>link</source>
+			</trans-unit>
+			<trans-unit id="picture_url.description">
+				<source>pictureUrl</source>
+			</trans-unit>
+			<trans-unit id="picture.description">
+				<source>picture</source>
+			</trans-unit>
+			<trans-unit id="cover_url.description">
+				<source>coverUrl</source>
+			</trans-unit>
+			<trans-unit id="cover.description">
+				<source>cover</source>
+			</trans-unit>
+		</body>
+	</file>
+</xliff>

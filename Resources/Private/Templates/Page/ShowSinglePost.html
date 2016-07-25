@@ -1,0 +1,111 @@
+
+<f:layout name="Default" />
+
+This Template is responsible for displaying a single view for a domain object
+
+If you modify this template, do not forget to change the overwrite settings
+in /Configuration/ExtensionBuilder/settings.yaml:
+  Resources:
+    Private:
+      Templates:
+        Show.html: keep
+
+Otherwise your changes will be overwritten the next time you save the extension in the extension builder
+
+<f:section name="main">
+  <article class="tx-social-stream-singleElement">
+    <f:if condition="{post.metatitle}">
+      <f:then>
+        <h1><f:format.raw>{post.metatitle}</f:format.raw></h1>
+      </f:then>
+      <f:else>
+        <f:if condition="{post.story}">
+          <f:then>
+            <h1><f:format.raw>{post.story}</f:format.raw></h1>
+          </f:then>
+          <f:else>
+            <h1><f:format.raw>{post.name}</f:format.raw></h1>
+          </f:else>
+        </f:if>
+      </f:else>
+    </f:if>
+
+    <f:if condition="{post.video.originalResource.publicUrl}">
+      <f:then>
+        <video controls>
+          <source src="{post.video.originalResource.publicUrl}" type="video/mp4"/>
+          <f:translate key="labels.novideo" />
+        </video>
+      </f:then>
+      <f:else>
+        <f:if condition="{post.picture.originalResource.publicUrl}">
+          <f:image src="{post.picture.originalResource.publicUrl}" title="{f:if(condition:'{post.picture.originalResource.title}',then:'{post.picture.originalResource.title}',else:'{post.name}')}" alt="{f:if(condition:'{post.picture.originalResource.alternative}',then:'{post.picture.originalResource.alternative}',else:'{post.name}')}" maxWidth="1200" />
+        </f:if>
+      </f:else>
+    </f:if>
+
+    <div class="tx-social-stream-caption">
+      <f:image class="type_icon" src="EXT:social_stream/Resources/Public/dummy/<f:if condition='{post.page.streamtype}==1'>facebook</f:if><f:if condition='{post.page.streamtype}==2'>instagram</f:if><f:if condition='{post.page.streamtype}==3'>youtube</f:if><f:if condition='{post.page.streamtype}==4'>twitter</f:if><f:if condition='{post.page.streamtype}==5'>xing</f:if><f:if condition='{post.page.streamtype}==6'>linkedin</f:if>.png" alt="Dummy Image" width="40"  />
+      <f:if condition="{post.type} == 1">
+        <f:image src="EXT:social_stream/Resources/Public/Icons/post.gif" alt="Post Type Post" />
+      </f:if>
+      <f:if condition="{post.type} == 2">
+        <f:image src="EXT:social_stream/Resources/Public/Icons/photo.gif" alt="Post Type Photo" />
+      </f:if>
+      <f:if condition="{post.type} == 3">
+        <f:image src="EXT:social_stream/Resources/Public/Icons/event.gif" alt="Post Type Event" />
+      </f:if>
+      <f:if condition="{post.type} == 4">
+        <f:image src="EXT:social_stream/Resources/Public/Icons/video.gif" alt="Post Type Video" />
+      </f:if>
+      <f:if condition="{post.type} == 5">
+        <f:image src="EXT:social_stream/Resources/Public/Icons/link.gif" alt="Post Type Status" />
+      </f:if>
+      <f:if condition="{post.type} == 6">
+        <f:image src="EXT:social_stream/Resources/Public/Icons/link.gif" alt="Post Type Offer" />
+      </f:if>
+      <span class="date"><f:format.date format="d.m.Y, H:i">{post.createdTime}</f:format.date></span><br/>
+      <f:if condition="{post.caption}">{post.caption}</f:if>
+    </div>
+
+      <f:if condition="{post.message}">
+        <f:then>
+          <f:format.html><p>{post.message}</p></f:format.html>
+        </f:then>
+        <f:else>
+          <f:if condition="{post.description}">
+            <f:format.html><p>{post.description}</p></f:format.html>
+          </f:if>
+        </f:else>
+      </f:if>
+
+    <b>Link: </b><a href="{post.link}" target="_blank" title="<f:translate key='labels.open' />">{post.link}</a>
+    <br/>
+    <br/>
+    <f:if condition="{nextprev}">
+      <f:then>
+        <f:link.page pageUid="{backpage}">&lt;- <f:translate key="labels.overview" /></f:link.page>
+      </f:then>
+      <f:else>
+        <a href=" javascript: history.go(-1); " rel="nofollow">&lt;- <f:translate key="labels.back" /></a>
+      </f:else>
+    </f:if>
+
+    <f:if condition="{nextprev}">
+      <br/><br/><br/><br/>
+      <div class="tx-social-stream-nextprev">
+        <f:if condition="{prev}">
+          <div class="tx-social-stream-prev">
+            <f:render partial="Page/NextPrev" arguments="{post:prev,showpost:showpost,prev:1}" />
+          </div>
+        </f:if>
+        <f:if condition="{next}">
+          <div class="tx-social-stream-next">
+            <f:render partial="Page/NextPrev" arguments="{post:next,showpost:showpost,next:1}" />
+          </div>
+        </f:if>
+      </div>
+    </f:if>
+
+  </article>
+</f:section>

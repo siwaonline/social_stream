@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<xliff version="1.0">
+	<file source-language="en" datatype="plaintext" original="messages" date="2016-02-01T07:45:55Z" product-name="social_stream">
+		<header/>
+		<body>
+			<trans-unit id="id.description">
+				<source>id</source>
+			</trans-unit>
+			<trans-unit id="start_time.description">
+                <source>startTime</source>
+            </trans-unit>
+            <trans-unit id="end_time.description">
+                <source>endTime</source>
+            </trans-unit>
+            <trans-unit id="name.description">
+                <source>name</source>
+            </trans-unit>
+            <trans-unit id="description.description">
+                <source>description</source>
+            </trans-unit>
+            <trans-unit id="place_name.description">
+                <source>place_name</source>
+            </trans-unit>
+            <trans-unit id="place_street.description">
+                <source>place_street</source>
+            </trans-unit>
+            <trans-unit id="place_zip.description">
+                <source>place_zip</source>
+            </trans-unit>
+            <trans-unit id="place_city.description">
+                <source>place_city</source>
+            </trans-unit>
+            <trans-unit id="place_country.description">
+                <source>place_country</source>
+            </trans-unit>
+            <trans-unit id="lat.description">
+                <source>lat</source>
+            </trans-unit>
+            <trans-unit id="lng.description">
+                <source>lng</source>
+            </trans-unit>
+			<trans-unit id="picture_url.description">
+				<source>pictureUrl</source>
+			</trans-unit>
+			<trans-unit id="picture.description">
+				<source>picture</source>
+			</trans-unit>
+			<trans-unit id="page.description">
+				<source>page</source>
+			</trans-unit>
+		</body>
+	</file>
+</xliff>

@@ -1,0 +1,106 @@
+
+plugin.tx_socialstream_pi1 {
+	view {
+		templateRootPaths.0 = {$plugin.tx_socialstream_pi1.view.templateRootPath}
+		partialRootPaths.0 = {$plugin.tx_socialstream_pi1.view.partialRootPath}
+		layoutRootPaths.0 = {$plugin.tx_socialstream_pi1.view.layoutRootPath}
+	}
+	persistence {
+		storagePid = {$plugin.tx_socialstream_pi1.persistence.storagePid}
+	}
+	settings{
+		sysmail = {$plugin.tx_socialstream_pi1.settings.sysmail}
+		limitPosts = {$plugin.tx_socialstream_pi1.settings.limitPosts}
+		limitGalleries = {$plugin.tx_socialstream_pi1.settings.limitGalleries}
+		maxText = {$plugin.tx_socialstream_pi1.settings.maxText}
+		maxWidth = {$plugin.tx_socialstream_pi1.settings.maxWidth}
+		maxHeight = {$plugin.tx_socialstream_pi1.settings.maxHeight}
+		storagePid = {$plugin.tx_socialstream_pi1.persistence.storagePid}
+		tmp = {$plugin.tx_socialstream_pi1.settings.tmp}
+
+		fbappid = {$plugin.tx_socialstream_pi1.settings.fbappid}
+		fbappsecret = {$plugin.tx_socialstream_pi1.settings.fbappsecret}
+		instaappid = {$plugin.tx_socialstream_pi1.settings.instaappid}
+		instaappsecret = {$plugin.tx_socialstream_pi1.settings.instaappsecret}
+		ytappid = {$plugin.tx_socialstream_pi1.settings.ytappid}
+		ytappsecret = {$plugin.tx_socialstream_pi1.settings.ytappsecret}
+		twappid = {$plugin.tx_socialstream_pi1.settings.twappid}
+		twappsecret = {$plugin.tx_socialstream_pi1.settings.twappsecret}
+		xingappid = {$plugin.tx_socialstream_pi1.settings.xingappid}
+		xingappsecret = {$plugin.tx_socialstream_pi1.settings.xingappsecret}
+		liappid = {$plugin.tx_socialstream_pi1.settings.liappid}
+		liappsecret = {$plugin.tx_socialstream_pi1.settings.liappsecret}
+	}
+}
+
+plugin.tx_socialstream._CSS_DEFAULT_STYLE (
+	textarea.f3-form-error {
+		background-color:#FF9F9F;
+		border: 1px #FF0000 solid;
+	}
+
+	input.f3-form-error {
+		background-color:#FF9F9F;
+		border: 1px #FF0000 solid;
+	}
+
+	.tx-social-stream table {
+		border-collapse:separate;
+		border-spacing:10px;
+	}
+
+	.tx-social-stream table th {
+		font-weight:bold;
+	}
+
+	.tx-social-stream table td {
+		vertical-align:top;
+	}
+
+	.typo3-messages .message-error {
+		color:red;
+	}
+
+	.typo3-messages .message-ok {
+		color:green;
+	}
+
+)
+
+ # Module configuration
+module.tx_socialstream_web_socialstreambe1 {
+	persistence {
+		storagePid = {$plugin.tx_socialstream_pi1.persistence.storagePid}
+	}
+	view {
+		templateRootPaths.0 = {$module.tx_socialstream_be1.view.templateRootPath}
+		partialRootPaths.0 = {$module.tx_socialstream_be1.view.partialRootPath}
+		layoutRootPaths.0 = {$module.tx_socialstream_be1.view.layoutRootPath}
+	}
+	settings{
+		storagePid = {$plugin.tx_socialstream_pi1.persistence.storagePid}
+		sysmail = {$plugin.tx_socialstream_pi1.settings.sysmail}
+		limitPosts = {$plugin.tx_socialstream_pi1.settings.limitPosts}
+		limitGalleries = {$plugin.tx_socialstream_pi1.settings.limitGalleries}
+		tmp = {$plugin.tx_socialstream_pi1.settings.tmp}
+
+		fbappid = {$plugin.tx_socialstream_pi1.settings.fbappid}
+		fbappsecret = {$plugin.tx_socialstream_pi1.settings.fbappsecret}
+		instaappid = {$plugin.tx_socialstream_pi1.settings.instaappid}
+		instaappsecret = {$plugin.tx_socialstream_pi1.settings.instaappsecret}
+		ytappid = {$plugin.tx_socialstream_pi1.settings.ytappid}
+		ytappsecret = {$plugin.tx_socialstream_pi1.settings.ytappsecret}
+		twappid = {$plugin.tx_socialstream_pi1.settings.twappid}
+		twappsecret = {$plugin.tx_socialstream_pi1.settings.twappsecret}
+		xingappid = {$plugin.tx_socialstream_pi1.settings.xingappid}
+		xingappsecret = {$plugin.tx_socialstream_pi1.settings.xingappsecret}
+		liappid = {$plugin.tx_socialstream_pi1.settings.liappid}
+		liappsecret = {$plugin.tx_socialstream_pi1.settings.liappsecret}
+	}
+}
+
+module.tx_socialstream < module.tx_socialstream_web_socialstreambe1
+
+page.includeCSS.social_stream = typo3conf/ext/social_stream/Resources/Public/social_stream.min.css
+
+tt_content.list.20.socialstream_pi1.stdWrap.addPageCacheTags = socialStream

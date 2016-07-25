@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<xliff version="1.0">
+	<file source-language="en" datatype="plaintext" original="messages" date="2016-02-01T07:45:55Z" product-name="social_stream">
+		<header/>
+		<body>
+			<trans-unit id="tx_socialstream_domain_model_page">
+				<source>Page</source>
+			</trans-unit>
+			<trans-unit id="tx_socialstream_domain_model_page.id">
+				<source>Id</source>
+			</trans-unit>
+			<trans-unit id="tx_socialstream_domain_model_page.me">
+				<source>User?</source>
+			</trans-unit>
+			<trans-unit id="tx_socialstream_domain_model_page.streamtype">
+				<source>Streamtype</source>
+			</trans-unit>
+			<trans-unit id="tx_socialstream_domain_model_page.token">
+				<source>Token</source>
+			</trans-unit>
+			<trans-unit id="tx_socialstream_domain_model_page.tokensecret">
+                <source>Token Secret</source>
+            </trans-unit>
+			<trans-unit id="tx_socialstream_domain_model_page.expires">
+				<source>Expires</source>
+			</trans-unit>
+			<trans-unit id="tx_socialstream_domain_model_page.name">
+				<source>Name</source>
+			</trans-unit>
+			<trans-unit id="tx_socialstream_domain_model_page.about">
+				<source>About</source>
+			</trans-unit>
+			<trans-unit id="tx_socialstream_domain_model_page.description">
+				<source>Description</source>
+			</trans-unit>
+			<trans-unit id="tx_socialstream_domain_model_page.link">
+				<source>Link</source>
+			</trans-unit>
+			<trans-unit id="tx_socialstream_domain_model_page.picture_url">
+				<source>Picture Url</source>
+			</trans-unit>
+			<trans-unit id="tx_socialstream_domain_model_page.picture">
+				<source>Picture</source>
+			</trans-unit>
+			<trans-unit id="tx_socialstream_domain_model_page.cover_url">
+				<source>Cover Url</source>
+			</trans-unit>
+			<trans-unit id="tx_socialstream_domain_model_page.cover">
+				<source>Cover</source>
+			</trans-unit>
+			<trans-unit id="tx_socialstream_domain_model_post">
+				<source>Post</source>
+			</trans-unit>
+			<trans-unit id="tx_socialstream_domain_model_post.id">
+				<source>Id</source>
+			</trans-unit>
+			<trans-unit id="tx_socialstream_domain_model_post.object_id">
+				<source>Object Id</source>
+			</trans-unit>
+			<trans-unit id="tx_socialstream_domain_model_post.created_time">
+				<source>Created Time</source>
+			</trans-unit>
+			<trans-unit id="tx_socialstream_domain_model_post.link">
+				<source>Link</source>
+			</trans-unit>
+			<trans-unit id="tx_socialstream_domain_model_post.type">
+				<source>Type</source>
+			</trans-unit>
+			<trans-unit id="tx_socialstream_domain_model_post.name">
+				<source>Name</source>
+			</trans-unit>
+			<trans-unit id="tx_socialstream_domain_model_post.caption">
+				<source>Caption</source>
+			</trans-unit>
+			<trans-unit id="tx_socialstream_domain_model_post.description">
+				<source>Description</source>
+			</trans-unit>
+			<trans-unit id="tx_socialstream_domain_model_post.message">
+				<source>Message</source>
+			</trans-unit>
+			<trans-unit id="tx_socialstream_domain_model_post.story">
+				<source>Story</source>
+			</trans-unit>
+			<trans-unit id="tx_socialstream_domain_model_post.metatitle">
+				<source>Meta-Title</source>
+			</trans-unit>
+			<trans-unit id="tx_socialstream_domain_model_post.metadesc">
+				<source>Meta-Description</source>
+			</trans-unit>
+			<trans-unit id="tx_socialstream_domain_model_post.picture_url">
+				<source>Picture Url</source>
+			</trans-unit>
+			<trans-unit id="tx_socialstream_domain_model_post.picture">
+				<source>Picture</source>
+			</trans-unit>
+			<trans-unit id="tx_socialstream_domain_model_post.video_url">
+				<source>Video Url</source>
+			</trans-unit>
+			<trans-unit id="tx_socialstream_domain_model_post.video">
+				<source>Video</source>
+			</trans-unit>
+			<trans-unit id="tx_socialstream_domain_model_post.page">
+				<source>Page</source>
+			</trans-unit>
+			<trans-unit id="tx_socialstream_domain_model_gallery">
+				<source>Gallery</source>
+			</trans-unit>
+			<trans-unit id="tx_socialstream_domain_model_gallery.id">
+				<source>Id</source>
+			</trans-unit>
+			<trans-unit id="tx_socialstream_domain_model_gallery.picture_url">
+				<source>Picture Url</source>
+			</trans-unit>
+			<trans-unit id="tx_socialstream_domain_model_gallery.picture">
+				<source>Picture</source>
+			</trans-unit>
+			<trans-unit id="tx_socialstream_domain_model_gallery.created_time">
+				<source>Created Time</source>
+			</trans-unit>
+			<trans-unit id="tx_socialstream_domain_model_gallery.page">
+				<source>Page</source>
+			</trans-unit>
+			<trans-unit id="tx_socialstream_domain_model_event">
+                <source>Event</source>
+            </trans-unit>
+            <trans-unit id="tx_socialstream_domain_model_event.id">
+                <source>Id</source>
+            </trans-unit>
+            <trans-unit id="tx_socialstream_domain_model_event.start_time">
+                <source>Start Time</source>
+            </trans-unit>
+            <trans-unit id="tx_socialstream_domain_model_event.end_time">
+                <source>End Time</source>
+            </trans-unit>
+            <trans-unit id="tx_socialstream_domain_model_event.name">
+                <source>Name</source>
+            </trans-unit>
+            <trans-unit id="tx_socialstream_domain_model_event.description">
+                <source>Description</source>
+            </trans-unit>
+            <trans-unit id="tx_socialstream_domain_model_event.place_name">
+                <source>Place Name</source>
+            </trans-unit>
+            <trans-unit id="tx_socialstream_domain_model_event.place_street">
+                <source>Place Street</source>
+            </trans-unit>
+            <trans-unit id="tx_socialstream_domain_model_event.place_zip">
+                <source>Place Zip</source>
+            </trans-unit>
+            <trans-unit id="tx_socialstream_domain_model_event.place_city">
+                <source>Place City</source>
+            </trans-unit>
+            <trans-unit id="tx_socialstream_domain_model_event.place_country">
+                <source>Place Country</source>
+            </trans-unit>
+            <trans-unit id="tx_socialstream_domain_model_event.lat">
+                <source>Latitude</source>
+            </trans-unit>
+            <trans-unit id="tx_socialstream_domain_model_event.lng">
+                <source>Longitude</source>
+            </trans-unit>
+            <trans-unit id="tx_socialstream_domain_model_event.picture_url">
+                <source>Picture Url</source>
+            </trans-unit>
+            <trans-unit id="tx_socialstream_domain_model_event.picture">
+                <source>Picture</source>
+            </trans-unit>
+            <trans-unit id="tx_socialstream_domain_model_event.page">
+                <source>Page</source>
+            </trans-unit>
+		</body>
+	</file>
+</xliff>

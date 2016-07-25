@@ -1,0 +1,87 @@
+
+<table class="tx-social-stream" >
+	<tr>
+		<td>
+			<f:translate key="tx_socialstream_domain_model_page.id" />
+		</td>
+		<td>
+			{page.id}
+		</td>
+	</tr>
+	<tr>
+		<td>
+			<f:translate key="tx_socialstream_domain_model_page.name" />
+		</td>
+		<td>
+			{page.name}
+		</td>
+	</tr>
+	<tr>
+		<td>
+			<f:translate key="tx_socialstream_domain_model_page.about" />
+		</td>
+		<td>
+			{page.about}
+		</td>
+	</tr>
+	<tr>
+		<td>
+			<f:translate key="tx_socialstream_domain_model_page.description" />
+		</td>
+		<td>
+			{page.description}
+		</td>
+	</tr>
+	<tr>
+		<td>
+			<f:translate key="tx_socialstream_domain_model_page.link" />
+		</td>
+		<td>
+			{page.link}
+		</td>
+	</tr>
+	<tr>
+		<td>
+			<f:translate key="tx_socialstream_domain_model_page.picture_url" />
+		</td>
+		<td>
+			{page.pictureUrl}
+		</td>
+	</tr>
+	<tr>
+		<td>
+			<f:translate key="tx_socialstream_domain_model_page.picture" />
+		</td>
+		<td>
+			<img src="../{page.picture.originalResource.publicUrl}" width="200" />
+		</td>
+	</tr>
+	<f:if condition="{page.coverUrl}">
+		<tr>
+			<td>
+				<f:translate key="tx_socialstream_domain_model_page.cover_url" />
+			</td>
+			<td>
+				{page.coverUrl}
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<f:translate key="tx_socialstream_domain_model_page.cover" />
+			</td>
+			<td>
+				<img src="../{page.cover.originalResource.publicUrl}" width="200"/>
+			</td>
+		</tr>
+	</f:if>
+	<f:if condition="{page.expires}">
+		<tr>
+			<td>
+				<f:translate key="tx_socialstream_domain_model_page.expires" />
+			</td>
+			<td>
+				<f:format.date format="%d.%m.%Y">{page.expires}</f:format.date>
+			</td>
+		</tr>
+	</f:if>
+</table>
