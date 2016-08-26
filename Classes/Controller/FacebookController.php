@@ -73,6 +73,7 @@ class FacebookController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
     protected $maxHeight = 0;
     protected $storagePid = 0;
     protected $tmp = "/tmp/";
+    protected $clearStrings = array('\ud83c\u','\ud83d\u','\u2600\u');
 
     public $rootPage = 1;
     
@@ -374,10 +375,13 @@ class FacebookController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
                 return $page;
             }
         }
-        while(strpos($elem, '\ud83d\u') !== false){
-            $pos = strpos($elem, '\ud83d\u');
-            $stream = substr_replace($elem,'',$pos,12);
+        foreach ($this->clearStrings as $str) {
+            while(strpos($elem, $str) !== false){
+                $pos = strpos($elem, $str);
+                $elem = substr_replace($elem,'',$pos,12);
+            }
         }
+
         $elem = json_decode($elem);
 
         $helppage = $this->pageRepository->searchById($elem->id,$this->streamtype);
@@ -537,9 +541,11 @@ class FacebookController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
                 }
             }
         }
-        while(strpos($stream, '\ud83d\u') !== false){
-            $pos = strpos($stream, '\ud83d\u');
-            $stream = substr_replace($stream,'',$pos,12);
+        foreach ($this->clearStrings as $str) {
+            while(strpos($stream, $str) !== false){
+                $pos = strpos($stream, $str);
+                $stream = substr_replace($stream,'',$pos,12);
+            }
         }
         $stream = json_decode($stream);
 
@@ -706,9 +712,11 @@ class FacebookController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
                 }
             }
         }
-        while(strpos($stream, '\ud83d\u') !== false){
-            $pos = strpos($stream, '\ud83d\u');
-            $stream = substr_replace($stream,'',$pos,12);
+        foreach ($this->clearStrings as $str) {
+            while(strpos($stream, $str) !== false){
+                $pos = strpos($stream, $str);
+                $stream = substr_replace($stream,'',$pos,12);
+            }
         }
         $stream = json_decode($stream);
 
@@ -804,9 +812,11 @@ class FacebookController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
                 }
             }
         }
-        while(strpos($stream, '\ud83d\u') !== false){
-            $pos = strpos($stream, '\ud83d\u');
-            $stream = substr_replace($stream,'',$pos,12);
+        foreach ($this->clearStrings as $str) {
+            while(strpos($stream, $str) !== false){
+                $pos = strpos($stream, $str);
+                $stream = substr_replace($stream,'',$pos,12);
+            }
         }
         $stream = json_decode($stream);
 
