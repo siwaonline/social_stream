@@ -1,0 +1,42 @@
+module.tx_socialstream {
+    persistence {
+        # cat=social_stream//a; type=string; label=Default storage PID
+        storagePid =
+    }
+    settings{
+        # cat=social_stream//b; type=string; label= Notification E-Mail
+        sysmail =
+        # cat=social_stream//c; type=int; label= Limit for Posts to fetch
+        limitPosts = 100
+        # cat=social_stream//d; type=string; label= tmp Folder
+        tmp = /tmp/
+        # cat=social_stream//e; type=int; label= File Storage
+        storage = 1
+        # cat=social_stream//f; type=string; label= Sub Folder
+        folder = social_stream
+        # cat=social_stream_keys/keys/a; type=string; label= Facebook App ID
+        fbappid =
+        # cat=social_stream_keys/keys/b; type=string; label= Facebook App Secret
+        fbappsecret =
+        # cat=social_stream_keys/keys/c; type=string; label= Instagram App ID
+        instaappid =
+        # cat=social_stream_keys/keys/d; type=string; label= Instagram App Secret
+        instaappsecret =
+        # cat=social_stream_keys/keys/e; type=string; label= YouTube App ID
+        ytappid =
+        # cat=social_stream_keys/keys/f; type=string; label= YouTube App Secret
+        ytappsecret =
+        # cat=social_stream_keys/keys/g; type=string; label= Twitter App ID
+        twappid =
+        # cat=social_stream_keys/keys/h; type=string; label= Twitter App Secret
+        twappsecret =
+        # cat=social_stream_keys/keys/i; type=string; label= Xing Consumer Key
+        xingappid =
+        # cat=social_stream_keys/keys/j; type=string; label= Xing Consumer Secret
+        xingappsecret =
+        # cat=social_stream_keys/keys/k; type=string; label= LinkedIn App ID
+        liappid =
+        # cat=social_stream_keys/keys/l; type=string; label= LinkedIn App Secret
+        liappsecret =
+    }
+}

@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<xliff version="1.0">
+	<file source-language="en" datatype="plaintext" original="messages" date="2016-09-29T11:36:38Z" product-name="social_stream">
+		<header/>
+		<body>
+			<trans-unit id="tx_socialstream_domain_model_news">
+				<source>News</source>
+			</trans-unit>
+			<trans-unit id="tx_socialstream_domain_model_news.object_id">
+				<source>Object Id</source>
+			</trans-unit>
+			<trans-unit id="tx_socialstream_domain_model_news.link">
+				<source>Link</source>
+			</trans-unit>
+			<trans-unit id="tx_socialstream_domain_model_news.place_name">
+				<source>Place Name</source>
+			</trans-unit>
+			<trans-unit id="tx_socialstream_domain_model_news.place_street">
+				<source>Place Street</source>
+			</trans-unit>
+			<trans-unit id="tx_socialstream_domain_model_news.place_zip">
+				<source>Place Zip</source>
+			</trans-unit>
+			<trans-unit id="tx_socialstream_domain_model_news.place_city">
+				<source>Place City</source>
+			</trans-unit>
+			<trans-unit id="tx_socialstream_domain_model_news.place_country">
+				<source>Place Country</source>
+			</trans-unit>
+			<trans-unit id="tx_socialstream_domain_model_news.place_lat">
+				<source>Place Lat</source>
+			</trans-unit>
+			<trans-unit id="tx_socialstream_domain_model_news.place_lng">
+				<source>Place Lng</source>
+			</trans-unit>
+			<trans-unit id="tx_socialstream_domain_model_news.datetimeend">
+                <source>Date &amp; Time End</source>
+            </trans-unit>
+			<trans-unit id="tx_socialstream_domain_model_news.channel">
+				<source>Channel</source>
+			</trans-unit>
+			<trans-unit id="tx_socialstream_domain_model_channel">
+				<source>Channel</source>
+			</trans-unit>
+			<trans-unit id="tx_socialstream_domain_model_channel.object_id">
+				<source>Object Id</source>
+			</trans-unit>
+			<trans-unit id="tx_socialstream_domain_model_channel.title">
+				<source>Title</source>
+			</trans-unit>
+			<trans-unit id="tx_socialstream_domain_model_channel.about">
+				<source>About</source>
+			</trans-unit>
+			<trans-unit id="tx_socialstream_domain_model_channel.description">
+				<source>Description</source>
+			</trans-unit>
+			<trans-unit id="tx_socialstream_domain_model_channel.user">
+				<source>User</source>
+			</trans-unit>
+			<trans-unit id="tx_socialstream_domain_model_channel.type">
+				<source>Type</source>
+			</trans-unit>
+			<trans-unit id="tx_socialstream_domain_model_channel.link">
+				<source>Link</source>
+			</trans-unit>
+			<trans-unit id="tx_socialstream_domain_model_channel.image">
+				<source>Image</source>
+			</trans-unit>
+			<trans-unit id="tx_socialstream_domain_model_channel.token">
+				<source>Token</source>
+			</trans-unit>
+			<trans-unit id="tx_socialstream_domain_model_channel.expires">
+				<source>Expires</source>
+			</trans-unit>
+			<trans-unit id="tx_socialstream_domain_model_channel.news">
+				<source>News</source>
+			</trans-unit>
+		</body>
+	</file>
+</xliff>

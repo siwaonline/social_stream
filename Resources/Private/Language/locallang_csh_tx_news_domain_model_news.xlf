@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<xliff version="1.0">
+	<file source-language="en" datatype="plaintext" original="messages" date="2016-09-29T11:36:38Z" product-name="social_stream">
+		<header/>
+		<body>
+			<trans-unit id="object_id.description">
+				<source>objectId</source>
+			</trans-unit>
+			<trans-unit id="link.description">
+				<source>link</source>
+			</trans-unit>
+			<trans-unit id="place_name.description">
+				<source>placeName</source>
+			</trans-unit>
+			<trans-unit id="place_street.description">
+				<source>placeStreet</source>
+			</trans-unit>
+			<trans-unit id="place_zip.description">
+				<source>placeZip</source>
+			</trans-unit>
+			<trans-unit id="place_city.description">
+				<source>placeCity</source>
+			</trans-unit>
+			<trans-unit id="place_country.description">
+				<source>placeCountry</source>
+			</trans-unit>
+			<trans-unit id="place_lat.description">
+				<source>placeLat</source>
+			</trans-unit>
+			<trans-unit id="place_lng.description">
+				<source>placeLng</source>
+			</trans-unit>
+			<trans-unit id="place_lng.datetimeend">
+                <source>datetimeend</source>
+            </trans-unit>
+			<trans-unit id="channel.description">
+				<source>channel</source>
+			</trans-unit>
+		</body>
+	</file>
+</xliff>
