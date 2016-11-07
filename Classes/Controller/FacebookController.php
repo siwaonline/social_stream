@@ -123,26 +123,40 @@ class FacebookController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
         $accesstoken = $_GET["access_token"];
         if($accesstoken) {
             $token = file_get_contents("https://graph.facebook.com/oauth/access_token?grant_type=fb_exchange_token&client_id=" . $this->fbappid . "&client_secret=" . $this->fbappsecret . "&fb_exchange_token=" . $accesstoken);
-            $infos = explode("&",$token);
-            $tk = explode("=",$infos[0])[1];
-            $exp = explode("=",$infos[1])[1];
-            $page = new \Socialstream\SocialStream\Domain\Model\Page();
-            $page->setName($_GET["name"]);
-            $page->setStreamtype(1);
-            $page->setToken($tk);
-            $page->setExpires(time()+$exp);
+            $infos = explode("&", $token);
+            $tk = explode("=", $infos[0])[1];
+            $exp = explode("=", $infos[1])[1];
+            if ($_GET["pageRefresh"]) {
+                $page = $this->pageRepository->searchById($_GET["pageRefresh"],$this->streamtype);
+                $page->setToken($tk);
+                $page->setExpires(time()+$exp);
+                $persistenceManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Persistence\\Generic\\PersistenceManager');
+                $persistenceManager->persistAll();
+            } else {                
+                $page = new \Socialstream\SocialStream\Domain\Model\Page();
+                $page->setName($_GET["name"]);
+                $page->setStreamtype(1);
+                $page->setToken($tk);
+                $page->setExpires(time()+$exp);
+            }            
             //$this->pageRepository->add($page);
             //$persistenceManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Persistence\\Generic\\PersistenceManager');
             //$persistenceManager->persistAll();
             $this->forward('create', null, null, array('page' => $page, 'short' => 1, 'close' => 1));
             //$this->view->assign('close', 1);
         }else{
-            if(!$_GET["name"]) {
+            if($_GET["name"]){
+                $this->view->assign('name', $_GET["name"]);
+            }else if($_GET["pageRefresh"]){
+                $this->view->assign('pageRefresh', $_GET["pageRefresh"]);
+            }else{
                 $accessurl = "https://www.facebook.com/v2.4/dialog/oauth?client_id=" . $this->fbappid . "&state=" . $this->fbappsecret . "&response_type=token&scope=user_posts&sdk=php-sdk-5.0.0&redirect_uri=";
                 $this->view->assign('accessurl', $accessurl);
-                $this->view->assign('name', $pagename);
-            }else{
-                $this->view->assign('name', $_GET["name"]);
+                if($vars["pageRefresh"]){
+                    $this->view->assign('pageRefresh', $vars["pageRefresh"]);
+                }else {
+                    $this->view->assign('name', $pagename);
+                }
             }
         }        
     }
@@ -252,7 +266,7 @@ class FacebookController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
         $this->galleryRepository = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Socialstream\\SocialStream\\Domain\\Repository\\GalleryRepository');
         $this->initializeAction();
         $short = 0;
-        $pages = $this->pageRepository->findAll();
+        $pages = $this->pageRepository->findByStreamtype(1);
         $clear = 0;
 
         foreach($pages as $page){
@@ -433,10 +447,10 @@ class FacebookController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
             $subFolder = $targetFolder->createFolder($page->getId());
         }
 
-        if(!$subFolder->hasFile($bildname)) {
+        if((!$subFolder->hasFile($bildname) && $bildname) || ($storage->getFileInFolder($bildname,$subFolder)->getSize() <= 0 && $subFolder->hasFile($bildname) && $bildname)) {
             if ($bildurl) {
                 copy($bildurl, $this->tmp . $bildname);
-                $movedNewFile = $storage->addFile($this->tmp . $bildname, $subFolder, $bildname);
+                $movedNewFile = $storage->addFile($this->tmp . $bildname, $subFolder, $bildname,  \TYPO3\CMS\Core\Resource\DuplicationBehavior::REPLACE);
                 $bild = $movedNewFile->getUid();
             }
             if($page->getPicture()){
@@ -473,10 +487,11 @@ class FacebookController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
         if (is_array($bildname)){
             $bildname = $bildname[0];
         }
-        if(!$subFolder->hasFile($bildname)) {
+
+        if((!$subFolder->hasFile($bildname) && $bildname) || ($storage->getFileInFolder($bildname,$subFolder)->getSize() <= 0 && $subFolder->hasFile($bildname) && $bildname)) {
             if ($bildurl) {
                 copy($bildurl, $this->tmp . $bildname);
-                $movedNewFile = $storage->addFile($this->tmp . $bildname, $subFolder, $bildname);
+                $movedNewFile = $storage->addFile($this->tmp . $bildname, $subFolder, $bildname,  \TYPO3\CMS\Core\Resource\DuplicationBehavior::REPLACE);
                 $bild = $movedNewFile->getUid();
             }
             if($page->getCover()){
@@ -585,8 +600,22 @@ class FacebookController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
                 $post->setMessage(str_replace("<br/><br/>", "<br/>", $message));
             }
             if($entry->story)$post->setStory($entry->story);
-            if($entry->full_picture)$post->setPictureUrl($entry->full_picture);
-            if($entry->source)$post->setVideoUrl($entry->source);
+            if($entry->full_picture){
+                $post->setPictureUrl($entry->full_picture);
+            }else{
+                $singlePost = json_decode(file_get_contents("https://graph.facebook.com/" . $entry->id . "/?fields=full_picture&access_token=$tk"));
+                if($singlePost->full_picture){
+                    $post->setPictureUrl($singlePost->full_picture);
+                }
+            }
+            if($entry->source){
+                $post->setVideoUrl($entry->source);
+            }else{
+                $singlePost = json_decode(file_get_contents("https://graph.facebook.com/" . $entry->id . "/?fields=source&access_token=$tk"));
+                if($singlePost->source){
+                    $post->setVideoUrl($singlePost->source);
+                }
+            }
 
             $post->setPage($page);
 
@@ -602,10 +631,10 @@ class FacebookController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
             $bildurl = $post->getPictureUrl();
             $bildname = $entry->id . ".jpg";
 
-            if(!$postsFolder->hasFile($bildname) && $bildname) {
+            if((!$postsFolder->hasFile($bildname) && $bildname) || ($storage->getFileInFolder($bildname,$postsFolder)->getSize() <= 0 && $postsFolder->hasFile($bildname) && $bildname)) {
                 if ($this->exists($bildurl)) {
                     $this->grab_image($bildurl,$this->tmp . $bildname);
-                    $movedNewFile = $storage->addFile($this->tmp . $bildname, $postsFolder, $bildname);
+                    $movedNewFile = $storage->addFile($this->tmp . $bildname, $postsFolder, $bildname,  \TYPO3\CMS\Core\Resource\DuplicationBehavior::REPLACE);
                     $bild = $movedNewFile->getUid();
                 }
                 if ($post->getPicture()) {
@@ -639,10 +668,10 @@ class FacebookController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
             $bildurl = $post->getVideoUrl();
             $bildname = $entry->id . ".mp4";
 
-            if(!$postsFolder->hasFile($bildname) && $bildname) {
+            if((!$postsFolder->hasFile($bildname) && $bildname) || ($storage->getFileInFolder($bildname,$postsFolder)->getSize() <= 0 && $postsFolder->hasFile($bildname) && $bildname)) {
                 if ($this->exists($bildurl)) {
                     $this->grab_image($bildurl,$this->tmp . $bildname);
-                    $movedNewFile = $storage->addFile($this->tmp . $bildname, $postsFolder, $bildname);
+                    $movedNewFile = $storage->addFile($this->tmp . $bildname, $postsFolder, $bildname,  \TYPO3\CMS\Core\Resource\DuplicationBehavior::REPLACE);
                     $bild = $movedNewFile->getUid();
                 }
                 if ($post->getVideo()) {
@@ -747,10 +776,10 @@ class FacebookController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
             $bildurl = $gallery->getPictureUrl();
             $bildname = $entry->id . ".jpg";
 
-            if(!$galleryFolder->hasFile($bildname) && $bildname) {
+            if((!$galleryFolder->hasFile($bildname) && $bildname) || ($storage->getFileInFolder($bildname,$galleryFolder)->getSize() <= 0 && $galleryFolder->hasFile($bildname) && $bildname)) {
                 if ($this->exists($bildurl)) {
                     $this->grab_image($bildurl,$this->tmp . $bildname);
-                    $movedNewFile = $storage->addFile($this->tmp . $bildname, $galleryFolder, $bildname);
+                    $movedNewFile = $storage->addFile($this->tmp . $bildname, $galleryFolder, $bildname,  \TYPO3\CMS\Core\Resource\DuplicationBehavior::REPLACE);
                     $bild = $movedNewFile->getUid();
                 }
                 if ($gallery->getPicture()) {
@@ -859,10 +888,10 @@ class FacebookController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
             $bildurl = $event->getPictureUrl();
             $bildname = $entry->id . ".jpg";
 
-            if(!$eventFolder->hasFile($bildname) && $bildname) {
+            if((!$eventFolder->hasFile($bildname) && $bildname) || ($storage->getFileInFolder($bildname,$eventFolder)->getSize() <= 0 && $eventFolder->hasFile($bildname) && $bildname)) {
                 if ($this->exists($bildurl)) {
                     $this->grab_image($bildurl,'/tmp/' . $bildname);
-                    $movedNewFile = $storage->addFile('/tmp/' . $bildname, $eventFolder, $bildname);
+                    $movedNewFile = $storage->addFile('/tmp/' . $bildname, $eventFolder, $bildname,  \TYPO3\CMS\Core\Resource\DuplicationBehavior::REPLACE);
                     $bild = $movedNewFile->getUid();
                 }
                 if ($event->getPicture()) {

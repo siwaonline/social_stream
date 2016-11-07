@@ -250,7 +250,7 @@ class LinkedInController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
         $this->galleryRepository = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Socialstream\\SocialStream\\Domain\\Repository\\GalleryRepository');
         $this->initializeAction();
         $short = 0;
-        $pages = $this->pageRepository->findAll();
+        $pages = $this->pageRepository->findByStreamtype(6);
         $clear = 0;
 
         foreach($pages as $page){
@@ -316,7 +316,7 @@ class LinkedInController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 
         $tk = $page->getToken();
         $expdiff = ($page->getExpires() - time())/86400;
-        if($expdiff <= 5 && $tk && $this->sysmail){
+        if($expdiff <= 5 && $tk && $this->sysmail && $showerror == 0){
             $this->uriBuilder->reset();
             $this->uriBuilder->setCreateAbsoluteUri(1);
             $url = explode("?",$this->uriBuilder->buildBackendUri())[0];
@@ -422,10 +422,10 @@ class LinkedInController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
             $subFolder = $targetFolder->createFolder($page->getId());
         }
 
-        if(!$subFolder->hasFile($bildname)) {
+        if((!$subFolder->hasFile($bildname) && $bildname) || ($storage->getFileInFolder($bildname,$subFolder)->getSize() <= 0 && $subFolder->hasFile($bildname) && $bildname)) {
             if ($bildurl) {
                 copy($bildurl, $this->tmp . $bildname);
-                $movedNewFile = $storage->addFile($this->tmp . $bildname, $subFolder, $bildname);
+                $movedNewFile = $storage->addFile($this->tmp . $bildname, $subFolder, $bildname,  \TYPO3\CMS\Core\Resource\DuplicationBehavior::REPLACE);
                 $bild = $movedNewFile->getUid();
             }
             if($page->getPicture()){
@@ -533,10 +533,10 @@ class LinkedInController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
             $bildurl = $post->getPictureUrl();
             $bildname = $entry->id . ".jpg";
 
-            if(!$postsFolder->hasFile($bildname) && $bildname) {
+            if((!$postsFolder->hasFile($bildname) && $bildname) || ($storage->getFileInFolder($bildname,$postsFolder)->getSize() <= 0 && $postsFolder->hasFile($bildname) && $bildname)) {
                 if ($this->exists($bildurl)) {
                     $this->grab_image($bildurl,$this->tmp . $bildname);
-                    $movedNewFile = $storage->addFile($this->tmp . $bildname, $postsFolder, $bildname);
+                    $movedNewFile = $storage->addFile($this->tmp . $bildname, $postsFolder, $bildname,  \TYPO3\CMS\Core\Resource\DuplicationBehavior::REPLACE);
                     $bild = $movedNewFile->getUid();
                 }
                 if ($post->getPicture()) {

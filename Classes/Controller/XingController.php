@@ -267,7 +267,7 @@ class XingController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
         $this->galleryRepository = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Socialstream\\SocialStream\\Domain\\Repository\\GalleryRepository');
         $this->initializeAction();
         $short = 0;
-        $pages = $this->pageRepository->findAll();
+        $pages = $this->pageRepository->findByStreamtype(5);
         $clear = 0;
 
         foreach($pages as $page){
@@ -439,10 +439,10 @@ class XingController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
             $subFolder = $targetFolder->createFolder($page->getId());
         }
 
-        if(!$subFolder->hasFile($bildname)) {
+        if((!$subFolder->hasFile($bildname) && $bildname) || ($storage->getFileInFolder($bildname,$subFolder)->getSize() <= 0 && $subFolder->hasFile($bildname) && $bildname)) {
             if ($bildurl) {
                 copy($bildurl, $this->tmp . $bildname);
-                $movedNewFile = $storage->addFile($this->tmp . $bildname, $subFolder, $bildname);
+                $movedNewFile = $storage->addFile($this->tmp . $bildname, $subFolder, $bildname,  \TYPO3\CMS\Core\Resource\DuplicationBehavior::REPLACE);
                 $bild = $movedNewFile->getUid();
             }
             if($page->getPicture()){

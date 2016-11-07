@@ -1,5 +1,5 @@
 <f:if condition="{open} == 1">
-	<f:link.external target="_blank" rel="nofollow" title="<f:translate key='labels.open' />" uri="{f:if(condition:'{post.id}',then:'www.facebook.com/events/{post.id}',else:'www.facebook.com/{page}')}" title="{f:if(condition:'{post.metatitle}',then:'{post.metatitle}',else:'{f:format.date(date: post.createdTime, format: \'d.m.Y H:i\')}')}">
+	<f:link.external target="_blank" rel="nofollow" title="<f:translate key='labels.open' />" uri="{f:if(condition:'{post.id}',then:'www.facebook.com/events/{post.id}',else:'www.facebook.com/{post.page.id}')}" title="{f:if(condition:'{post.metatitle}',then:'{post.metatitle}',else:'{f:format.date(date: post.createdTime, format: \'d.m.Y H:i\')}')}">
 		<div class="tx-social-stream-element">
 
 			<f:render partial="Page/Event" arguments="{post:post,maxText:maxText,maxWidth:maxWidth,maxHeight:maxHeight}" />

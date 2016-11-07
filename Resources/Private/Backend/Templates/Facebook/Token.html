@@ -26,23 +26,39 @@ Otherwise your changes will be overwritten the next time you save the extension 
 			<a href="javascript:window.close();">x <f:translate key="labels.closeWindow" /> x</a>
 		</f:then>
 		<f:else>
-
 				<f:if condition="{accessurl}">
 					<f:then>
 						<br/>
 						<f:link.action action="listbe" controller="Page"><f:translate key="labels.refresh" />!!!</f:link.action>
 						<br/>
-						<script>
-							var url = "<f:format.htmlentitiesDecode>{accessurl}</f:format.htmlentitiesDecode><f:format.urlencode>{f:uri.action(action: 'token', absolute: 1, additionalParams: {name:name})}</f:format.urlencode>";
-							window.open(url,'_blank');
-						</script>
+						<f:if condition="{pageRefresh}">
+							<f:then>
+								<script>
+									var url = "<f:format.htmlentitiesDecode>{accessurl}</f:format.htmlentitiesDecode><f:format.urlencode>{f:uri.action(action: 'token', absolute: 1, additionalParams: {pageRefresh:pageRefresh})}</f:format.urlencode>";
+									window.open(url,'_blank');
+								</script>
+							</f:then>
+							<f:else>
+								<script>
+									var url = "<f:format.htmlentitiesDecode>{accessurl}</f:format.htmlentitiesDecode><f:format.urlencode>{f:uri.action(action: 'token', absolute: 1, additionalParams: {name:name})}</f:format.urlencode>";
+									window.open(url,'_blank');
+								</script>
+							</f:else>
+						</f:if>
 					</f:then>
 					<f:else>
 						<br/>
 						<f:translate key="labels.wait" />!
 						<br/>
+						<f:if condition="{pageRefresh}">
+							<f:then>
+								<script>var typourl = "{f:uri.action(action: 'token', absolute: 1, additionalParams: {pageRefresh:pageRefresh})}";</script>
+							</f:then>
+							<f:else>
+								<script>var typourl = "{f:uri.action(action: 'token', absolute: 1, additionalParams: {name:name})}";</script>
+							</f:else>
+						</f:if>
 						<script>
-							var typourl = "{f:uri.action(action: 'token', absolute: 1, additionalParams: {name:name})}";
 							var url = window.location.hash;
 							var hash = url.substring(1);
 							window.location.replace(typourl+"&"+hash);

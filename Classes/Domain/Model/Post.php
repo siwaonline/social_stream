@@ -163,6 +163,17 @@ class Post extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     }
     
     /**
+     * Returns the id
+     *
+     * @return string $id
+     */
+    public function getPostId()
+    {
+        $id = explode("_",$this->id);
+        return $id[1];
+    }
+    
+    /**
      * Sets the id
      *
      * @param string $id
