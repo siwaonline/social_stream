@@ -17,17 +17,17 @@ $EM_CONF[$_EXTKEY] = array(
 	'author' => 'Philipp Parzer',
 	'author_email' => 'https://forge.typo3.org/projects/extension-social_stream',
 	'author_company' => 'SIWA Online GmbH',
-	'state' => 'alpha',
+	'state' => 'beta',
 	'internal' => '',
 	'uploadfolder' => '1',
 	'createDirs' => '',
 	'clearCacheOnLoad' => 0,
-	'version' => '',
+	'version' => '1.0.0',
 	'constraints' => array(
 		'depends' => array(
-			'typo3' => '7.6.0-7.6.99',
-			'news' => '5.0.0-5.99.99',
-			'scheduler' => '6.2.0-7.6.99',
+			'typo3' => '^7.6.0',
+			'news' => '^5.0.0',
+			'scheduler' => '^7.6.0',
 		),
 		'conflicts' => array(
 		),
