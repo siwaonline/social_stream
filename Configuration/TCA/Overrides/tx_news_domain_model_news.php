@@ -54,6 +54,15 @@ $tmp_social_stream_columns = array(
 			'eval' => 'trim'
 		),
 	),
+	'media_url' => array(
+		'exclude' => 1,
+		'label' => 'LLL:EXT:social_stream/Resources/Private/Language/locallang_db.xlf:tx_socialstream_domain_model_news.media_url',
+		'config' => array(
+			'type' => 'input',
+			'size' => 30,
+			'eval' => 'trim'
+		),
+	),
 	'place_name' => array(
 		'exclude' => 1,
 		'label' => 'LLL:EXT:social_stream/Resources/Private/Language/locallang_db.xlf:tx_socialstream_domain_model_news.place_name',
@@ -155,7 +164,7 @@ $tmp_social_stream_columns['channel'] = array(
 );
 
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addTCAcolumns('tx_news_domain_model_news',$tmp_social_stream_columns);
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addToAllTCAtypes('tx_news_domain_model_news', 'object_id, link, place_name, place_street, place_zip, place_city, place_country, place_lat, place_lng, channel');
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addToAllTCAtypes('tx_news_domain_model_news', 'object_id, link, media_url, place_name, place_street, place_zip, place_city, place_country, place_lat, place_lng, channel');
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addToAllTCAtypes('tx_news_domain_model_news', 'datetimeend', '', 'after:datetime');
 
 /* inherit and extend the show items from the parent class */

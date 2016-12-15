@@ -39,13 +39,20 @@ class News extends \GeorgRinger\News\Domain\Model\News
      * @var string
      */
     protected $objectId = '';
-    
+
     /**
      * link
      *
      * @var string
      */
     protected $link = '';
+
+    /**
+     * mediaUrl
+     *
+     * @var string
+     */
+    protected $mediaUrl = '';
     
     /**
      * placeName
@@ -148,6 +155,22 @@ class News extends \GeorgRinger\News\Domain\Model\News
     public function setLink($link)
     {
         $this->link = $link;
+    }
+
+    /**
+     * @return string
+     */
+    public function getMediaUrl()
+    {
+        return $this->mediaUrl;
+    }
+
+    /**
+     * @param string $mediaUrl
+     */
+    public function setMediaUrl($mediaUrl)
+    {
+        $this->mediaUrl = $mediaUrl;
     }
     
     /**

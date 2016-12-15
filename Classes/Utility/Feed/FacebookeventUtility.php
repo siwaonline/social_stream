@@ -81,18 +81,17 @@ class FacebookeventUtility extends \Socialstream\SocialStream\Utility\Feed\Faceb
                 $news->setBodytext(str_replace("<br/><br/>", "<br/>", $message));
             }
             
+            if($entry->cover){
+                $news->setMediaUrl($entry->cover->source);
+                $this->processNewsMedia($news, $entry->cover->source);
+            }
+
             if ($new) {
                 $this->newsRepository->add($news);
             } else {
                 $this->newsRepository->update($news);
             }
             $this->persistenceManager->persistAll();
-       
-
-            if($entry->cover){
-                $this->processNewsMedia($news, $entry->cover->source);
-            }
-            
         }
     }
 }

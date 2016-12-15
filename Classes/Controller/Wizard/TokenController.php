@@ -111,15 +111,19 @@ class TokenController extends \TYPO3\CMS\Backend\Controller\Wizard\AbstractWizar
             return;
         }
 
-        TokenUtility::initTSFE($this->P['pid'],0);
+        $pageRes = $GLOBALS['TYPO3_DB']->exec_SELECTquery("pid","pages","uid=".$this->P['pid']);
+        while ($pageRow = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($pageRes)) {
+            $pid = $pageRow['pid'];
+        }
+        if($pid <= 0)$pid = $this->P["pid"];
+        TokenUtility::initTSFE($pid,0);
         $this->objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
         $this->configurationManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Configuration\\ConfigurationManager');
         $this->settings = $this->configurationManager->getConfiguration(\TYPO3\CMS\Extbase\Configuration\ConfigurationManager::CONFIGURATION_TYPE_SETTINGS, 'Socialstream');
         
         $this->settings["storagePid"] = $this->P['pid'];
         
-
-        $utility = TokenUtility::getUtility($row["type"],$this->P['pid']);
+        $utility = TokenUtility::getUtility($row["type"],$pid);
         $redirectUrl = BackendUtility::getModuleUrl(
             'wizard_token',
             array("P" => $this->P),

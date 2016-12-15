@@ -9,6 +9,9 @@
 			<trans-unit id="link.description">
 				<source>link</source>
 			</trans-unit>
+			<trans-unit id="media_url.description">
+                <source>media_url</source>
+            </trans-unit>
 			<trans-unit id="place_name.description">
 				<source>placeName</source>
 			</trans-unit>
