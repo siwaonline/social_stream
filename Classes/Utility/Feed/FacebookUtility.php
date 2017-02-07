@@ -115,79 +115,81 @@ class FacebookUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUtilit
         $elem = $this->getElems($url);
 
         foreach ($elem->data as $entry) {
-            $new = 0;
-            $news = $this->newsRepository->findHiddenById($entry->id,$channel->getUid());
-            if (!$news) {
-                $news = new \Socialstream\SocialStream\Domain\Model\News();
-                $new = 1;
-            }
+            if($entry->name) {
+                $new = 0;
+                $news = $this->newsRepository->findHiddenById($entry->id, $channel->getUid());
+                if (!$news) {
+                    $news = new \Socialstream\SocialStream\Domain\Model\News();
+                    $new = 1;
+                }
 
-            $news->setChannel($channel);
-            $cat = $this->getCategory($channel->getType());
-            $news->addCategory($cat);
-            $subcat = $this->getCategory($channel->getTitle(),$cat);
-            $news->addCategory($subcat);            
-            $news->setObjectId($entry->id);
-            $news->setDatetime(new \DateTime($entry->created_time));
-            if($entry->link)$news->setLink($entry->link);
-            $news->setAuthor($entry->from->name);
-            if($entry->name)$news->setTitle($entry->name);
-            if($entry->place){
-                $news->setPlaceName($entry->place->name);
-                $news->setPlaceCity($entry->place->location->city);
-                $news->setPlaceCountry($entry->place->location->country);
-                $news->setPlaceLat($entry->place->location->latitude);
-                $news->setPlaceLng($entry->place->location->longitude);
-                $news->setPlaceStreet($entry->place->location->street);
-                $news->setPlaceZip($entry->place->location->zip);
-            }
-            
-            if($entry->message) {
-                $message = str_replace("\n", "<br/>", $entry->message);
-                $news->setBodytext(str_replace("<br/><br/>", "<br/>", $message));
-                if($entry->description){
-                    $news->setTeaser($entry->description);
-                    if($entry->caption)$news->setAlternativeTitle($entry->caption);
-                }else{
-                    if($entry->caption)$news->setTeaser($entry->caption);
+                $news->setChannel($channel);
+                $cat = $this->getCategory($channel->getType());
+                $news->addCategory($cat);
+                $subcat = $this->getCategory($channel->getTitle(), $cat);
+                $news->addCategory($subcat);
+                $news->setObjectId($entry->id);
+                $news->setDatetime(new \DateTime($entry->created_time));
+                if ($entry->link) $news->setLink($entry->link);
+                $news->setAuthor($entry->from->name);
+                if ($entry->name) $news->setTitle($entry->name);
+                if ($entry->place) {
+                    $news->setPlaceName($entry->place->name);
+                    $news->setPlaceCity($entry->place->location->city);
+                    $news->setPlaceCountry($entry->place->location->country);
+                    $news->setPlaceLat($entry->place->location->latitude);
+                    $news->setPlaceLng($entry->place->location->longitude);
+                    $news->setPlaceStreet($entry->place->location->street);
+                    $news->setPlaceZip($entry->place->location->zip);
                 }
-            }else{
-                if($entry->description){
-                    $news->setBodytext($entry->description);
-                    if($entry->caption)$news->setTeaser($entry->caption);
-                }else{
-                    if($entry->caption)$news->setBodytext($entry->caption);
-                }
-            }
-            if($entry->story)$news->setDescription($entry->story);
-            
-            $singlePost = json_decode(file_get_contents("https://graph.facebook.com/" . $entry->id . "/?fields=full_picture,source&access_token=".$channel->getToken()));
-            
-            if($entry->source){
-                $videoUrl = $entry->source;
-            }else if($singlePost->source){
-                $videoUrl = $singlePost->source;                
-            }else{
-                if($entry->full_picture){
-                    $imageUrl = $entry->full_picture;
-                }else if($singlePost->full_picture){
-                    $imageUrl = $singlePost->full_picture;
-                }
-            }
-            if ($videoUrl) {
-                $news->setMediaUrl($videoUrl);
-                $this->processNewsMedia($news, $videoUrl);
-            }else if ($imageUrl) {
-                $news->setMediaUrl($imageUrl);
-                $this->processNewsMedia($news, $imageUrl);
-            }
 
-            if ($new) {
-                $this->newsRepository->add($news);
-            } else {
-                $this->newsRepository->update($news);
+                if ($entry->message) {
+                    $message = str_replace("\n", "<br/>", $entry->message);
+                    $news->setBodytext(str_replace("<br/><br/>", "<br/>", $message));
+                    if ($entry->description) {
+                        $news->setTeaser($entry->description);
+                        if ($entry->caption) $news->setAlternativeTitle($entry->caption);
+                    } else {
+                        if ($entry->caption) $news->setTeaser($entry->caption);
+                    }
+                } else {
+                    if ($entry->description) {
+                        $news->setBodytext($entry->description);
+                        if ($entry->caption) $news->setTeaser($entry->caption);
+                    } else {
+                        if ($entry->caption) $news->setBodytext($entry->caption);
+                    }
+                }
+                if ($entry->story) $news->setDescription($entry->story);
+
+                $singlePost = json_decode(file_get_contents("https://graph.facebook.com/" . $entry->id . "/?fields=full_picture,source&access_token=" . $channel->getToken()));
+
+                if ($entry->source) {
+                    $videoUrl = $entry->source;
+                } else if ($singlePost->source) {
+                    $videoUrl = $singlePost->source;
+                } else {
+                    if ($entry->full_picture) {
+                        $imageUrl = $entry->full_picture;
+                    } else if ($singlePost->full_picture) {
+                        $imageUrl = $singlePost->full_picture;
+                    }
+                }
+                if ($videoUrl) {
+                    $news->setMediaUrl($videoUrl);
+                    $this->processNewsMedia($news, $videoUrl);
+                } else if ($imageUrl) {
+                    $news->setMediaUrl($imageUrl);
+                    $this->processNewsMedia($news, $imageUrl);
+                }
+
+                if ($new) {
+                    $this->newsRepository->add($news);
+                } else {
+                    $this->newsRepository->update($news);
+                }
+                $this->persistenceManager->persistAll();
             }
-            $this->persistenceManager->persistAll();            
         }
     }
     protected function getCategory($type,\GeorgRinger\News\Domain\Model\Category $parent = NULL){
