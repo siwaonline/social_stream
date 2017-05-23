@@ -108,7 +108,14 @@ class FeedUtility extends \Socialstream\SocialStream\Utility\BaseUtility
         //$imageName = $model->getObjectId().".jpg";
 
         $storage = $this->getStorage();
-                
+
+        if($table == "tx_news_domain_model_newsa") {
+            var_dump($this->settings["tmp"]);
+            var_dump($imageName);
+            var_dump($folder);
+            var_dump($imageName);
+            var_dump(!$folder->hasFile($imageName) && $imageName);
+        }
         if((!$folder->hasFile($imageName) && $imageName) || ($storage->getFileInFolder($imageName,$folder)->getSize() <= 0 && $folder->hasFile($imageName) && $imageName)) {
             $this->grab_image($imageUrl,$this->settings["tmp"] . $imageName);
             if(filesize($this->settings["tmp"] . $imageName) > 0) {
@@ -120,7 +127,7 @@ class FeedUtility extends \Socialstream\SocialStream\Utility\BaseUtility
                 if ($model->getImage()) {
                     $GLOBALS["TYPO3_DB"]->exec_UPDATEquery("sys_file_reference", "uid=" . $model->getImage()->getUid(), array('deleted' => '1'));
                 }
-            }else {
+            }elseif($table == "tx_news_domain_model_news"){
                 if (count($model->getFalMedia()) > 0) {
                     $media = $model->getFalMedia()->current();
                     if($media) {
@@ -138,6 +145,12 @@ class FeedUtility extends \Socialstream\SocialStream\Utility\BaseUtility
                 $image = $storage->getFileInFolder($imageName,$folder);
                 $image = $image->getUid();
             }            
+        }
+        if($table == "tx_news_domain_model_newsa") {
+            var_dump($image);
+            var_dump($model->getUid());
+            //var_dump($this->settings["storagePid"]);
+            exit;
         }
         
         if ($image) {

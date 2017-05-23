@@ -63,13 +63,18 @@ class FacebookUtility extends \Socialstream\SocialStream\Utility\Token\TokenUtil
     public function retrieveToken($url){
         $parts = parse_url($url);
         parse_str($parts['query'], $params);
-
+        
         if(!$params["access_token"]){
             return false;
         }else{
             $token = file_get_contents("https://graph.facebook.com/oauth/access_token?grant_type=fb_exchange_token&client_id=" . $this->settings["fbappid"] . "&client_secret=" . $this->settings["fbappsecret"] . "&fb_exchange_token=" . $params["access_token"]);
             return $token;
         }
+    }
+    
+    public function getValues($tokenString){
+        $json = json_decode($tokenString);        
+        return array("tk" => $json->access_token, "exp" => time() + $json->expires_in);
     }
     
 }

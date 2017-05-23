@@ -123,6 +123,7 @@ class FacebookUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUtilit
                     $new = 1;
                 }
 
+                $news->setType(0);
                 $news->setChannel($channel);
                 $cat = $this->getCategory($channel->getType());
                 $news->addCategory($cat);
@@ -162,6 +163,13 @@ class FacebookUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUtilit
                 }
                 if ($entry->story) $news->setDescription($entry->story);
 
+                if ($new) {
+                    $this->newsRepository->add($news);
+                } else {
+                    $this->newsRepository->update($news);
+                }
+                $this->persistenceManager->persistAll();
+
                 $singlePost = json_decode(file_get_contents("https://graph.facebook.com/" . $entry->id . "/?fields=full_picture,source&access_token=" . $channel->getToken()));
 
                 if ($entry->source) {
@@ -183,11 +191,7 @@ class FacebookUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUtilit
                     $this->processNewsMedia($news, $imageUrl);
                 }
 
-                if ($new) {
-                    $this->newsRepository->add($news);
-                } else {
-                    $this->newsRepository->update($news);
-                }
+                $this->newsRepository->update($news);
                 $this->persistenceManager->persistAll();
             }
         }

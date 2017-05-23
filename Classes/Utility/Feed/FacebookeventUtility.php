@@ -55,6 +55,7 @@ class FacebookeventUtility extends \Socialstream\SocialStream\Utility\Feed\Faceb
                 $new = 1;
             }
 
+            $news->setType(0);
             $news->setChannel($channel);
             $cat = $this->getCategory($channel->getType());
             $news->addCategory($cat);
@@ -80,17 +81,19 @@ class FacebookeventUtility extends \Socialstream\SocialStream\Utility\Feed\Faceb
                 $message = str_replace("\n", "<br/>", $entry->description);
                 $news->setBodytext(str_replace("<br/><br/>", "<br/>", $message));
             }
+            if ($new) {
+                $this->newsRepository->add($news);
+            } else {
+                $this->newsRepository->update($news);
+            }
+            $this->persistenceManager->persistAll();
             
             if($entry->cover){
                 $news->setMediaUrl($entry->cover->source);
                 $this->processNewsMedia($news, $entry->cover->source);
             }
 
-            if ($new) {
-                $this->newsRepository->add($news);
-            } else {
-                $this->newsRepository->update($news);
-            }
+            $this->newsRepository->update($news);
             $this->persistenceManager->persistAll();
         }
     }

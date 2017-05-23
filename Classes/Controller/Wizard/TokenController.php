@@ -130,15 +130,21 @@ class TokenController extends \TYPO3\CMS\Backend\Controller\Wizard\AbstractWizar
             false,
             true
         );
+        if(strpos($redirectUrl, "://") === false) {
+            $base = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off' ? 'https' : 'http' . '://' . $_SERVER['SERVER_NAME'];
+            $redirectUrl = $base . $redirectUrl;  
+        }
+
         $accessUrl = $utility->getAccessUrl().urlencode($redirectUrl);
         $actualUrl = "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
         $tokenString = $utility->retrieveToken($actualUrl);
+        
         if(!$tokenString) {
             $this->content .= $utility->getTokenJavascript($accessUrl, $actualUrl);
         }else{
-            $infos = explode("&", $tokenString);
-            $tk = explode("=", $infos[0])[1];
-            $exp = time() + explode("=", $infos[1])[1];
+            $res = $utility->getValues($tokenString);
+            $tk = $res["tk"];
+            $exp = $res["exp"];
             $this->content .= "
 <script>
     var selectorTk = 'form[name=\"" . $this->P['formName'] . "\"] [data-formengine-input-name=\"" . $this->P['itemName'] . "\"]';

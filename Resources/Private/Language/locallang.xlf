@@ -15,9 +15,12 @@
 			<trans-unit id="tx_socialstream_domain_model_news.media_url">
                 <source>Media URL</source>
             </trans-unit>
-			<trans-unit id="tx_socialstream_domain_model_news.place_name">
-				<source>Place Name</source>
+			<trans-unit id="tx_socialstream_domain_model_news.location">
+				<source>Location</source>
 			</trans-unit>
+			<trans-unit id="tx_socialstream_domain_model_news.place_name">
+                <source>Place Name</source>
+            </trans-unit>
 			<trans-unit id="tx_socialstream_domain_model_news.place_street">
 				<source>Place Street</source>
 			</trans-unit>
@@ -78,6 +81,14 @@
 			<trans-unit id="tx_socialstream_domain_model_channel.news">
 				<source>News</source>
 			</trans-unit>
+
+			<trans-unit id="labels.pleaseSave">
+                <source>Please save first.</source>
+            </trans-unit>
+            <trans-unit id="labels.enterID">
+                <source>Please enter a valid %s-Page-ID.</source>
+            </trans-unit>
+
 		</body>
 	</file>
 </xliff>

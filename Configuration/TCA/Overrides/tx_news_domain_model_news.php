@@ -66,7 +66,7 @@ $tmp_social_stream_columns = array(
 	'place_name' => array(
 		'exclude' => 1,
 		'label' => 'LLL:EXT:social_stream/Resources/Private/Language/locallang_db.xlf:tx_socialstream_domain_model_news.place_name',
-		'displayCond' => 'FIELD:type:=:11',
+		'displayCond' => 'FIELD:place_name:REQ:true',
 		'config' => array(
 			'type' => 'input',
 			'size' => 30,
@@ -76,7 +76,7 @@ $tmp_social_stream_columns = array(
 	'place_street' => array(
 		'exclude' => 1,
 		'label' => 'LLL:EXT:social_stream/Resources/Private/Language/locallang_db.xlf:tx_socialstream_domain_model_news.place_street',
-		'displayCond' => 'FIELD:type:=:11',
+		'displayCond' => 'FIELD:place_name:REQ:true',
 		'config' => array(
 			'type' => 'input',
 			'size' => 30,
@@ -86,7 +86,7 @@ $tmp_social_stream_columns = array(
 	'place_zip' => array(
 		'exclude' => 1,
 		'label' => 'LLL:EXT:social_stream/Resources/Private/Language/locallang_db.xlf:tx_socialstream_domain_model_news.place_zip',
-		'displayCond' => 'FIELD:type:=:11',
+		'displayCond' => 'FIELD:place_name:REQ:true',
 		'config' => array(
 			'type' => 'input',
 			'size' => 30,
@@ -96,7 +96,7 @@ $tmp_social_stream_columns = array(
 	'place_city' => array(
 		'exclude' => 1,
 		'label' => 'LLL:EXT:social_stream/Resources/Private/Language/locallang_db.xlf:tx_socialstream_domain_model_news.place_city',
-		'displayCond' => 'FIELD:type:=:11',
+		'displayCond' => 'FIELD:place_name:REQ:true',
 		'config' => array(
 			'type' => 'input',
 			'size' => 30,
@@ -106,7 +106,7 @@ $tmp_social_stream_columns = array(
 	'place_country' => array(
 		'exclude' => 1,
 		'label' => 'LLL:EXT:social_stream/Resources/Private/Language/locallang_db.xlf:tx_socialstream_domain_model_news.place_country',
-		'displayCond' => 'FIELD:type:=:11',
+		'displayCond' => 'FIELD:place_name:REQ:true',
 		'config' => array(
 			'type' => 'input',
 			'size' => 30,
@@ -116,7 +116,7 @@ $tmp_social_stream_columns = array(
 	'place_lat' => array(
 		'exclude' => 1,
 		'label' => 'LLL:EXT:social_stream/Resources/Private/Language/locallang_db.xlf:tx_socialstream_domain_model_news.place_lat',
-		'displayCond' => 'FIELD:type:=:11',
+		'displayCond' => 'FIELD:place_name:REQ:true',
 		'config' => array(
 			'type' => 'input',
 			'size' => 30,
@@ -126,7 +126,7 @@ $tmp_social_stream_columns = array(
 	'place_lng' => array(
 		'exclude' => 1,
 		'label' => 'LLL:EXT:social_stream/Resources/Private/Language/locallang_db.xlf:tx_socialstream_domain_model_news.place_lng',
-		'displayCond' => 'FIELD:type:=:11',
+		'displayCond' => 'FIELD:place_name:REQ:true',
 		'config' => array(
 			'type' => 'input',
 			'size' => 30,
@@ -146,7 +146,6 @@ $tmp_social_stream_columns = array(
 	'channel' => array(
 		'exclude' => 1,
 		'label' => 'LLL:EXT:social_stream/Resources/Private/Language/locallang_db.xlf:tx_socialstream_domain_model_news.channel',
-		'displayCond' => 'FIELD:type:=:11',
 		'config' => array(
 			'type' => 'select',
 			'renderType' => 'selectSingle',
@@ -157,15 +156,21 @@ $tmp_social_stream_columns = array(
 	),
 );
 
+/*
 $tmp_social_stream_columns['channel'] = array(
 	'config' => array(
 		'type' => 'passthrough',
 	)
 );
+*/
+
 
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addTCAcolumns('tx_news_domain_model_news',$tmp_social_stream_columns);
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addToAllTCAtypes('tx_news_domain_model_news', 'object_id, link, media_url, place_name, place_street, place_zip, place_city, place_country, place_lat, place_lng, channel');
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addToAllTCAtypes('tx_news_domain_model_news', 'object_id, link, media_url, channel');
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addToAllTCAtypes('tx_news_domain_model_news', '--div--;LLL:EXT:social_stream/Resources/Private/Language/locallang_db.xlf:tx_socialstream_domain_model_news.location,place_name, place_street, place_zip, place_city, place_country, place_lat, place_lng', '', 'after:notes');
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addToAllTCAtypes('tx_news_domain_model_news', 'datetimeend', '', 'after:datetime');
+
+//$GLOBALS['TCA']['tx_news_domain_model_news']['types']['0']['showitem'] .= ',--div--;LLL:EXT:social_stream/Resources/Private/Language/locallang_db.xlf:tx_socialstream_domain_model_news.location,place_name, place_street, place_zip, place_city, place_country, place_lat, place_lng,';
 
 /* inherit and extend the show items from the parent class */
 
@@ -189,3 +194,4 @@ $GLOBALS['TCA']['tx_news_domain_model_news']['columns'][$GLOBALS['TCA']['tx_news
 	'EXT:/Resources/Private/Language/locallang_csh_.xlf'
 );
 */
+

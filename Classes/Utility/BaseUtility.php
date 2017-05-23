@@ -65,12 +65,12 @@ class BaseUtility
         return array(
             'facebook' => 'Facebook',
             'facebookevent' => 'Facebook Event',
-            'instagram' => 'Instagram',
+            /*'instagram' => 'Instagram',
             'youtube' => 'YouTube',
             'twitter' => 'Twitter',
             'xing' => 'Xing',
             'linkedin' => 'LinkedIn',
-            'soundcloud' => 'Soundcloud',
+            'soundcloud' => 'Soundcloud',*/
         );
     }
     public static function getType($key){
