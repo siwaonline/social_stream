@@ -112,6 +112,7 @@ class FacebookUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUtilit
         $this->categoryRepository = GeneralUtility::makeInstance('GeorgRinger\\News\\Domain\\Repository\\CategoryRepository');
 
         $url = "https://graph.facebook.com/".$channel->getObjectId()."/feed?fields=id,created_time,link,permalink_url,place,type,message,full_picture,object_id,picture,name,caption,description,story,source,from&access_token=".$channel->getToken()."&limit=".$limit;
+        //likes.limit(1).summary(true)
         $elem = $this->getElems($url);
 
         foreach ($elem->data as $entry) {
@@ -129,7 +130,12 @@ class FacebookUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUtilit
                 $news->addCategory($cat);
                 $subcat = $this->getCategory($channel->getTitle(), $cat);
                 $news->addCategory($subcat);
-                $news->setObjectId($entry->id);
+                $id = explode("_",$entry->id);
+                if($id[1]){
+                    $news->setObjectId($id[1]);
+                }else{
+                    $news->setObjectId($entry->id);
+                }                
                 $news->setDatetime(new \DateTime($entry->created_time));
                 if ($entry->link) $news->setLink($entry->link);
                 $news->setAuthor($entry->from->name);

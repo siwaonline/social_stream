@@ -60,8 +60,13 @@ class FacebookeventUtility extends \Socialstream\SocialStream\Utility\Feed\Faceb
             $cat = $this->getCategory($channel->getType());
             $news->addCategory($cat);
             $subcat = $this->getCategory($channel->getTitle(),$cat);
-            $news->addCategory($subcat);            
-            $news->setObjectId($entry->id);
+            $news->addCategory($subcat);
+            $id = explode("_",$entry->id);
+            if($id[1]){
+                $news->setObjectId($id[1]);
+            }else{
+                $news->setObjectId($entry->id);
+            }
             $news->setDatetime(new \DateTime($entry->start_time));
             $news->setDatetimeend(new \DateTime($entry->end_time));
             if($entry->link)$news->setLink($entry->link);
