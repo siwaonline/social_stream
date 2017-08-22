@@ -114,9 +114,9 @@ class FacebookUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUtilit
         $url = "https://graph.facebook.com/".$channel->getObjectId()."/feed?fields=id,created_time,link,permalink_url,place,type,message,full_picture,object_id,picture,name,caption,description,story,source,from&access_token=".$channel->getToken()."&limit=".$limit;
         //likes.limit(1).summary(true)
         $elem = $this->getElems($url);
-
+        
         foreach ($elem->data as $entry) {
-            if($entry->name) {
+            if($entry->name || $entry->message) {
                 $new = 0;
                 $news = $this->newsRepository->findHiddenById($entry->id, $channel->getUid());
                 if (!$news) {
@@ -139,7 +139,11 @@ class FacebookUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUtilit
                 $news->setDatetime(new \DateTime($entry->created_time));
                 if ($entry->link) $news->setLink($entry->link);
                 $news->setAuthor($entry->from->name);
-                if ($entry->name) $news->setTitle($entry->name);
+                if ($entry->name){
+                    $news->setTitle($entry->name);
+                }else{
+                    $news->setTitle($entry->from->name);
+                }
                 if ($entry->place) {
                     $news->setPlaceName($entry->place->name);
                     $news->setPlaceCity($entry->place->location->city);
