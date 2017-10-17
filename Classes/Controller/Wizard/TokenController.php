@@ -131,7 +131,12 @@ class TokenController extends \TYPO3\CMS\Backend\Controller\Wizard\AbstractWizar
             true
         );
         if(strpos($redirectUrl, "://") === false) {
-            $base = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off' ? 'https' : 'http' . '://' . $_SERVER['SERVER_NAME'];
+            //$base = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off' ? 'https' : 'http' . '://' . $_SERVER['SERVER_NAME'];
+            if(isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off'){
+                $base = 'https' . '://' . $_SERVER['SERVER_NAME'];
+            }else{
+                $base = 'http' . '://' . $_SERVER['SERVER_NAME'];
+            }
             $redirectUrl = $base . $redirectUrl;  
         }
 

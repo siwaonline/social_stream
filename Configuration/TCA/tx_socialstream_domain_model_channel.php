@@ -40,10 +40,21 @@ return array(
 		'showRecordFieldList' => 'sys_language_uid, l10n_parent, l10n_diffsource, hidden, object_id, title, about, description, type, link, image, token, expires',
 	),
 	'types' => array(
-		'1' => array('showitem' => 'sys_language_uid;;;;1-1-1, l10n_parent, l10n_diffsource, hidden;;1, object_id, title, about, description, type, link, image, token, expires, --div--;LLL:EXT:cms/locallang_ttc.xlf:tabs.access, starttime, endtime'),
+		'1' => array('showitem' => 'sys_language_uid;;;;1-1-1, l10n_parent, l10n_diffsource, hidden;;1, --palette--;;paletteTitle, --palette--;;paletteAbout, --palette--;;paletteType, image, --palette--;;paletteToken, --div--;LLL:EXT:cms/locallang_ttc.xlf:tabs.access, starttime, endtime'),
 	),
 	'palettes' => array(
-		'1' => array('showitem' => ''),
+		'paletteTitle' => array(
+			'showitem' => 'object_id,title,',
+		),
+		'paletteAbout' => array(
+			'showitem' => 'about,description',
+		),
+		'paletteType' => array(
+			'showitem' => 'type,link',
+		),
+		'paletteToken' => array(
+			'showitem' => 'token,expires',
+		),
 	),
 	'columns' => array(
 	

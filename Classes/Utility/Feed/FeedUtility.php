@@ -109,13 +109,6 @@ class FeedUtility extends \Socialstream\SocialStream\Utility\BaseUtility
 
         $storage = $this->getStorage();
 
-        if($table == "tx_news_domain_model_newsa") {
-            var_dump($this->settings["tmp"]);
-            var_dump($imageName);
-            var_dump($folder);
-            var_dump($imageName);
-            var_dump(!$folder->hasFile($imageName) && $imageName);
-        }
         if((!$folder->hasFile($imageName) && $imageName) || ($storage->getFileInFolder($imageName,$folder)->getSize() <= 0 && $folder->hasFile($imageName) && $imageName)) {
             $this->grab_image($imageUrl,$this->settings["tmp"] . $imageName);
             if(filesize($this->settings["tmp"] . $imageName) > 0) {
@@ -145,12 +138,6 @@ class FeedUtility extends \Socialstream\SocialStream\Utility\BaseUtility
                 $image = $storage->getFileInFolder($imageName,$folder);
                 $image = $image->getUid();
             }            
-        }
-        if($table == "tx_news_domain_model_newsa") {
-            var_dump($image);
-            var_dump($model->getUid());
-            //var_dump($this->settings["storagePid"]);
-            exit;
         }
         
         if ($image) {

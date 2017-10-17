@@ -1,19 +1,22 @@
 {
-  "name": "siwa/social_stream",
+  "name": "siwaonline/social_stream",
   "type": "typo3-cms-extension",
-  "description": "Social Stream",
+  "description": "Social Stream - Crawls the data from a Social Media Page and saves it as news record",
   "homepage": "https://www.siwa.at",
   "license": [
     "GPL-2.0+"
   ],
   "keywords": [
     "TYPO3 CMS",
-    "Social Stream"
+    "Social Stream",
+    "Siwa"
   ],
   "support": {
-    "issues": "https://github.com/siwaonline/social_stream"
+    "issues": "https://github.com/siwaonline/social_stream/issues"
   },
   "require": {
+    "typo3/cms-core": "^7.6.13 || >=8.7.0 <9",
+    "georgringer/news": ">=4.3.0"
   },
   "version": "1.0.0",
   "config": {

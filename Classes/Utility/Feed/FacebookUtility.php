@@ -112,7 +112,6 @@ class FacebookUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUtilit
         $this->categoryRepository = GeneralUtility::makeInstance('GeorgRinger\\News\\Domain\\Repository\\CategoryRepository');
 
         $url = "https://graph.facebook.com/".$channel->getObjectId()."/feed?fields=id,created_time,link,permalink_url,place,type,message,full_picture,object_id,picture,name,caption,description,story,source,from&access_token=".$channel->getToken()."&limit=".$limit;
-        //likes.limit(1).summary(true)
         $elem = $this->getElems($url);
         
         foreach ($elem->data as $entry) {

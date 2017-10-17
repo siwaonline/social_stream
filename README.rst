@@ -11,7 +11,7 @@ Highly extendable with every Social Media Platform, that provides an API
 
 Provides a scheduler task so the pages are crawled each day.
 
-Issue Tracking at https://forge.typo3.org/projects/extension-social_stream.
+Issue Tracking at https://github.com/siwaonline/social_stream/issues.
 
 -----------------------------------------------------------------------------
 
@@ -65,7 +65,7 @@ For example:
 
 If your facebook page URL is https://www.facebook.com/siwa.online/?fref=ts then your name is ``siwa.online``
 
-If your facebook page URL is https://www.facebook.com/ADhouse-Communication-Group-121064187970420/?fref=ts then your id is ``121064187970420``
+You can look your page ID up on this site: https://findmyfbid.com/
 
 -----------------------------------------------------------------------------
 
