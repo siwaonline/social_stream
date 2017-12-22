@@ -65,10 +65,10 @@ class BaseUtility
         return array(
             'facebook' => 'Facebook',
             'facebookevent' => 'Facebook Event',
-            /*'instagram' => 'Instagram',
-            'youtube' => 'YouTube',
+            'instagram' => 'Instagram',
+            //'youtube' => 'YouTube',
             'twitter' => 'Twitter',
-            'xing' => 'Xing',
+            /*'xing' => 'Xing',
             'linkedin' => 'LinkedIn',
             'soundcloud' => 'Soundcloud',*/
         );
