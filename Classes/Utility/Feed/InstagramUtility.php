@@ -147,7 +147,7 @@ class InstagramUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUtili
 
                 $news->addCategory($cat);
 
-                $subcat = $this->getCategory($channel->getTitle(), $cat);
+                $subcat = $this->getCategory($channel->getTitle() . "@Instagram", $cat);
                 $news->addCategory($subcat);
 
                 $news->setObjectId($newsId);

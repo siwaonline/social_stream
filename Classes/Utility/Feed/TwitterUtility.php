@@ -81,7 +81,7 @@ class TwitterUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUtility
 
             $channel->setObjectId($elem["id_str"]);
             $channel->setTitle($elem["screen_name"]);
-            if ($elem["description"]) $channel->setAbout($elem-["description"]);
+            if ($elem["description"]) $channel->setAbout($elem["description"]);
             //if($elem->description)$channel->setDescription($elem->description);
             $channel->setLink("https://www.twitter.com/" . $elem["screen_name"] . "/");
 
@@ -194,7 +194,7 @@ class TwitterUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUtility
 
                 $news->addCategory($cat);
 
-                $subcat = $this->getCategory($channel->getTitle(), $cat);
+                $subcat = $this->getCategory($channel->getTitle() . "@Twitter", $cat);
                 $news->addCategory($subcat);
 
                 $news->setObjectId($newsId);
