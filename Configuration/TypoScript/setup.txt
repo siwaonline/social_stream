@@ -22,6 +22,8 @@ module.tx_socialstream {
         xingappsecret = {$module.tx_socialstream.settings.xingappsecret}
         liappid = {$module.tx_socialstream.settings.liappid}
         liappsecret = {$module.tx_socialstream.settings.liappsecret}
+        flickrappid = {$module.tx_socialstream.settings.flickrappid}
+        flickrappsecret = {$module.tx_socialstream.settings.flickrappsecret}
     }
 }
 

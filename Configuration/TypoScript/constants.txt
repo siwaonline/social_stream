@@ -38,5 +38,9 @@ module.tx_socialstream {
         liappid =
         # cat=social_stream_keys/keys/l; type=string; label= LinkedIn App Secret
         liappsecret =
+        # cat=social_stream_keys/keys/m; type=string; label= Flickr App ID
+        flickrappid =
+        # cat=social_stream_keys/keys/n; type=string; label= Flickr App Secret
+        flickrappsecret =
     }
 }

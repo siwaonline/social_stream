@@ -68,6 +68,7 @@ class BaseUtility
             'instagram' => 'Instagram',
             //'youtube' => 'YouTube',
             'twitter' => 'Twitter',
+            'flickr' => 'Flickr'
             /*'xing' => 'Xing',
             'linkedin' => 'LinkedIn',
             'soundcloud' => 'Soundcloud',*/
