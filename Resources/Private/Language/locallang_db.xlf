@@ -69,6 +69,15 @@
 			<trans-unit id="tx_socialstream_domain_model_channel.type">
 				<source>Type</source>
 			</trans-unit>
+            <trans-unit id="tx_socialstream_domain_model_channel.posttype">
+                <source>Type of Postings</source>
+            </trans-unit>
+            <trans-unit id="tx_socialstream_domain_model_channel.posttype.0">
+                <source>All</source>
+            </trans-unit>
+            <trans-unit id="tx_socialstream_domain_model_channel.posttype.1">
+                <source>Posts of Site only</source>
+            </trans-unit>
 			<trans-unit id="tx_socialstream_domain_model_channel.link">
 				<source>Link</source>
 			</trans-unit>

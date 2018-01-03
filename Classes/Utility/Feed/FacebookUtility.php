@@ -111,7 +111,12 @@ class FacebookUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUtilit
         $this->newsRepository = GeneralUtility::makeInstance('Socialstream\\SocialStream\\Domain\\Repository\\NewsRepository');
         $this->categoryRepository = GeneralUtility::makeInstance('GeorgRinger\\News\\Domain\\Repository\\CategoryRepository');
 
-        $url = "https://graph.facebook.com/".$channel->getObjectId()."/feed?fields=id,created_time,link,permalink_url,place,type,message,full_picture,object_id,picture,name,caption,description,story,source,from&access_token=".$channel->getToken()."&limit=".$limit;
+        if($channel->getPosttype() == "1"){
+            $url = "https://graph.facebook.com/".$channel->getObjectId()."/posts?fields=id,created_time,link,permalink_url,place,type,message,full_picture,object_id,picture,name,caption,description,story,source,from&access_token=".$channel->getToken()."&limit=".$limit;
+        }else{
+            $url = "https://graph.facebook.com/".$channel->getObjectId()."/feed?fields=id,created_time,link,permalink_url,place,type,message,full_picture,object_id,picture,name,caption,description,story,source,from&access_token=".$channel->getToken()."&limit=".$limit;
+        }
+
         $elem = $this->getElems($url);
         
         foreach ($elem->data as $entry) {
@@ -180,6 +185,9 @@ class FacebookUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUtilit
                 $this->persistenceManager->persistAll();
 
                 $singlePost = json_decode(file_get_contents("https://graph.facebook.com/" . $entry->id . "/?fields=full_picture,source&access_token=" . $channel->getToken()));
+
+                $videoUrl = '';
+                $imageUrl = '';
 
                 if ($entry->source) {
                     $videoUrl = $entry->source;
