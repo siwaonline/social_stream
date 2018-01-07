@@ -42,36 +42,36 @@ class ChannelProcessDatamap
 
         if ($table == 'tx_socialstream_domain_model_channel') {
             if($status == "update") {
-                $channel = $channelRepository->findByUid($id);                
+                //TODO: what if channel is hidden?
+                $channel = $channelRepository->findByUid($id);
             }else {
                 $channel = new \Socialstream\SocialStream\Domain\Model\Channel();
             }
             if(array_key_exists('type', $fieldArray))$channel->setType($fieldArray["type"]);
             if(array_key_exists('object_id', $fieldArray))$channel->setObjectId($fieldArray["object_id"]);
             if(array_key_exists('token', $fieldArray))$channel->setToken($fieldArray["token"]);
+            if($channel){
+                if($channel->getObjectId() && $channel->getToken()) {
 
-            if($channel->getObjectId() && $channel->getToken()) {
+                    /*if ($channel->getType() == "facebook") {
+                        $utility = new \Socialstream\SocialStream\Utility\Feed\FacebookUtility();
+                    }*/
+                    $utility = FeedUtility::getUtility($channel->getType());
+                    $channel = $utility->getChannel($channel,1);
 
-                /*if ($channel->getType() == "facebook") {
-                    $utility = new \Socialstream\SocialStream\Utility\Feed\FacebookUtility();
-                }*/
-                $utility = FeedUtility::getUtility($channel->getType());
-                $channel = $utility->getChannel($channel,1);
-                
-                if($channel) {
-                    $fieldArray['object_id'] = $channel->getObjectId();
-                    $fieldArray['title'] = $channel->getTitle();
-                    $fieldArray['about'] = $channel->getAbout();
-                    //$fieldArray['description'] = $channel->getDescription();
-                    $fieldArray['link'] = $channel->getLink();                    
-                }
-                else{
-                    $fieldArray = array();
+                    if($channel) {
+                        $fieldArray['object_id'] = $channel->getObjectId();
+                        $fieldArray['title'] = $channel->getTitle();
+                        $fieldArray['about'] = $channel->getAbout();
+                        //$fieldArray['description'] = $channel->getDescription();
+                        $fieldArray['link'] = $channel->getLink();
+                    }
+                    else{
+                        $fieldArray = array();
+                    }
                 }
             }
-            
-        }        
-        
+        }
     }
     
 }
