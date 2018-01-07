@@ -205,7 +205,12 @@ return array(
         'posttype' => array(
             'exclude' => 1,
             'label' => 'LLL:EXT:social_stream/Resources/Private/Language/locallang_db.xlf:tx_socialstream_domain_model_channel.posttype',
-            'displayCond' => 'FIELD:type:=:facebook',
+            'displayCond' => array(
+                'OR' => array(
+                    'FIELD:type:=:facebook',
+                    'FIELD:type:=:twitter',
+                )
+            ),
             'config' => array(
                 'type' => 'select',
                 'renderType' => 'selectSingle',

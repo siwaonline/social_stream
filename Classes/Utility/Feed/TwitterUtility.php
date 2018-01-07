@@ -138,7 +138,14 @@ class TwitterUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUtility
         //$url = "https://api.instagram.com/v1/users/".$channel->getObjectId()."/media/recent/?access_token=".$channel->getToken()."&count=".$limit;
         //$elem = $this->getElems($url);
 
-        $ch = curl_init("https://api.twitter.com/1.1/statuses/user_timeline.json?user_id=" . $channel->getObjectId() . "&count=" . $limit);
+        if($channel->getPosttype() == "1"){
+            $url = "https://api.twitter.com/1.1/statuses/user_timeline.json?user_id=" . $channel->getObjectId() . "&count=" . $limit . "&exclude_replies=true";
+        }else{
+            $url = "https://api.twitter.com/1.1/statuses/user_timeline.json?user_id=" . $channel->getObjectId() . "&count=" . $limit;
+        }
+
+        $ch = curl_init($url);
+
         $headers = array(
             'Accept: application/json',
             'Content-Type: application/json',
