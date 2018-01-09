@@ -151,11 +151,13 @@ class FlickrUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUtility
             }
             $this->persistenceManager->persistAll();
 
-            $imageUrl = "https://farm" . $entry->farm . ".static.flickr.com/" . $entry->server . "/" . $entry->primary . "_" . $entry->secret . "_b.jpg";
+            $mediaUrl = "https://farm" . $entry->farm . ".static.flickr.com/" . $entry->server . "/" . $entry->primary . "_" . $entry->secret . "_b.jpg";
 
-            if($this->get_http_response_code($imageUrl) == 200) {
-                $news->setMediaUrl($imageUrl);
-                $this->processNewsMedia($news, $imageUrl);
+            if($mediaUrl){
+                if($this->validateMedia($mediaUrl)){
+                    $news->setMediaUrl($mediaUrl);
+                    $this->processNewsMedia($news, $mediaUrl);
+                }
             }
 
             $this->newsRepository->update($news);

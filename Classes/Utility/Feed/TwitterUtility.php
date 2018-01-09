@@ -228,10 +228,15 @@ class TwitterUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUtility
 
                 if($entry["entities"]["media"]){
                     foreach($entry["entities"]["media"] as $media){
+                        $mediaUrl = '';
                         if($media["type"] == "photo"){
-                            $imageUrl = $media["media_url"];
-                            $news->setMediaUrl($imageUrl);
-                            $this->processNewsMedia($news, $imageUrl);
+                            $mediaUrl = $media["media_url"];
+                        }
+                        if($mediaUrl){
+                            if($this->validateMedia($mediaUrl)){
+                                $news->setMediaUrl($mediaUrl);
+                                $this->processNewsMedia($news, $mediaUrl);
+                            }
                         }
                     }
                 }

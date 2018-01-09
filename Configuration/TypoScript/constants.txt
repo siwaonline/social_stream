@@ -14,6 +14,8 @@ module.tx_socialstream {
         storage = 1
         # cat=social_stream//f; type=string; label= Sub Folder
         folder = social_stream
+        # cat=social_stream//g; type=int; label= Maximale Dateigröße in MB
+        maxFilesize = 10
         # cat=social_stream_keys/keys/a; type=string; label= Facebook App ID
         fbappid =
         # cat=social_stream_keys/keys/b; type=string; label= Facebook App Secret

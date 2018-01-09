@@ -174,24 +174,33 @@ class InstagramUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUtili
                 }
                 $this->persistenceManager->persistAll();
 
+                $mediaUrl = '';
+
                 if($entry->type == "image"){
-                    $imageUrl = $entry->images->standard_resolution->url;
-                    $news->setMediaUrl($imageUrl);
-                    $this->processNewsMedia($news, $imageUrl);
+                    $mediaUrl = $entry->images->standard_resolution->url;
                 }else if($entry->type == "video"){
-                    $videoUrl = $entry->videos->standard_resolution->url;
-                    $news->setMediaUrl($videoUrl);
-                    $this->processNewsMedia($news, $videoUrl);
-                }else if($entry->type == "carousel"){
+                    $mediaUrl = $entry->videos->standard_resolution->url;
+                }
+                if($mediaUrl){
+                    if($this->validateMedia($mediaUrl)){
+                        $news->setMediaUrl($mediaUrl);
+                        $this->processNewsMedia($news, $mediaUrl);
+                    }
+                }
+
+                if($entry->type == "carousel"){
                     foreach($entry->carousel_media as $carouselMedia){
+                        $mediaUrl = '';
                         if($carouselMedia->type == "image"){
-                            $imageUrl = $carouselMedia->images->standard_resolution->url;
-                            $news->setMediaUrl($imageUrl);
-                            $this->processNewsMedia($news, $imageUrl);
+                            $mediaUrl = $carouselMedia->images->standard_resolution->url;
                         }else if($carouselMedia->type == "video"){
-                            $videoUrl = $carouselMedia->videos->standard_resolution->url;
-                            $news->setMediaUrl($videoUrl);
-                            $this->processNewsMedia($news, $videoUrl);
+                            $mediaUrl = $carouselMedia->videos->standard_resolution->url;
+                        }
+                        if($mediaUrl){
+                            if($this->validateMedia($mediaUrl)){
+                                $news->setMediaUrl($mediaUrl);
+                                $this->processNewsMedia($news, $mediaUrl);
+                            }
                         }
                     }
                 }

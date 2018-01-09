@@ -92,10 +92,17 @@ class FacebookeventUtility extends \Socialstream\SocialStream\Utility\Feed\Faceb
                 $this->newsRepository->update($news);
             }
             $this->persistenceManager->persistAll();
-            
+
+            $mediaUrl = '';
+
             if($entry->cover){
-                $news->setMediaUrl($entry->cover->source);
-                $this->processNewsMedia($news, $entry->cover->source);
+                $mediaUrl = $entry->cover->source;
+            }
+            if($mediaUrl){
+                if($this->validateMedia($mediaUrl)){
+                    $news->setMediaUrl($mediaUrl);
+                    $this->processNewsMedia($news, $mediaUrl);
+                }
             }
 
             $this->newsRepository->update($news);

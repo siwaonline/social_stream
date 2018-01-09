@@ -103,5 +103,18 @@ class BaseUtility
         $message->send();
         
     }
+    public function validateMedia($mediaUrl){
+        if($this->get_http_response_code($mediaUrl) == 200){
+            $maxFilesize = $this->settings["maxFilesize"] * 1024 * 1024;
+            $head = array_change_key_case(get_headers($mediaUrl, TRUE));
+            if(array_key_exists('content-length', $head)){
+                $filesize = $head['content-length'];
+                if($filesize <= $maxFilesize && $filesize > 0) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 
 }

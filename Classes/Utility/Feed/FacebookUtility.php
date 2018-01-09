@@ -186,26 +186,24 @@ class FacebookUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUtilit
 
                 $singlePost = json_decode(file_get_contents("https://graph.facebook.com/" . $entry->id . "/?fields=full_picture,source&access_token=" . $channel->getToken()));
 
-                $videoUrl = '';
-                $imageUrl = '';
+                $mediaUrl = '';
 
                 if ($entry->source) {
-                    $videoUrl = $entry->source;
+                    $mediaUrl = $entry->source;
                 } else if ($singlePost->source) {
-                    $videoUrl = $singlePost->source;
+                    $mediaUrl = $singlePost->source;
                 } else {
                     if ($entry->full_picture) {
-                        $imageUrl = $entry->full_picture;
+                        $mediaUrl = $entry->full_picture;
                     } else if ($singlePost->full_picture) {
-                        $imageUrl = $singlePost->full_picture;
+                        $mediaUrl = $singlePost->full_picture;
                     }
                 }
-                if ($videoUrl) {
-                    $news->setMediaUrl($videoUrl);
-                    $this->processNewsMedia($news, $videoUrl);
-                } else if ($imageUrl) {
-                    $news->setMediaUrl($imageUrl);
-                    $this->processNewsMedia($news, $imageUrl);
+                if($mediaUrl){
+                    if($this->validateMedia($mediaUrl)){
+                        $news->setMediaUrl($mediaUrl);
+                        $this->processNewsMedia($news, $mediaUrl);
+                    }
                 }
 
                 $this->newsRepository->update($news);
