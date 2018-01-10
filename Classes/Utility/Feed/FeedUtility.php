@@ -39,7 +39,7 @@ class FeedUtility extends \Socialstream\SocialStream\Utility\BaseUtility
      *
      * @var array
      */
-    public $clearStrings = array('\ud83c\u','\ud83d\u','\u2600\u');
+    public $clearStrings = array('\ud83c\u','\ud83d\u','\ud83e\u','\u2600\u');
     
     public static function initTSFE($id = 1, $typeNum = 0) {
         parent::initTSFE($id,$typeNum);
