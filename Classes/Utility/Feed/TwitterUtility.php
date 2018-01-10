@@ -227,15 +227,24 @@ class TwitterUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUtility
                 $this->persistenceManager->persistAll();
 
                 if($entry["entities"]["media"]){
+                    $mediaUrlSet = false;
                     foreach($entry["entities"]["media"] as $media){
-                        $mediaUrl = '';
+                        $imageUrl = '';
                         if($media["type"] == "photo"){
-                            $mediaUrl = $media["media_url"];
+                            $imageUrl = $media["media_url"];
                         }
-                        if($mediaUrl){
-                            if($this->validateMedia($mediaUrl)){
-                                $news->setMediaUrl($mediaUrl);
-                                $this->processNewsMedia($news, $mediaUrl);
+                        $media = $this->validateMedia($channel, $imageUrl);
+
+                        if(is_array($media)){
+                            if($media['link']){
+                                if(!$mediaUrlSet){
+                                    $news->setMediaUrl($media['link']);
+                                    $mediaUrlSet = true;
+                                }
+                                
+                            }
+                            if($media['media_url']){
+                                $this->processNewsMedia($news, $media['media_url']);
                             }
                         }
                     }

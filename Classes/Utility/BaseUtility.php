@@ -103,18 +103,56 @@ class BaseUtility
         $message->send();
         
     }
-    public function validateMedia($mediaUrl){
+    public function validateMediaAvailability($mediaUrl){
         if($this->get_http_response_code($mediaUrl) == 200){
-            $maxFilesize = $this->settings["maxFilesize"] * 1024 * 1024;
-            $head = array_change_key_case(get_headers($mediaUrl, TRUE));
-            if(array_key_exists('content-length', $head)){
-                $filesize = $head['content-length'];
-                if($filesize <= $maxFilesize && $filesize > 0) {
-                    return true;
-                }
+            return true;
+        }
+        return false;
+    }
+    public function validateMediaSize($mediaUrl){
+        $maxFilesize = $this->settings["maxFilesize"] * 1024 * 1024;
+        $head = array_change_key_case(get_headers($mediaUrl, TRUE));
+        if(array_key_exists('content-length', $head)){
+            $filesize = $head['content-length'];
+            if($filesize <= $maxFilesize && $filesize > 0) {
+                return true;
             }
         }
         return false;
     }
 
+    public function validateMedia($channel, $imageUrl, $videoUrl = null){
+        $link = '';
+        $mediaUrl = '';
+        if($videoUrl && $imageUrl){
+            if($channel->isVideosync()){
+                if($this->validateMediaAvailability($videoUrl)){
+                    if($this->validateMediaSize($videoUrl)){
+                        $mediaUrl = $videoUrl;
+                    }else{
+                        if($this->validateMediaAvailability($imageUrl)) {
+                            if ($this->validateMediaSize($imageUrl)) {
+                                $mediaUrl = $imageUrl;
+                            }
+                        }
+                    }
+                }
+            }else{
+                if($this->validateMediaAvailability($imageUrl)){
+                    if($this->validateMediaSize($imageUrl)){
+                        $mediaUrl = $imageUrl;
+                    }
+                }
+            }
+            $link = $videoUrl;
+        }else if($imageUrl){
+            if($this->validateMediaAvailability($imageUrl)){
+                if($this->validateMediaSize($imageUrl)){
+                    $mediaUrl = $imageUrl;
+                }
+            }
+            $link = $imageUrl;
+        }
+        return array('link' => $link, 'media_url' => $mediaUrl);
+    }
 }

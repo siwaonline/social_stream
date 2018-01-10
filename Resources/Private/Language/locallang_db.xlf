@@ -78,6 +78,9 @@
             <trans-unit id="tx_socialstream_domain_model_channel.posttype.1">
                 <source>Posts of Site only</source>
             </trans-unit>
+            <trans-unit id="tx_socialstream_domain_model_channel.videosync">
+                <source>Should Videos be downloaded?</source>
+            </trans-unit>
 			<trans-unit id="tx_socialstream_domain_model_channel.link">
 				<source>Link</source>
 			</trans-unit>

@@ -151,12 +151,18 @@ class FlickrUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUtility
             }
             $this->persistenceManager->persistAll();
 
-            $mediaUrl = "https://farm" . $entry->farm . ".static.flickr.com/" . $entry->server . "/" . $entry->primary . "_" . $entry->secret . "_b.jpg";
+            $imageUrl = '';
+            if($entry->farm && $entry->server && $entry->primary && $entry->secret)
+            $imageUrl = "https://farm" . $entry->farm . ".static.flickr.com/" . $entry->server . "/" . $entry->primary . "_" . $entry->secret . "_b.jpg";
 
-            if($mediaUrl){
-                if($this->validateMedia($mediaUrl)){
-                    $news->setMediaUrl($mediaUrl);
-                    $this->processNewsMedia($news, $mediaUrl);
+            $media = $this->validateMedia($channel, $imageUrl);
+
+            if(is_array($media)){
+                if($media['link']){
+                    $news->setMediaUrl($media['link']);
+                }
+                if($media['media_url']){
+                    $this->processNewsMedia($news, $media['media_url']);
                 }
             }
 
