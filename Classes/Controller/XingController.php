@@ -281,7 +281,7 @@ class XingController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
 
             try {
                 // ### get Page Data ###
-                $page = $this->pageProcess($page,$storage,$targetFolder,1);
+                $page = $this->pageProcess($page,$storage,$targetFolder,1,0);
                 if(is_array($page)){
                     foreach ($page as $p){
                         if ($targetFolder->hasFolder($p->getId())) {
@@ -326,17 +326,25 @@ class XingController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
 
     }
 
-    private function pageProcess($page,$storage,$targetFolder,$already,$rec=0){
+    private function pageProcess($page,$storage,$targetFolder,$already,$showerror=1){
         $persistenceManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Persistence\\Generic\\PersistenceManager');
         if(!$this->xingappid || !$this->xingappsecret){
             $msg = \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate('msg.noapp', 'social_stream');
-            $head = \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate('msg.error', 'social_stream');
-            $this->redirect('message', 'Page', null, array('head' => $head, 'message' => $msg, 'close' => 1));
+            $head = \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate('msg.error', 'social_stream');            
+            if($showerror) {
+                $this->redirect('message', 'Page', null, array('head' => $head, 'message' => $msg, 'close' => 1));
+            }else{
+                return $page;
+            }
         }
         if(!$this->storagePid){
             $msg = \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate('msg.nostorage', 'social_stream');
             $head = \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate('msg.error', 'social_stream');
-            $this->redirect('message', 'Page', null, array('head' => $head, 'message' => $msg, 'close' => 1));
+            if($showerror) {
+                $this->redirect('message', 'Page', null, array('head' => $head, 'message' => $msg, 'close' => 1));
+            }else{
+                return $page;
+            }
         }
 
         $tk = $page->getToken();
@@ -358,7 +366,11 @@ class XingController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
                     if(!$elem){
                         $msg = \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate('msg.nodata', 'social_stream');
                         $head = \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate('msg.error', 'social_stream');
-                        $this->redirect('message', 'Page', null, array('head' => $head, 'message' => $msg, 'close' => 1));
+                        if($showerror) {
+                			$this->redirect('message', 'Page', null, array('head' => $head, 'message' => $msg, 'close' => 1));
+            			}else{
+                			return $page;
+            			}
                     }
                     $elem = json_decode($elem);
                     $pages = array();
@@ -376,12 +388,20 @@ class XingController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
         } catch (\TYPO3\CMS\Core\Error\Exception $e) {
             $msg = \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate('msg.nodata', 'social_stream');
             $head = \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate('msg.error', 'social_stream');
-            $this->redirect('message', 'Page', null, array('head' => $head, 'message' => $msg, 'close' => 1));
+            if($showerror) {
+                $this->redirect('message', 'Page', null, array('head' => $head, 'message' => $msg, 'close' => 1));
+            }else{
+                return $page;
+            }
         }
         if(!$elem){
             $msg = \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate('msg.nodata', 'social_stream');
             $head = \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate('msg.error', 'social_stream');
-            $this->redirect('message', 'Page', null, array('head' => $head, 'message' => $msg, 'close' => 1));
+            if($showerror) {
+                $this->redirect('message', 'Page', null, array('head' => $head, 'message' => $msg, 'close' => 1));
+            }else{
+                return $page;
+            }
         }
         while(strpos($elem, '\ud83d\u') !== false){
             $pos = strpos($elem, '\ud83d\u');
