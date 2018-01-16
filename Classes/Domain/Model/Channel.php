@@ -74,6 +74,20 @@ class Channel extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
      * @var string
      */
     protected $type = '';
+
+    /**
+     * posttype
+     *
+     * @var string
+     */
+    protected $posttype = '';
+
+    /**
+     * videosync
+     *
+     * @var bool
+     */
+    protected $videosync = '';
     
     /**
      * link
@@ -268,7 +282,39 @@ class Channel extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     {
         $this->type = $type;
     }
-    
+
+    /**
+     * @return string
+     */
+    public function getPosttype()
+    {
+        return $this->posttype;
+    }
+
+    /**
+     * @param string $posttype
+     */
+    public function setPosttype($posttype)
+    {
+        $this->posttype = $posttype;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isVideosync()
+    {
+        return $this->videosync;
+    }
+
+    /**
+     * @param bool $videosync
+     */
+    public function setVideosync($videosync)
+    {
+        $this->videosync = $videosync;
+    }
+
     /**
      * Returns the link
      *

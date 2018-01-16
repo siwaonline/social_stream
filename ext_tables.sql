@@ -32,6 +32,8 @@ CREATE TABLE tx_socialstream_domain_model_channel (
 	description varchar(255) DEFAULT '' NOT NULL,
 	user tinyint(1) unsigned DEFAULT '0' NOT NULL,
 	type varchar(255) DEFAULT '' NOT NULL,
+	posttype varchar(255) DEFAULT '' NOT NULL,
+	videosync tinyint(4) unsigned DEFAULT '0' NOT NULL,
 	link varchar(255) DEFAULT '' NOT NULL,
 	image int(11) unsigned NOT NULL default '0',
 	token varchar(255) DEFAULT '' NOT NULL,

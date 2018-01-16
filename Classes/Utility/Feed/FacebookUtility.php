@@ -111,7 +111,12 @@ class FacebookUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUtilit
         $this->newsRepository = GeneralUtility::makeInstance('Socialstream\\SocialStream\\Domain\\Repository\\NewsRepository');
         $this->categoryRepository = GeneralUtility::makeInstance('GeorgRinger\\News\\Domain\\Repository\\CategoryRepository');
 
-        $url = "https://graph.facebook.com/".$channel->getObjectId()."/feed?fields=id,created_time,link,permalink_url,place,type,message,full_picture,object_id,picture,name,caption,description,story,source,from&access_token=".$channel->getToken()."&limit=".$limit;
+        if($channel->getPosttype() == "1"){
+            $url = "https://graph.facebook.com/".$channel->getObjectId()."/posts?fields=id,created_time,link,permalink_url,place,type,message,full_picture,object_id,picture,name,caption,description,story,source,from&access_token=".$channel->getToken()."&limit=".$limit;
+        }else{
+            $url = "https://graph.facebook.com/".$channel->getObjectId()."/feed?fields=id,created_time,link,permalink_url,place,type,message,full_picture,object_id,picture,name,caption,description,story,source,from&access_token=".$channel->getToken()."&limit=".$limit;
+        }
+
         $elem = $this->getElems($url);
         
         foreach ($elem->data as $entry) {
@@ -181,23 +186,29 @@ class FacebookUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUtilit
 
                 $singlePost = json_decode(file_get_contents("https://graph.facebook.com/" . $entry->id . "/?fields=full_picture,source&access_token=" . $channel->getToken()));
 
+                $imageUrl = '';
+                $videoUrl = '';
+
                 if ($entry->source) {
                     $videoUrl = $entry->source;
                 } else if ($singlePost->source) {
                     $videoUrl = $singlePost->source;
-                } else {
-                    if ($entry->full_picture) {
-                        $imageUrl = $entry->full_picture;
-                    } else if ($singlePost->full_picture) {
-                        $imageUrl = $singlePost->full_picture;
-                    }
                 }
-                if ($videoUrl) {
-                    $news->setMediaUrl($videoUrl);
-                    $this->processNewsMedia($news, $videoUrl);
-                } else if ($imageUrl) {
-                    $news->setMediaUrl($imageUrl);
-                    $this->processNewsMedia($news, $imageUrl);
+                if ($entry->full_picture) {
+                    $imageUrl = $entry->full_picture;
+                } else if ($singlePost->full_picture) {
+                    $imageUrl = $singlePost->full_picture;
+                }
+
+                $media = $this->validateMedia($channel, $imageUrl, $videoUrl);
+
+                if(is_array($media)){
+                    if($media['link']){
+                        $news->setMediaUrl($media['link']);
+                    }
+                    if($media['media_url']){
+                        $this->processNewsMedia($news, $media['media_url']);
+                    }
                 }
 
                 $this->newsRepository->update($news);

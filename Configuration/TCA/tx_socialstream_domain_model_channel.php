@@ -37,7 +37,7 @@ return array(
 		),
 	),
 	'interface' => array(
-		'showRecordFieldList' => 'sys_language_uid, l10n_parent, l10n_diffsource, hidden, object_id, title, about, description, type, link, image, token, expires',
+		'showRecordFieldList' => 'sys_language_uid, l10n_parent, l10n_diffsource, hidden, object_id, title, about, description, type, posttype, videosync, link, image, token, expires',
 	),
 	'types' => array(
 		'1' => array('showitem' => 'sys_language_uid;;;;1-1-1, l10n_parent, l10n_diffsource, hidden;;1, --palette--;;paletteTitle, --palette--;;paletteAbout, --palette--;;paletteType, image, --palette--;;paletteToken, --div--;LLL:EXT:cms/locallang_ttc.xlf:tabs.access, starttime, endtime'),
@@ -50,7 +50,7 @@ return array(
 			'showitem' => 'about,description',
 		),
 		'paletteType' => array(
-			'showitem' => 'type,link',
+			'showitem' => 'type, posttype, videosync, link',
 		),
 		'paletteToken' => array(
 			'showitem' => 'token,expires',
@@ -202,6 +202,36 @@ return array(
 				'eval' => ''
 			),
 		),
+        'posttype' => array(
+            'exclude' => 1,
+            'label' => 'LLL:EXT:social_stream/Resources/Private/Language/locallang_db.xlf:tx_socialstream_domain_model_channel.posttype',
+            'displayCond' => array(
+                'OR' => array(
+                    'FIELD:type:=:facebook',
+                    'FIELD:type:=:twitter',
+                )
+            ),
+            'config' => array(
+                'type' => 'select',
+                'renderType' => 'selectSingle',
+                'items' => array(
+                    array('LLL:EXT:social_stream/Resources/Private/Language/locallang_db.xlf:tx_socialstream_domain_model_channel.posttype.0', 0),
+                    array('LLL:EXT:social_stream/Resources/Private/Language/locallang_db.xlf:tx_socialstream_domain_model_channel.posttype.1', 1)
+                ),
+                'size' => 1,
+                'maxitems' => 1,
+                'eval' => ''
+            ),
+        ),
+        'videosync' => array(
+            'exclude' => 1,
+            'label' => 'LLL:EXT:social_stream/Resources/Private/Language/locallang_db.xlf:tx_socialstream_domain_model_channel.videosync',
+            'displayCond' => 'FIELD:type:=:facebook',
+            'config' => array(
+                'type' => 'check',
+                'default' => 1
+            ),
+        ),
 		'link' => array(
 			'exclude' => 1,
 			'label' => 'LLL:EXT:social_stream/Resources/Private/Language/locallang_db.xlf:tx_socialstream_domain_model_channel.link',

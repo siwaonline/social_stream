@@ -21,6 +21,9 @@
 			<trans-unit id="type.description">
 				<source>type</source>
 			</trans-unit>
+			<trans-unit id="posttype.description">
+				<source>posttype</source>
+			</trans-unit>
 			<trans-unit id="link.description">
 				<source>link</source>
 			</trans-unit>

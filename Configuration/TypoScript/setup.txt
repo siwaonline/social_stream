@@ -9,6 +9,7 @@ module.tx_socialstream {
         tmp = {$module.tx_socialstream.settings.tmp}
         storage = {$module.tx_socialstream.settings.storage}
         folder = {$module.tx_socialstream.settings.folder}
+        maxFilesize = {$module.tx_socialstream.settings.maxFilesize}
 
         fbappid = {$module.tx_socialstream.settings.fbappid}
         fbappsecret = {$module.tx_socialstream.settings.fbappsecret}
@@ -22,6 +23,8 @@ module.tx_socialstream {
         xingappsecret = {$module.tx_socialstream.settings.xingappsecret}
         liappid = {$module.tx_socialstream.settings.liappid}
         liappsecret = {$module.tx_socialstream.settings.liappsecret}
+        flickrappid = {$module.tx_socialstream.settings.flickrappid}
+        flickrappsecret = {$module.tx_socialstream.settings.flickrappsecret}
     }
 }
 
