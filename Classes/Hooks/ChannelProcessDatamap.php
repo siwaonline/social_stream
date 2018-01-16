@@ -33,8 +33,6 @@ use Socialstream\SocialStream\Utility\Feed\FeedUtility;
  */
 class ChannelProcessDatamap
 {
-    //processDatamap_postProcessFieldArray
-    //hook_processDatamap_afterDatabaseOperations
     
     function processDatamap_postProcessFieldArray($status, $table, $id, &$fieldArray, &$reference) {
         $objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
@@ -42,8 +40,7 @@ class ChannelProcessDatamap
 
         if ($table == 'tx_socialstream_domain_model_channel') {
             if($status == "update") {
-                //TODO: what if channel is hidden?
-                $channel = $channelRepository->findByUid($id);
+                $channel = $channelRepository->findHidden($id);
             }else {
                 $channel = new \Socialstream\SocialStream\Domain\Model\Channel();
             }
@@ -53,9 +50,6 @@ class ChannelProcessDatamap
             if($channel){
                 if($channel->getObjectId() && $channel->getToken()) {
 
-                    /*if ($channel->getType() == "facebook") {
-                        $utility = new \Socialstream\SocialStream\Utility\Feed\FacebookUtility();
-                    }*/
                     $utility = FeedUtility::getUtility($channel->getType());
                     $channel = $utility->getChannel($channel,1);
 

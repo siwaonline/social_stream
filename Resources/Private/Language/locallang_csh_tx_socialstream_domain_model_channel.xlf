@@ -24,6 +24,9 @@
 			<trans-unit id="posttype.description">
 				<source>posttype</source>
 			</trans-unit>
+			<trans-unit id="videosync.description">
+				<source>videosync</source>
+			</trans-unit>
 			<trans-unit id="link.description">
 				<source>link</source>
 			</trans-unit>
