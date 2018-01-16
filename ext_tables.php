@@ -16,5 +16,5 @@ $iconRegistry->registerIcon('extensions-social-stream-youtube', 'TYPO3\\CMS\\Cor
 $iconRegistry->registerIcon('extensions-social-stream-twitter', 'TYPO3\\CMS\\Core\\Imaging\\IconProvider\\BitmapIconProvider', array("source" => 'EXT:social_stream/Resources/Public/Icons/socialstream_domain_model_channel_twitter.svg',));
 $iconRegistry->registerIcon('extensions-social-stream-xing', 'TYPO3\\CMS\\Core\\Imaging\\IconProvider\\BitmapIconProvider', array("source" => 'EXT:social_stream/Resources/Public/Icons/socialstream_domain_model_channel_xing.svg',));
 $iconRegistry->registerIcon('extensions-social-stream-linkedin', 'TYPO3\\CMS\\Core\\Imaging\\IconProvider\\BitmapIconProvider', array("source" => 'EXT:social_stream/Resources/Public/Icons/socialstream_domain_model_channel_linkedin.svg',));
+$iconRegistry->registerIcon('extensions-social-stream-flickr', 'TYPO3\\CMS\\Core\\Imaging\\IconProvider\\BitmapIconProvider', array("source" => 'EXT:social_stream/Resources/Public/Icons/socialstream_domain_model_channel_flickr.svg',));
 $iconRegistry->registerIcon('extensions-social-stream-soundcloud', 'TYPO3\\CMS\\Core\\Imaging\\IconProvider\\BitmapIconProvider', array("source" => 'EXT:social_stream/Resources/Public/Icons/socialstream_domain_model_channel_soundcloud.svg',));
-
