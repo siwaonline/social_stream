@@ -1,25 +1,8 @@
 <?php
-if (!defined('TYPO3_MODE')) {
-	die('Access denied.');
-}
+defined('TYPO3_MODE') or die();
 
-$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['extbase']['commandControllers'][] = 'Socialstream\\SocialStream\\Controller\\GetSocialCommandController';
+$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['extbase']['commandControllers'][] = 'Socialstream\\SocialStream\\Controller\\GetFeedCommandController';
 
-\TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
-	'Socialstream.' . $_EXTKEY,
-	'Pi1',
-	array(
-		'Page' => 'list, show, message, showSinglePost, showSingleEvent',
-		'Facebook' => '',
-		'Xing' => '',
-		'LinkedIn' => '',
-		
-	),
-	// non-cacheable actions
-	array(
-		'Page' => '',
-		'Facebook' => '',
-		'Xing' => '',
-		'LinkedIn' => '',
-	)
-);
+$GLOBALS['TYPO3_CONF_VARS']['EXT']['news']['classes']['Domain/Model/News'][] = 'social_stream';
+
+$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processDatamapClass'][] = 'EXT:social_stream/Classes/Hooks/ChannelProcessDatamap.php:Socialstream\SocialStream\Hooks\ChannelProcessDatamap';

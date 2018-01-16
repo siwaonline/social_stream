@@ -3,49 +3,18 @@ if (!defined('TYPO3_MODE')) {
 	die('Access denied.');
 }
 
-\TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
-	'Socialstream.' . $_EXTKEY,
-	'Pi1',
-	'Social Stream'
-);
-
-if (TYPO3_MODE === 'BE') {
-
-	/**
-	 * Registers a Backend Module
-	 */
-	\TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerModule(
-		'Socialstream.' . $_EXTKEY,
-		'web',	 // Make module a submodule of 'web'
-		'be1',	// Submodule key
-		'',						// Position
-		array(
-			'Page' => 'listbe, showbe,  new, create, edit, update, delete, message',
-			'Facebook' => 'token, create',
-			'Xing' => 'token, create',
-			'LinkedIn' => 'token, create',
-		),
-		array(
-			'access' => 'user,group',
-			'icon'   => 'EXT:' . $_EXTKEY . '/ext_icon.' . (\TYPO3\CMS\Core\Utility\GeneralUtility::compat_version('7.0') ? 'png' : 'gif'),
-			'labels' => 'LLL:EXT:' . $_EXTKEY . '/Resources/Private/Language/locallang_be1.xlf',
-		)
-	);
-}
-
-$pluginSignature = str_replace('_', '', $_EXTKEY) . '_pi1';
-$TCA['tt_content']['types']['list']['subtypes_addlist'][$pluginSignature] = 'pi_flexform';
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue($pluginSignature, 'FILE:EXT:' . $_EXTKEY . '/Flexform.xml');
-
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile($_EXTKEY, 'Configuration/TypoScript', 'Social Stream');
 
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addLLrefForTCAdescr('tx_socialstream_domain_model_page', 'EXT:social_stream/Resources/Private/Language/locallang_csh_tx_socialstream_domain_model_page.xlf');
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::allowTableOnStandardPages('tx_socialstream_domain_model_page');
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addLLrefForTCAdescr('tx_socialstream_domain_model_channel', 'EXT:social_stream/Resources/Private/Language/locallang_csh_tx_socialstream_domain_model_channel.xlf');
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::allowTableOnStandardPages('tx_socialstream_domain_model_channel');
 
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addLLrefForTCAdescr('tx_socialstream_domain_model_post', 'EXT:social_stream/Resources/Private/Language/locallang_csh_tx_socialstream_domain_model_post.xlf');
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::allowTableOnStandardPages('tx_socialstream_domain_model_post');
-
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addLLrefForTCAdescr('tx_socialstream_domain_model_gallery', 'EXT:social_stream/Resources/Private/Language/locallang_csh_tx_socialstream_domain_model_gallery.xlf');
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::allowTableOnStandardPages('tx_socialstream_domain_model_gallery');
-
+$iconRegistry = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Imaging\\IconRegistry');
+$iconRegistry->registerIcon('extensions-social-stream-empty', 'TYPO3\\CMS\\Core\\Imaging\\IconProvider\\BitmapIconProvider', array("source" => 'EXT:social_stream/Resources/Public/Icons/socialstream_domain_model_channel_empty.svg',));
+$iconRegistry->registerIcon('extensions-social-stream-facebook', 'TYPO3\\CMS\\Core\\Imaging\\IconProvider\\BitmapIconProvider', array("source" => 'EXT:social_stream/Resources/Public/Icons/socialstream_domain_model_channel_facebook.svg',));
+$iconRegistry->registerIcon('extensions-social-stream-instagram', 'TYPO3\\CMS\\Core\\Imaging\\IconProvider\\BitmapIconProvider', array("source" => 'EXT:social_stream/Resources/Public/Icons/socialstream_domain_model_channel_instagram.svg',));
+$iconRegistry->registerIcon('extensions-social-stream-youtube', 'TYPO3\\CMS\\Core\\Imaging\\IconProvider\\BitmapIconProvider', array("source" => 'EXT:social_stream/Resources/Public/Icons/socialstream_domain_model_channel_youtube.svg',));
+$iconRegistry->registerIcon('extensions-social-stream-twitter', 'TYPO3\\CMS\\Core\\Imaging\\IconProvider\\BitmapIconProvider', array("source" => 'EXT:social_stream/Resources/Public/Icons/socialstream_domain_model_channel_twitter.svg',));
+$iconRegistry->registerIcon('extensions-social-stream-xing', 'TYPO3\\CMS\\Core\\Imaging\\IconProvider\\BitmapIconProvider', array("source" => 'EXT:social_stream/Resources/Public/Icons/socialstream_domain_model_channel_xing.svg',));
+$iconRegistry->registerIcon('extensions-social-stream-linkedin', 'TYPO3\\CMS\\Core\\Imaging\\IconProvider\\BitmapIconProvider', array("source" => 'EXT:social_stream/Resources/Public/Icons/socialstream_domain_model_channel_linkedin.svg',));
+$iconRegistry->registerIcon('extensions-social-stream-soundcloud', 'TYPO3\\CMS\\Core\\Imaging\\IconProvider\\BitmapIconProvider', array("source" => 'EXT:social_stream/Resources/Public/Icons/socialstream_domain_model_channel_soundcloud.svg',));
 
