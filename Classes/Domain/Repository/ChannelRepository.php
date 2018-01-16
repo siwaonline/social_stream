@@ -38,6 +38,6 @@ class ChannelRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
         $query->matching(
             $query->equals("uid", $uid)
         );
-        return $query->execute();
+        return $query->execute(true);
     }
 }
