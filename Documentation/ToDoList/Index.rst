@@ -13,9 +13,7 @@ To-Do list
 
 Social Media Channels that should be included:
 
-- instagram
 - youtube
-- twitter
 - xing
 - linkedin
 - soundcloud

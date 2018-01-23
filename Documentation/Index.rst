@@ -28,7 +28,7 @@ Social Stream
 		social,stream,facebook,news,siwa
 
 	:Copyright:
-		2017
+		2018
 
 	:Author:
 	    Philipp Parzer
