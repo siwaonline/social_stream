@@ -150,6 +150,9 @@ $tmp_social_stream_columns = array(
 			'type' => 'select',
 			'renderType' => 'selectSingle',
 			'foreign_table' => 'tx_socialstream_domain_model_channel',
+            'items' => array(
+                array('', 0),
+            ),
 			'minitems' => 0,
 			'maxitems' => 1,
 		),
