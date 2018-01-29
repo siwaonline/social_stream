@@ -40,7 +40,7 @@ class ChannelProcessDatamap
 
         if ($table == 'tx_socialstream_domain_model_channel') {
             if($status == "update") {
-                $channel = $channelRepository->findHidden($id);
+                $channel = $channelRepository->findHidden($id)->getFirst();
             }else {
                 $channel = new \Socialstream\SocialStream\Domain\Model\Channel();
             }

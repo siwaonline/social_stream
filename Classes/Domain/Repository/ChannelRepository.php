@@ -35,9 +35,11 @@ class ChannelRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
     public function findHidden($uid){
         $query = $this->createQuery();
         $query->getQuerySettings()->setIgnoreEnableFields(TRUE);
+        $query->getQuerySettings()->setRespectStoragePage(FALSE);
         $query->matching(
             $query->equals("uid", $uid)
         );
-        return $query->execute(true);
+        $query->setLimit(1);
+        return $query->execute();
     }
 }
