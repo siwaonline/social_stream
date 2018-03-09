@@ -199,14 +199,16 @@ class FeedUtility extends \Socialstream\SocialStream\Utility\BaseUtility
         $uriBuilder->setCreateAbsoluteUri(1);
         $url = explode("?",$uriBuilder->buildBackendUri())[0];
         if(substr( $url, 0, 1 ) === "/"){
-            $url = "http://". $_SERVER["HOSTNAME"] . $url;
+            if($_SERVER["HTTP_HOST"]){
+                $url = "http://". $_SERVER["HTTP_HOST"] . $url;
+            }else{
+                $url = "http://". $_SERVER["HOSTNAME"] . $url;
+            }
         }
 
-        $subject = "Social Stream - Token abgelaufen";
-        //$subject = \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate('mail.subject_token', 'social_stream');
+        $subject = "Social Stream - " . \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate('labels.subject_token', 'social_stream');
         $text = "Social Stream ".$this->getType($channel->getType())." ".$channel->getTitle().": <br/>";
-        //$text .= \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate('mail.body_token', 'social_stream');
-        $text .= "Bitte melden Sie sich im Backend an und aktualisieren Sie den Token.";
+        $text .= \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate('labels.body_token', 'social_stream');
         $text .= "<br/><br/><a href='".$url."'>".$url."</a>";
 
         if(!$sendermail)$sendermail = "no-reply@example.com";

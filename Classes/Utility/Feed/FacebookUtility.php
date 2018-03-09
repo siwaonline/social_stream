@@ -92,11 +92,12 @@ class FacebookUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUtilit
             $url = "https://graph.facebook.com/oauth/access_token?grant_type=fb_exchange_token&client_id=" . $this->settings["fbappid"] . "&client_secret=" . $this->settings["fbappsecret"] . "&fb_exchange_token=" . $channel->getToken();
             if($this->get_http_response_code($url) == 200) {
                 $token = file_get_contents($url);
-                $infos = explode("&", $token);
+                /*$infos = explode("&", $token);
                 $tk = explode("=", $infos[0])[1];
-                $exp = time() + explode("=", $infos[1])[1];
-                $channel->setToken($tk);
-                $channel->setExpires($exp);
+                $exp = time() + explode("=", $infos[1])[1];*/
+                $tk = json_decode($token);
+                $channel->setToken($tk->access_token);
+                $channel->setExpires(time() + $tk->expires_in);
             }else{
                 if($this->settings["sysmail"]) {
                     $this->sendTokenInfoMail($channel,$this->settings["sysmail"],$this->settings["sendermail"]);

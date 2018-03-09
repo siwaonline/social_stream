@@ -100,6 +100,12 @@
             <trans-unit id="labels.enterID">
                 <source>Please enter a valid %s-Page-ID.</source>
             </trans-unit>
+			<trans-unit id="labels.subject_token">
+				<source>Token expired</source>
+			</trans-unit>
+			<trans-unit id="labels.body_token">
+				<source>Please log into the TYPO3 Backend and refresh the token.</source>
+			</trans-unit>
 
 		</body>
 	</file>
