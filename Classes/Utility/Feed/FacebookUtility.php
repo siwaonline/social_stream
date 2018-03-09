@@ -72,7 +72,7 @@ class FacebookUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUtilit
         }else{
             if ($isProcessing == 0) {
                 if($this->settings["sysmail"]) {
-                    $this->sendTokenInfoMail($channel,$this->settings["sysmail"]);
+                    $this->sendTokenInfoMail($channel,$this->settings["sysmail"],$this->settings["sendermail"]);
                 }
             }else{
                 $msg = "Fehler: Channel konnte nicht gecrawlt werden. Object Id oder Token falsch.";
@@ -89,7 +89,7 @@ class FacebookUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUtilit
     public function renewToken(\Socialstream\SocialStream\Domain\Model\Channel $channel){
         $expdiff = ($channel->getExpires() - time())/86400;
         if($expdiff <= 5){
-            $url = "https://graph.facebook.com/oauth/access_token?grant_type=fb_exchange_token&client_id=" . $this->settings["fbappid"] . "&client_secret=" . $this->settings["fbappsecret"] . "&fb_exchange_token=aaa" . $channel->getToken();
+            $url = "https://graph.facebook.com/oauth/access_token?grant_type=fb_exchange_token&client_id=" . $this->settings["fbappid"] . "&client_secret=" . $this->settings["fbappsecret"] . "&fb_exchange_token=" . $channel->getToken();
             if($this->get_http_response_code($url) == 200) {
                 $token = file_get_contents($url);
                 $infos = explode("&", $token);
@@ -99,7 +99,7 @@ class FacebookUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUtilit
                 $channel->setExpires($exp);
             }else{
                 if($this->settings["sysmail"]) {
-                    $this->sendTokenInfoMail($channel,$this->settings["sysmail"]);
+                    $this->sendTokenInfoMail($channel,$this->settings["sysmail"],$this->settings["sendermail"]);
                 }
             }
         }

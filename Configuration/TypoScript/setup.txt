@@ -5,6 +5,7 @@ module.tx_socialstream {
     settings{
         storagePid = {$module.tx_socialstream.persistence.storagePid}
         sysmail = {$module.tx_socialstream.settings.sysmail}
+        sendermail = {$module.tx_socialstream.settings.sendermail}
         limitPosts = {$module.tx_socialstream.settings.limitPosts}
         tmp = {$module.tx_socialstream.settings.tmp}
         storage = {$module.tx_socialstream.settings.storage}

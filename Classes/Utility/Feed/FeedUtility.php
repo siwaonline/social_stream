@@ -190,14 +190,17 @@ class FeedUtility extends \Socialstream\SocialStream\Utility\BaseUtility
         fclose($fp);
     }
 
-    public function sendTokenInfoMail(\Socialstream\SocialStream\Domain\Model\Channel $channel,$sysmail){
+    public function sendTokenInfoMail(\Socialstream\SocialStream\Domain\Model\Channel $channel,$sysmail,$sendermail=""){
         //$this->uriBuilder->reset();
         //$this->uriBuilder->setCreateAbsoluteUri(1);
         //$url = explode("?",$this->uriBuilder->buildBackendUri())[0];
-        $uriBuilder = $this->objectManager->get( 'TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder');
+        $uriBuilder = $this->objectManager->get('TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder');
         $uriBuilder->initializeObject();
         $uriBuilder->setCreateAbsoluteUri(1);
         $url = explode("?",$uriBuilder->buildBackendUri())[0];
+        if(substr( $url, 0, 1 ) === "/"){
+            $url = "http://". $_SERVER["HOSTNAME"] . $url;
+        }
 
         $subject = "Social Stream - Token abgelaufen";
         //$subject = \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate('mail.subject_token', 'social_stream');
@@ -206,8 +209,8 @@ class FeedUtility extends \Socialstream\SocialStream\Utility\BaseUtility
         $text .= "Bitte melden Sie sich im Backend an und aktualisieren Sie den Token.";
         $text .= "<br/><br/><a href='".$url."'>".$url."</a>";
 
-        $this->sendInfoMail(array("social.stream@typo3.org" => "Social Stream"),array($sysmail => $sysmail),$subject,$text);
-        $this->sendInfoMail(array("noreply@paweb.at" => "Social Stream"),array($sysmail => $sysmail),$subject,$text);
+        if(!$sendermail)$sendermail = "no-reply@example.com";
+        $this->sendInfoMail(array($sendermail => "Social Stream"),array($sysmail => $sysmail),$subject,$text);
     }
     public function addFlashMessage($txt,$head,$type,$obj){
         $message = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Messaging\\FlashMessage',$txt,$head,$type,TRUE);

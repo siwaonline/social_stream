@@ -74,7 +74,7 @@ class InstagramUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUtili
         }else{
             if ($isProcessing == 0) {
                 if($this->settings["sysmail"]) {
-                    $this->sendTokenInfoMail($channel,$this->settings["sysmail"]);
+                    $this->sendTokenInfoMail($channel,$this->settings["sysmail"],$this->settings["sendermail"]);
                 }
             }else{
                 $msg = "Fehler: Channel konnte nicht gecrawlt werden. Object Id oder Token falsch.";
@@ -101,7 +101,7 @@ class InstagramUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUtili
                 $channel->setExpires($exp);
             }else{
                 if($this->settings["sysmail"]) {
-                    $this->sendTokenInfoMail($channel,$this->settings["sysmail"]);
+                    $this->sendTokenInfoMail($channel,$this->settings["sysmail"],$this->settings["sendermail"]);
                 }
             }
         }*/

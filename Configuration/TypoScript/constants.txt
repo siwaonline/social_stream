@@ -4,8 +4,10 @@ module.tx_socialstream {
         storagePid =
     }
     settings{
-        # cat=social_stream//b; type=string; label= Notification E-Mail
+        # cat=social_stream//b; type=string; label= Notification Receiver E-Mail
         sysmail =
+        # cat=social_stream//h; type=string; label= Notification Sender E-Mail
+        sendermail =
         # cat=social_stream//c; type=int; label= Limit for Posts to fetch
         limitPosts = 100
         # cat=social_stream//d; type=string; label= tmp Folder
