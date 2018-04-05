@@ -28,11 +28,3 @@ module.tx_socialstream {
         flickrappsecret = {$module.tx_socialstream.settings.flickrappsecret}
     }
 }
-
-plugin.tx_news {
-    view {
-        templateRootPaths.9 = EXT:social_stream/Resources/Private/Templates/
-        partialRootPaths.9 = EXT:social_stream/Resources/Private/Partials/
-        layoutRootPaths.9 = EXT:social_stream/Resources/Private/Layouts/
-    }
-}
