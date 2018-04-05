@@ -52,7 +52,9 @@ class BaseUtility
         if (\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::isLoaded('realurl')) {
             $rootline = \TYPO3\CMS\Backend\Utility\BackendUtility::BEgetRootLine($id);
             $host = \TYPO3\CMS\Backend\Utility\BackendUtility::firstDomainRecord($rootline);
-            $_SERVER['HTTP_HOST'] = $host;
+            if (!is_null($host)) {
+                $_SERVER['HTTP_HOST'] = $host;
+            }
         }
     }
     public function initSettings(){
@@ -101,7 +103,7 @@ class BaseUtility
             ->setSubject("=?utf-8?b?".base64_encode($subject)."?=")
             ->setBody($text,"text/html");
         $message->send();
-        
+
     }
     public function validateMediaAvailability($mediaUrl){
         if($this->get_http_response_code($mediaUrl) == 200){

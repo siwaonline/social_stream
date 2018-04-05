@@ -42,7 +42,7 @@ class TokenController extends \TYPO3\CMS\Backend\Controller\Wizard\AbstractWizar
      * @var int
      */
     public $doClose;
-    
+
     /**
      * Constructor
      */
@@ -81,7 +81,7 @@ class TokenController extends \TYPO3\CMS\Backend\Controller\Wizard\AbstractWizar
         $response->getBody()->write($this->moduleTemplate->renderContent());
         return $response;
     }
-    
+
     /**
      * Main function
      * Makes a header-location redirect to an edit form IF POSSIBLE from the passed data - otherwise the window will
@@ -120,9 +120,9 @@ class TokenController extends \TYPO3\CMS\Backend\Controller\Wizard\AbstractWizar
         $this->objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
         $this->configurationManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Configuration\\ConfigurationManager');
         $this->settings = $this->configurationManager->getConfiguration(\TYPO3\CMS\Extbase\Configuration\ConfigurationManager::CONFIGURATION_TYPE_SETTINGS, 'Socialstream');
-        
+
         $this->settings["storagePid"] = $this->P['pid'];
-        
+
         $utility = TokenUtility::getUtility($row["type"],$pid);
         $redirectUrl = BackendUtility::getModuleUrl(
             'wizard_token',
@@ -130,20 +130,19 @@ class TokenController extends \TYPO3\CMS\Backend\Controller\Wizard\AbstractWizar
             false,
             true
         );
-        if(strpos($redirectUrl, "://") === false) {
-            //$base = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off' ? 'https' : 'http' . '://' . $_SERVER['SERVER_NAME'];
-            if(isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off'){
-                $base = 'https' . '://' . $_SERVER['SERVER_NAME'];
-            }else{
-                $base = 'http' . '://' . $_SERVER['SERVER_NAME'];
-            }
-            $redirectUrl = $base . $redirectUrl;  
+        if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') {
+            $base = 'https://' . $_SERVER['SERVER_NAME'];
+        } else {
+            $base = 'http://' . $_SERVER['SERVER_NAME'];
+        }
+        if (strpos($redirectUrl, "://") === false) {
+            $redirectUrl = $base . $redirectUrl;
         }
 
-        $accessUrl = $utility->getAccessUrl().urlencode($redirectUrl);
-        $actualUrl = "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
+        $accessUrl = $utility->getAccessUrl() . urlencode($redirectUrl);
+        $actualUrl = $base . $_SERVER['REQUEST_URI'];
         $tokenString = $utility->retrieveToken($actualUrl);
-        
+
         if(!$tokenString) {
             $this->content .= $utility->getTokenJavascript($accessUrl, $actualUrl);
         }else{
@@ -173,5 +172,5 @@ class TokenController extends \TYPO3\CMS\Backend\Controller\Wizard\AbstractWizar
 
         // Build the <body> for the module
         $this->moduleTemplate->setContent($this->content);
-    }    
+    }
 }
