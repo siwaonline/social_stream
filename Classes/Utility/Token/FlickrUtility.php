@@ -1,4 +1,5 @@
 <?php
+
 namespace Socialstream\SocialStream\Utility\Token;
 
 
@@ -33,27 +34,48 @@ namespace Socialstream\SocialStream\Utility\Token;
 class FlickrUtility extends \Socialstream\SocialStream\Utility\Token\TokenUtility
 {
     /**
-     * __construct
+     * FlickrUtility constructor.
+     * @param integer $pid
      */
     public function __construct($pid)
     {
-        $this->initTSFE($pid,0);
+        $this->initTSFE($pid, 0);
         $this->initSettings();
     }
 
+    /**
+     * @return string
+     */
     public function getAccessUrl()
     {
         return "not in use";
     }
-    public function getTokenJavascript($accessUrl,$actualUrl){
+
+    /**
+     * @param string $accessUrl
+     * @param string $actualUrl
+     * @return string
+     */
+    public function getTokenJavascript($accessUrl, $actualUrl)
+    {
         return "should not be called";
     }
 
-    public function retrieveToken($url){
+    /**
+     * @param string $url
+     * @return string
+     */
+    public function retrieveToken($url)
+    {
         return $this->settings['flickrappid'];
     }
 
-    public function getValues($tokenString){
+    /**
+     * @param string $tokenString
+     * @return array
+     */
+    public function getValues($tokenString)
+    {
         return array("tk" => $tokenString, "exp" => 0);
     }
 }

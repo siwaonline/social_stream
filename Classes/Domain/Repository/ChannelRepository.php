@@ -1,4 +1,5 @@
 <?php
+
 namespace Socialstream\SocialStream\Domain\Repository;
 
 
@@ -32,14 +33,20 @@ namespace Socialstream\SocialStream\Domain\Repository;
  */
 class ChannelRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
 {
-    public function findHidden($uid){
+    /**
+     * @param int $uid
+     * @return mixed
+     */
+    public function findHidden($uid)
+    {
         $query = $this->createQuery();
-        $query->getQuerySettings()->setIgnoreEnableFields(TRUE);
-        $query->getQuerySettings()->setRespectStoragePage(FALSE);
+        $query->getQuerySettings()->setIgnoreEnableFields(true);
+        $query->getQuerySettings()->setRespectStoragePage(false);
         $query->matching(
             $query->equals("uid", $uid)
         );
         $query->setLimit(1);
+
         return $query->execute();
     }
 }

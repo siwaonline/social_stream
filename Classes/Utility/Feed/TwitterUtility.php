@@ -1,4 +1,5 @@
 <?php
+
 namespace Socialstream\SocialStream\Utility\Feed;
 
 
@@ -40,23 +41,29 @@ class TwitterUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUtility
 {
 
     /**
-     * __construct
+     * TwitterUtility constructor.
+     * @param int $pid
      */
-    public function __construct($pid=0)
+    public function __construct($pid = 0)
     {
-        if($pid) {
+        if ($pid) {
             $this->initTSFE($pid, 0);
             $this->initSettings();
         }
     }
 
-    public function getChannel(\Socialstream\SocialStream\Domain\Model\Channel $channel,$isProcessing=0)
+    /**
+     * @param \Socialstream\SocialStream\Domain\Model\Channel $channel
+     * @param int $isProcessing
+     * @return bool|\Socialstream\SocialStream\Domain\Model\Channel
+     */
+    public function getChannel(\Socialstream\SocialStream\Domain\Model\Channel $channel, $isProcessing = 0)
     {
-        $ch = curl_init("https://api.twitter.com/1.1/users/show.json?user_id=" . $channel->getObjectId());
+        $ch = curl_init("https://api.twitter.com/1.1/users/show.json?user_id=".$channel->getObjectId());
         $headers = array(
             'Accept: application/json',
             'Content-Type: application/json',
-            'Authorization: Bearer '. $channel->getToken()
+            'Authorization: Bearer '.$channel->getToken(),
         );
 
         $options = array(
@@ -66,7 +73,7 @@ class TwitterUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUtility
             CURLOPT_SSL_VERIFYPEER => false,
             CURLOPT_HTTPHEADER => $headers,
             CURLOPT_CONNECTTIMEOUT => 30,
-            CURLOPT_TIMEOUT => 30
+            CURLOPT_TIMEOUT => 30,
         );
 
         curl_setopt_array($ch, $options);
@@ -75,15 +82,17 @@ class TwitterUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUtility
 
         $requestInfo = curl_getinfo($ch);
 
-        if($requestInfo["http_code"] == 200) {
+        if ($requestInfo["http_code"] == 200) {
 
-            $elem = json_decode($result,true);
+            $elem = json_decode($result, true);
 
             $channel->setObjectId($elem["id_str"]);
             $channel->setTitle($elem["screen_name"]);
-            if ($elem["description"]) $channel->setAbout($elem["description"]);
+            if ($elem["description"]) {
+                $channel->setAbout($elem["description"]);
+            }
             //if($elem->description)$channel->setDescription($elem->description);
-            $channel->setLink("https://www.twitter.com/" . $elem["screen_name"] . "/");
+            $channel->setLink("https://www.twitter.com/".$elem["screen_name"]."/");
 
             if ($isProcessing == 0) {
                 //$picStream = json_decode(file_get_contents("https://graph.facebook.com/" . $channel->getObjectId() . "/picture?redirect=0&width=900&access_token=" . $channel->getToken()));
@@ -93,16 +102,24 @@ class TwitterUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUtility
                     $this->processChannelMedia($channel, $imageUrl);
                 }
             }
-        }else{
+        } else {
             if ($isProcessing == 0) {
-                if($this->settings["sysmail"]) {
-                    $this->sendTokenInfoMail($channel,$this->settings["sysmail"],$this->settings["sendermail"]);
+                if ($this->settings["sysmail"]) {
+                    $this->sendTokenInfoMail($channel, $this->settings["sysmail"], $this->settings["sendermail"]);
                 }
-            }else{
+            } else {
                 $msg = "Fehler: Channel konnte nicht gecrawlt werden. Object Id oder Token falsch.";
                 //$this->addFlashMessage($msg, '', AbstractMessage::ERROR);
-                $this->objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
-                $this->addFlashMessage($msg, '', FlashMessage::ERROR,$this->objectManager->get(FlashMessageService::class));
+                $this->objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
+                    'TYPO3\\CMS\\Extbase\\Object\\ObjectManager'
+                );
+                $this->addFlashMessage(
+                    $msg,
+                    '',
+                    FlashMessage::ERROR,
+                    $this->objectManager->get(FlashMessageService::class)
+                );
+
                 return false;
             }
         }
@@ -110,7 +127,12 @@ class TwitterUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUtility
         return $channel;
     }
 
-    public function renewToken(\Socialstream\SocialStream\Domain\Model\Channel $channel){
+    /**
+     * @param \Socialstream\SocialStream\Domain\Model\Channel $channel
+     * @return \Socialstream\SocialStream\Domain\Model\Channel
+     */
+    public function renewToken(\Socialstream\SocialStream\Domain\Model\Channel $channel)
+    {
         /*$expdiff = ($channel->getExpires() - time())/86400;
         if($expdiff <= 5){
             $url = "https://graph.facebook.com/oauth/access_token?grant_type=fb_exchange_token&client_id=" . $this->settings["fbappid"] . "&client_secret=" . $this->settings["fbappsecret"] . "&fb_exchange_token=aaa" . $channel->getToken();
@@ -130,18 +152,31 @@ class TwitterUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUtility
         return $channel;
     }
 
-    public function getFeed(\Socialstream\SocialStream\Domain\Model\Channel $channel,$limit=100){
-        $this->persistenceManager = GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Persistence\\Generic\\PersistenceManager');
-        $this->newsRepository = GeneralUtility::makeInstance('Socialstream\\SocialStream\\Domain\\Repository\\NewsRepository');
-        $this->categoryRepository = GeneralUtility::makeInstance('GeorgRinger\\News\\Domain\\Repository\\CategoryRepository');
+    /**
+     * @param \Socialstream\SocialStream\Domain\Model\Channel $channel
+     * @param int $limit
+     */
+    public function getFeed(\Socialstream\SocialStream\Domain\Model\Channel $channel, $limit = 100)
+    {
+        $this->persistenceManager = GeneralUtility::makeInstance(
+            'TYPO3\\CMS\\Extbase\\Persistence\\Generic\\PersistenceManager'
+        );
+        $this->newsRepository = GeneralUtility::makeInstance(
+            'Socialstream\\SocialStream\\Domain\\Repository\\NewsRepository'
+        );
+        $this->categoryRepository = GeneralUtility::makeInstance(
+            'GeorgRinger\\News\\Domain\\Repository\\CategoryRepository'
+        );
 
         //$url = "https://api.instagram.com/v1/users/".$channel->getObjectId()."/media/recent/?access_token=".$channel->getToken()."&count=".$limit;
         //$elem = $this->getElems($url);
 
-        if($channel->getPosttype() == "1"){
-            $url = "https://api.twitter.com/1.1/statuses/user_timeline.json?user_id=" . $channel->getObjectId() . "&count=" . $limit . "&exclude_replies=true";
-        }else{
-            $url = "https://api.twitter.com/1.1/statuses/user_timeline.json?user_id=" . $channel->getObjectId() . "&count=" . $limit;
+        if ($channel->getPosttype() == "1") {
+            $url = "https://api.twitter.com/1.1/statuses/user_timeline.json?user_id=" . $channel->getObjectId() .
+                "&count=" . $limit . "&exclude_replies=true";
+        } else {
+            $url = "https://api.twitter.com/1.1/statuses/user_timeline.json?user_id=" . $channel->getObjectId() .
+                "&count=" . $limit;
         }
 
         $ch = curl_init($url);
@@ -149,7 +184,7 @@ class TwitterUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUtility
         $headers = array(
             'Accept: application/json',
             'Content-Type: application/json',
-            'Authorization: Bearer '. $channel->getToken()
+            'Authorization: Bearer '.$channel->getToken(),
         );
 
         $options = array(
@@ -159,7 +194,7 @@ class TwitterUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUtility
             CURLOPT_SSL_VERIFYPEER => false,
             CURLOPT_HTTPHEADER => $headers,
             CURLOPT_CONNECTTIMEOUT => 30,
-            CURLOPT_TIMEOUT => 30
+            CURLOPT_TIMEOUT => 30,
         );
 
         curl_setopt_array($ch, $options);
@@ -168,17 +203,17 @@ class TwitterUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUtility
 
         $requestInfo = curl_getinfo($ch);
 
-        if($requestInfo["http_code"] == 200) {
-            $elem = json_decode($result,true);
+        if ($requestInfo["http_code"] == 200) {
+            $elem = json_decode($result, true);
 
             foreach ($elem as $entry) {
 
                 $new = 0;
 
-                $id = explode("_",$entry["id_str"]);
-                if($id[0]){
+                $id = explode("_", $entry["id_str"]);
+                if ($id[0]) {
                     $newsId = $id[0];
-                }else{
+                } else {
                     $newsId = $entry["id_str"];
                 }
 
@@ -201,12 +236,12 @@ class TwitterUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUtility
 
                 $news->addCategory($cat);
 
-                $subcat = $this->getCategory($channel->getTitle() . "@Twitter", $cat);
+                $subcat = $this->getCategory($channel->getTitle()."@Twitter", $cat);
                 $news->addCategory($subcat);
 
                 $news->setObjectId($newsId);
 
-                $news->setLink("https://www.twitter.com/" . $entry["user"]["screen_name"] . "/status/" . $entry["id_str"]);
+                $news->setLink("https://www.twitter.com/".$entry["user"]["screen_name"]."/status/".$entry["id_str"]);
                 $news->setAuthor($entry["user"]["name"]);
 
 
@@ -226,24 +261,24 @@ class TwitterUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUtility
                 }
                 $this->persistenceManager->persistAll();
 
-                if($entry["entities"]["media"]){
+                if ($entry["entities"]["media"]) {
                     $mediaUrlSet = false;
-                    foreach($entry["entities"]["media"] as $media){
+                    foreach ($entry["entities"]["media"] as $media) {
                         $imageUrl = '';
-                        if($media["type"] == "photo"){
+                        if ($media["type"] == "photo") {
                             $imageUrl = $media["media_url"];
                         }
                         $media = $this->validateMedia($channel, $imageUrl);
 
-                        if(is_array($media)){
-                            if($media['link']){
-                                if(!$mediaUrlSet){
+                        if (is_array($media)) {
+                            if ($media['link']) {
+                                if (!$mediaUrlSet) {
                                     $news->setMediaUrl($media['link']);
                                     $mediaUrlSet = true;
                                 }
-                                
+
                             }
-                            if($media['media_url']){
+                            if ($media['media_url']) {
                                 $this->processNewsMedia($news, $media['media_url']);
                             }
                         }
@@ -256,18 +291,28 @@ class TwitterUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUtility
 
         }
     }
-    protected function getCategory($type,\GeorgRinger\News\Domain\Model\Category $parent = NULL){
+
+    /**
+     * @param string $type
+     * @param \GeorgRinger\News\Domain\Model\Category|null $parent
+     * @return \GeorgRinger\News\Domain\Model\Category
+     */
+    protected function getCategory($type, \GeorgRinger\News\Domain\Model\Category $parent = null)
+    {
         $title = $this->getType($type);
 
         $cat = $this->categoryRepository->findOneByTitle($title);
 
-        if(!$cat){
+        if (!$cat) {
             $cat = new \GeorgRinger\News\Domain\Model\Category();
             $cat->setTitle($title);
-            if($parent)$cat->setParentcategory($parent);
+            if ($parent) {
+                $cat->setParentcategory($parent);
+            }
             $this->categoryRepository->add($cat);
             $this->persistenceManager->persistAll();
         }
+
         return $cat;
     }
 }
