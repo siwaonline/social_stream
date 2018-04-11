@@ -32,18 +32,10 @@ namespace Socialstream\SocialStream\Utility\Token;
  */
 class InstagramUtility extends \Socialstream\SocialStream\Utility\Token\TokenUtility
 {
-    /**
-     * __construct
-     */
-    public function __construct($pid)
+    public function getAccessUrl($redirect)
     {
-        $this->initTSFE($pid,0);
-        $this->initSettings();
-    }
-
-    public function getAccessUrl()
-    {
-        $url = "https://api.instagram.com/oauth/authorize/?client_id=" . $this->settings["instaappid"] . "&response_type=token&redirect_uri=";
+        $url_parts = $this->splitRedirectUrl($redirect);
+        $url = "https://api.instagram.com/oauth/authorize/?client_id=" . $this->settings["instaappid"] . "&response_type=token&state=" . $url_parts["state"] . "&redirect_uri=".$url_parts["base"];
         return $url;
     }
     public function getTokenJavascript($accessUrl,$actualUrl){

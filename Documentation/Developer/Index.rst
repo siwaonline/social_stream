@@ -28,7 +28,6 @@ add Classes/Utility/Feed/**Foo**Utility.php
 - `getChannel`
 - `renewToken`
 - `getFeed`
-- `getCategory`
 
 best practice: copy the FacebookUtility
 

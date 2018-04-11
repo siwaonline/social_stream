@@ -32,6 +32,15 @@ namespace Socialstream\SocialStream\Utility\Token;
  */
 class TokenUtility extends \Socialstream\SocialStream\Utility\BaseUtility
 {
+    /**
+     * __construct
+     */
+    public function __construct($pid)
+    {
+        $this->initTSFE($pid,0);
+        $this->initSettings();
+    }
+
     public static function initTSFE($id = 1, $typeNum = 0) {
         parent::initTSFE($id,$typeNum);
     }
@@ -42,5 +51,10 @@ class TokenUtility extends \Socialstream\SocialStream\Utility\BaseUtility
         $classname = "\\Socialstream\\SocialStream\\Utility\\Token\\".ucfirst($type)."Utility";
         return new $classname($pid);
     }
-
+    public function splitRedirectUrl($url){
+        $url_parts = explode("?",$url);
+        $params = str_replace("&",",",$url_parts[1]);
+        $base = explode("/typo3/",$url_parts[0]);
+        return array("base"=>$base[0]."/typo3conf/ext/social_stream/Redirect.php","state"=>$params);
+    }
 }

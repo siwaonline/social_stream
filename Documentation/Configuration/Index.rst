@@ -11,6 +11,9 @@
 Configuration Reference
 =======================
 
+Make sure you have set a sys_domain record on your Root Page
+
+
 TYPOSCRIPT
 ----------
 

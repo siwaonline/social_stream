@@ -39,17 +39,6 @@ use \TYPO3\CMS\Core\Utility\GeneralUtility;
 class FacebookUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUtility
 {
         
-    /**
-     * __construct
-     */
-    public function __construct($pid=0)
-    {
-        if($pid) {
-            $this->initTSFE($pid, 0);
-            $this->initSettings();
-        }
-    }
-
     public function getChannel(\Socialstream\SocialStream\Domain\Model\Channel $channel,$isProcessing=0)
     {
         $url = "https://graph.facebook.com/".$channel->getObjectId()."/?fields=id,name,about,link,picture,cover&access_token=".$channel->getToken();
@@ -216,17 +205,5 @@ class FacebookUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUtilit
                 $this->persistenceManager->persistAll();
             }
         }
-    }
-    protected function getCategory($type,\GeorgRinger\News\Domain\Model\Category $parent = NULL){
-        $title = $this->getType($type);
-        $cat = $this->categoryRepository->findOneByTitle($title);
-        if(!$cat){
-            $cat = new \GeorgRinger\News\Domain\Model\Category();
-            $cat->setTitle($title);
-            if($parent)$cat->setParentcategory($parent);
-            $this->categoryRepository->add($cat);
-            $this->persistenceManager->persistAll();
-        }
-        return $cat;
     }
 }

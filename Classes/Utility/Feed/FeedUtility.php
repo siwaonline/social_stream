@@ -40,6 +40,17 @@ class FeedUtility extends \Socialstream\SocialStream\Utility\BaseUtility
      * @var array
      */
     public $clearStrings = array('\ud83c\u','\ud83d\u','\ud83e\u','\u2600\u');
+
+    /**
+     * __construct
+     */
+    public function __construct($pid=0)
+    {
+        if($pid) {
+            $this->initTSFE($pid, 0);
+            $this->initSettings();
+        }
+    }
     
     public static function initTSFE($id = 1, $typeNum = 0) {
         parent::initTSFE($id,$typeNum);
@@ -218,6 +229,21 @@ class FeedUtility extends \Socialstream\SocialStream\Utility\BaseUtility
         $message = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Messaging\\FlashMessage',$txt,$head,$type,TRUE);
         $messageQueue = $obj->getMessageQueueByIdentifier();
         $messageQueue->addMessage($message);
+    }
+
+    protected function getCategory($type,\GeorgRinger\News\Domain\Model\Category $parent = NULL){
+        $title = $this->getType($type);
+
+        $cat = $this->categoryRepository->findOneByTitle($title);
+
+        if(!$cat){
+            $cat = new \GeorgRinger\News\Domain\Model\Category();
+            $cat->setTitle($title);
+            if($parent)$cat->setParentcategory($parent);
+            $this->categoryRepository->add($cat);
+            $this->persistenceManager->persistAll();
+        }
+        return $cat;
     }
 
 }

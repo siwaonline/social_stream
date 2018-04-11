@@ -32,18 +32,10 @@ namespace Socialstream\SocialStream\Utility\Token;
  */
 class FlickrUtility extends \Socialstream\SocialStream\Utility\Token\TokenUtility
 {
-    /**
-     * __construct
-     */
-    public function __construct($pid)
-    {
-        $this->initTSFE($pid,0);
-        $this->initSettings();
-    }
 
-    public function getAccessUrl()
+    public function getAccessUrl($redirect)
     {
-        return "not in use";
+        return $redirect;
     }
     public function getTokenJavascript($accessUrl,$actualUrl){
         return "should not be called";

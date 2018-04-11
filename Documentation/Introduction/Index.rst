@@ -25,6 +25,9 @@ Social Stream crawls the data from a Social Media Page and saves it as news reco
 
 - Facebook User/Page
 - Facebook Event
+- Instagram
+- Flickr
+- Twitter
 
 
 .. _screenshots:

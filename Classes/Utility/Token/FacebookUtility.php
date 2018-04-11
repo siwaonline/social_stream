@@ -32,18 +32,11 @@ namespace Socialstream\SocialStream\Utility\Token;
  */
 class FacebookUtility extends \Socialstream\SocialStream\Utility\Token\TokenUtility
 {
-    /**
-     * __construct
-     */
-    public function __construct($pid)
-    {
-        $this->initTSFE($pid,0);
-        $this->initSettings();
-    }
-    
-    public function getAccessUrl()
+    public function getAccessUrl($redirect)
     {        
-        $url = "https://www.facebook.com/v2.4/dialog/oauth?client_id=" . $this->settings["fbappid"] . "&state=" . $this->settings["fbappsecret"] . "&response_type=token&scope=user_posts&sdk=php-sdk-5.0.0&redirect_uri=";
+        //$url = "https://www.facebook.com/v2.5/dialog/oauth?client_id=" . $this->settings["fbappid"] . "&state=" . $this->settings["fbappsecret"] . "&response_type=token&scope=user_posts&sdk=php-sdk-5.0.0&redirect_uri=";
+        $url_parts = $this->splitRedirectUrl($redirect);
+        $url = "https://www.facebook.com/v2.12/dialog/oauth?client_id=" . $this->settings["fbappid"] . "&state=" . $url_parts["state"] . "&response_type=token&scope=user_posts&sdk=php-sdk-5.0.0&redirect_uri=".$url_parts["base"];
         return $url;
     }
     public function getTokenJavascript($accessUrl,$actualUrl){

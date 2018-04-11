@@ -52,7 +52,9 @@ class BaseUtility
         if (\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::isLoaded('realurl')) {
             $rootline = \TYPO3\CMS\Backend\Utility\BackendUtility::BEgetRootLine($id);
             $host = \TYPO3\CMS\Backend\Utility\BackendUtility::firstDomainRecord($rootline);
-            $_SERVER['HTTP_HOST'] = $host;
+            if (!is_null($host)) {
+                $_SERVER['HTTP_HOST'] = $host;
+            }
         }
     }
     public function initSettings(){

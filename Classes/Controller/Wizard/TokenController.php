@@ -130,21 +130,23 @@ class TokenController extends \TYPO3\CMS\Backend\Controller\Wizard\AbstractWizar
             false,
             true
         );
+
+        if(isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off'){
+            $base = 'https' . '://' . $_SERVER['SERVER_NAME'];
+        }else{
+            $base = 'http' . '://' . $_SERVER['SERVER_NAME'];
+        }
         if(strpos($redirectUrl, "://") === false) {
-            //$base = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off' ? 'https' : 'http' . '://' . $_SERVER['SERVER_NAME'];
-            if(isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off'){
-                $base = 'https' . '://' . $_SERVER['SERVER_NAME'];
-            }else{
-                $base = 'http' . '://' . $_SERVER['SERVER_NAME'];
-            }
             $redirectUrl = $base . $redirectUrl;  
         }
 
-        $accessUrl = $utility->getAccessUrl().urlencode($redirectUrl);
-        $actualUrl = "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
+        $actualUrl = $base . $_SERVER['REQUEST_URI'];
+        $accessUrl = $utility->getAccessUrl($redirectUrl);
+
         $tokenString = $utility->retrieveToken($actualUrl);
-        
+
         if(!$tokenString) {
+            //header('Location: '.$accessUrl);
             $this->content .= $utility->getTokenJavascript($accessUrl, $actualUrl);
         }else{
             $res = $utility->getValues($tokenString);
@@ -163,7 +165,7 @@ class TokenController extends \TYPO3\CMS\Backend\Controller\Wizard\AbstractWizar
         window.opener.document.querySelector(selectorExpHidden).value = '".$exp."';
         close();
     } else {
-        close();
+        alert('Got Token, but cant write to window');
     }
 
 </script>

@@ -32,18 +32,9 @@ namespace Socialstream\SocialStream\Utility\Token;
  */
 class TwitterUtility extends \Socialstream\SocialStream\Utility\Token\TokenUtility
 {
-    /**
-     * __construct
-     */
-    public function __construct($pid)
+    public function getAccessUrl($redirect)
     {
-        $this->initTSFE($pid,0);
-        $this->initSettings();
-    }
-
-    public function getAccessUrl()
-    {
-        return "not in use";
+        return $redirect;
     }
     public function getTokenJavascript($accessUrl,$actualUrl){
         return "should not be called";

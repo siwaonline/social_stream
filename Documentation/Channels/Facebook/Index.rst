@@ -25,6 +25,7 @@ Go to https://developers.facebook.com/apps/
 
 - Click 'Settings' on the Left
 - Check that the settings look like Image 1
+- For your valid OAuth Redirect Uri enter 'http://your-domain.com/typo3conf/ext/social_stream/Redirect.php'
 - Save (bottom right corner)
 
 .. figure:: ../Images/screen-fb-api.jpg
