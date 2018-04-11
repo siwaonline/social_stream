@@ -1,5 +1,4 @@
 <?php
-
 namespace Socialstream\SocialStream\Domain\Model;
 
 
@@ -54,49 +53,49 @@ class News extends \GeorgRinger\News\Domain\Model\News
      * @var string
      */
     protected $mediaUrl = '';
-
+    
     /**
      * placeName
      *
      * @var string
      */
     protected $placeName = '';
-
+    
     /**
      * placeStreet
      *
      * @var string
      */
     protected $placeStreet = '';
-
+    
     /**
      * placeZip
      *
      * @var string
      */
     protected $placeZip = '';
-
+    
     /**
      * placeCity
      *
      * @var string
      */
     protected $placeCity = '';
-
+    
     /**
      * placeCountry
      *
      * @var string
      */
     protected $placeCountry = '';
-
+    
     /**
      * placeLat
      *
      * @var string
      */
     protected $placeLat = '';
-
+    
     /**
      * placeLng
      *
@@ -108,14 +107,14 @@ class News extends \GeorgRinger\News\Domain\Model\News
      * @var \DateTime
      */
     protected $datetimeend;
-
+    
     /**
      * channel
      *
      * @var \Socialstream\SocialStream\Domain\Model\Channel
      */
     protected $channel = null;
-
+    
     /**
      * Returns the objectId
      *
@@ -125,7 +124,7 @@ class News extends \GeorgRinger\News\Domain\Model\News
     {
         return $this->objectId;
     }
-
+    
     /**
      * Sets the objectId
      *
@@ -136,7 +135,7 @@ class News extends \GeorgRinger\News\Domain\Model\News
     {
         $this->objectId = $objectId;
     }
-
+    
     /**
      * Returns the link
      *
@@ -146,7 +145,7 @@ class News extends \GeorgRinger\News\Domain\Model\News
     {
         return $this->link;
     }
-
+    
     /**
      * Sets the link
      *
@@ -173,7 +172,7 @@ class News extends \GeorgRinger\News\Domain\Model\News
     {
         $this->mediaUrl = $mediaUrl;
     }
-
+    
     /**
      * Returns the placeName
      *
@@ -183,7 +182,7 @@ class News extends \GeorgRinger\News\Domain\Model\News
     {
         return $this->placeName;
     }
-
+    
     /**
      * Sets the placeName
      *
@@ -194,7 +193,7 @@ class News extends \GeorgRinger\News\Domain\Model\News
     {
         $this->placeName = $placeName;
     }
-
+    
     /**
      * Returns the placeStreet
      *
@@ -204,7 +203,7 @@ class News extends \GeorgRinger\News\Domain\Model\News
     {
         return $this->placeStreet;
     }
-
+    
     /**
      * Sets the placeStreet
      *
@@ -215,7 +214,7 @@ class News extends \GeorgRinger\News\Domain\Model\News
     {
         $this->placeStreet = $placeStreet;
     }
-
+    
     /**
      * Returns the placeZip
      *
@@ -225,7 +224,7 @@ class News extends \GeorgRinger\News\Domain\Model\News
     {
         return $this->placeZip;
     }
-
+    
     /**
      * Sets the placeZip
      *
@@ -236,7 +235,7 @@ class News extends \GeorgRinger\News\Domain\Model\News
     {
         $this->placeZip = $placeZip;
     }
-
+    
     /**
      * Returns the placeCity
      *
@@ -246,7 +245,7 @@ class News extends \GeorgRinger\News\Domain\Model\News
     {
         return $this->placeCity;
     }
-
+    
     /**
      * Sets the placeCity
      *
@@ -257,7 +256,7 @@ class News extends \GeorgRinger\News\Domain\Model\News
     {
         $this->placeCity = $placeCity;
     }
-
+    
     /**
      * Returns the placeCountry
      *
@@ -267,7 +266,7 @@ class News extends \GeorgRinger\News\Domain\Model\News
     {
         return $this->placeCountry;
     }
-
+    
     /**
      * Sets the placeCountry
      *
@@ -278,7 +277,7 @@ class News extends \GeorgRinger\News\Domain\Model\News
     {
         $this->placeCountry = $placeCountry;
     }
-
+    
     /**
      * Returns the placeLat
      *
@@ -288,7 +287,7 @@ class News extends \GeorgRinger\News\Domain\Model\News
     {
         return $this->placeLat;
     }
-
+    
     /**
      * Sets the placeLat
      *
@@ -299,7 +298,7 @@ class News extends \GeorgRinger\News\Domain\Model\News
     {
         $this->placeLat = $placeLat;
     }
-
+    
     /**
      * Returns the placeLng
      *
@@ -309,7 +308,7 @@ class News extends \GeorgRinger\News\Domain\Model\News
     {
         return $this->placeLng;
     }
-
+    
     /**
      * Sets the placeLng
      *
@@ -336,7 +335,7 @@ class News extends \GeorgRinger\News\Domain\Model\News
     {
         $this->datetimeend = $datetimeend;
     }
-
+    
     /**
      * Returns the channel
      *
@@ -346,7 +345,7 @@ class News extends \GeorgRinger\News\Domain\Model\News
     {
         return $this->channel;
     }
-
+    
     /**
      * Sets the channel
      *

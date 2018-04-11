@@ -1,5 +1,4 @@
 <?php
-
 namespace Socialstream\SocialStream\Controller\Wizard;
 
 /*
@@ -43,9 +42,9 @@ class TokenController extends \TYPO3\CMS\Backend\Controller\Wizard\AbstractWizar
      * @var int
      */
     public $doClose;
-
+    
     /**
-     * TokenController constructor.
+     * Constructor
      */
     public function __construct()
     {
@@ -80,10 +79,9 @@ class TokenController extends \TYPO3\CMS\Backend\Controller\Wizard\AbstractWizar
     {
         $this->main($request);
         $response->getBody()->write($this->moduleTemplate->renderContent());
-
         return $response;
     }
-
+    
     /**
      * Main function
      * Makes a header-location redirect to an edit form IF POSSIBLE from the passed data - otherwise the window will
@@ -96,9 +94,8 @@ class TokenController extends \TYPO3\CMS\Backend\Controller\Wizard\AbstractWizar
         if ($this->doClose) {
             return $this->closeWindow;
         }
-        if (!is_numeric($this->P['uid'])) {
+        if(!is_numeric($this->P['uid'])){
             $this->moduleTemplate->setContent("Bitte speichern Sie zuerst.");
-
             return;
         }
         if (!$this->checkEditAccess($this->P['table'], $this->P['uid'])) {
@@ -109,87 +106,72 @@ class TokenController extends \TYPO3\CMS\Backend\Controller\Wizard\AbstractWizar
         if (!is_array($row)) {
             throw new \RuntimeException('Wizard Error: No reference to record', 1294587125);
         }
-        if (!$row['object_id']) {
+        if(!$row['object_id']){
             $this->moduleTemplate->setContent("Bitte geben Sie eine ".ucfirst($row['type'])."-Seiten ID ein.");
-
             return;
         }
 
-        $pageRes = $GLOBALS['TYPO3_DB']->exec_SELECTquery("pid", "pages", "uid=".$this->P['pid']);
+        $pageRes = $GLOBALS['TYPO3_DB']->exec_SELECTquery("pid","pages","uid=".$this->P['pid']);
         while ($pageRow = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($pageRes)) {
             $pid = $pageRow['pid'];
         }
-        if ($pid <= 0) {
-            $pid = $this->P["pid"];
-        }
-        TokenUtility::initTSFE($pid, 0);
-        $this->objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-            'TYPO3\\CMS\\Extbase\\Object\\ObjectManager'
-        );
-        $this->configurationManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-            'TYPO3\\CMS\\Extbase\\Configuration\\ConfigurationManager'
-        );
-        $this->settings = $this->configurationManager->getConfiguration(
-            \TYPO3\CMS\Extbase\Configuration\ConfigurationManager::CONFIGURATION_TYPE_SETTINGS,
-            'Socialstream'
-        );
-
+        if($pid <= 0)$pid = $this->P["pid"];
+        TokenUtility::initTSFE($pid,0);
+        $this->objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
+        $this->configurationManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Configuration\\ConfigurationManager');
+        $this->settings = $this->configurationManager->getConfiguration(\TYPO3\CMS\Extbase\Configuration\ConfigurationManager::CONFIGURATION_TYPE_SETTINGS, 'Socialstream');
+        
         $this->settings["storagePid"] = $this->P['pid'];
-
-        $utility = TokenUtility::getUtility($row["type"], $pid);
+        
+        $utility = TokenUtility::getUtility($row["type"],$pid);
         $redirectUrl = BackendUtility::getModuleUrl(
             'wizard_token',
             array("P" => $this->P),
             false,
             true
         );
-        if (strpos($redirectUrl, "://") === false) {
+        if(strpos($redirectUrl, "://") === false) {
             //$base = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off' ? 'https' : 'http' . '://' . $_SERVER['SERVER_NAME'];
-            if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') {
-                $base = 'https'.'://'.$_SERVER['SERVER_NAME'];
-            } else {
-                $base = 'http'.'://'.$_SERVER['SERVER_NAME'];
+            if(isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off'){
+                $base = 'https' . '://' . $_SERVER['SERVER_NAME'];
+            }else{
+                $base = 'http' . '://' . $_SERVER['SERVER_NAME'];
             }
-            $redirectUrl = $base.$redirectUrl;
+            $redirectUrl = $base . $redirectUrl;  
         }
 
         $accessUrl = $utility->getAccessUrl().urlencode($redirectUrl);
         $actualUrl = "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
         $tokenString = $utility->retrieveToken($actualUrl);
-
-        if (!$tokenString) {
+        
+        if(!$tokenString) {
             $this->content .= $utility->getTokenJavascript($accessUrl, $actualUrl);
-        } else {
+        }else{
             $res = $utility->getValues($tokenString);
             $tk = $res["tk"];
             $exp = $res["exp"];
-            $this->content .= "<script>
-                var selectorTk = 'form[name=\"".$this->P['formName']."\"] [data-formengine-input-name=\"".$this->P['itemName']."\"]';
-                var selectorTkHidden = 'form[name=\"".$this->P['formName']."\"] [name=\"".$this->P['itemName']."\"]';
-                var selectorExp = 'form[name=\"".$this->P['formName']."\"] [data-formengine-input-name=\"".str_replace(
-                                "token",
-                                "expires",
-                                $this->P['itemName']
-                            )."\"]';
-                var selectorExpHidden = 'form[name=\"".$this->P['formName']."\"] [name=\"".str_replace(
-                                "token",
-                                "expires",
-                                $this->P['itemName']
-                            )."\"]';
-                if (window.opener && window.opener.document && window.opener.document.querySelector(selectorTk)){
-                    window.opener.document.querySelector(selectorTk).value = '".$tk."';
-                    window.opener.document.querySelector(selectorTkHidden).value = '".$tk."';
-                    window.opener.document.querySelector(selectorExp).value = '".$exp."';
-                    window.opener.document.querySelector(selectorExpHidden).value = '".$exp."';
-                    close();
-                } else {
-                    close();
-                }
-            
-            </script>";
+            $this->content .= "
+<script>
+    var selectorTk = 'form[name=\"" . $this->P['formName'] . "\"] [data-formengine-input-name=\"" . $this->P['itemName'] . "\"]';
+    var selectorTkHidden = 'form[name=\"" . $this->P['formName'] . "\"] [name=\"" . $this->P['itemName'] . "\"]';
+    var selectorExp = 'form[name=\"" . $this->P['formName'] . "\"] [data-formengine-input-name=\"" . str_replace("token","expires",$this->P['itemName']) . "\"]';
+    var selectorExpHidden = 'form[name=\"" . $this->P['formName'] . "\"] [name=\"" . str_replace("token","expires",$this->P['itemName']) . "\"]';
+    if (window.opener && window.opener.document && window.opener.document.querySelector(selectorTk)){
+        window.opener.document.querySelector(selectorTk).value = '".$tk."';
+        window.opener.document.querySelector(selectorTkHidden).value = '".$tk."';
+        window.opener.document.querySelector(selectorExp).value = '".$exp."';
+        window.opener.document.querySelector(selectorExpHidden).value = '".$exp."';
+        close();
+    } else {
+        close();
+    }
+
+</script>
+";
         }
+
 
         // Build the <body> for the module
         $this->moduleTemplate->setContent($this->content);
-    }
+    }    
 }
