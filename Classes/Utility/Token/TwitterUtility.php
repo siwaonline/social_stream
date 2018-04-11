@@ -1,4 +1,5 @@
 <?php
+
 namespace Socialstream\SocialStream\Utility\Token;
 
 
@@ -33,30 +34,48 @@ namespace Socialstream\SocialStream\Utility\Token;
 class TwitterUtility extends \Socialstream\SocialStream\Utility\Token\TokenUtility
 {
     /**
-     * __construct
+     * TwitterUtility constructor.
+     * @param integer $pid
      */
     public function __construct($pid)
     {
-        $this->initTSFE($pid,0);
+        $this->initTSFE($pid, 0);
         $this->initSettings();
     }
 
+    /**
+     * @return string
+     */
     public function getAccessUrl()
     {
         return "not in use";
     }
-    public function getTokenJavascript($accessUrl,$actualUrl){
+
+    /**
+     * @param string $accessUrl
+     * @param string $actualUrl
+     * @return string
+     */
+    public function getTokenJavascript($accessUrl, $actualUrl)
+    {
         return "should not be called";
     }
 
-    public function retrieveToken($url){
-        $encodedToken = base64_encode(urlencode($this->settings["twappid"]) . ":" . urlencode($this->settings["twappsecret"]));
+    /**
+     * @param string $url
+     * @return string
+     */
+    public function retrieveToken($url)
+    {
+        $encodedToken = base64_encode(
+            urlencode($this->settings["twappid"]).":".urlencode($this->settings["twappsecret"])
+        );
 
         $ch = curl_init("https://api.twitter.com/oauth2/token?grant_type=client_credentials");
         $headers = array(
             'Accept: application/json',
             'Content-Type: application/json',
-            'Authorization: Basic '. $encodedToken
+            'Authorization: Basic '.$encodedToken,
         );
 
         $options = array(
@@ -66,19 +85,24 @@ class TwitterUtility extends \Socialstream\SocialStream\Utility\Token\TokenUtili
             CURLOPT_SSL_VERIFYPEER => false,
             CURLOPT_HTTPHEADER => $headers,
             CURLOPT_CONNECTTIMEOUT => 30,
-            CURLOPT_TIMEOUT => 30
+            CURLOPT_TIMEOUT => 30,
         );
 
         curl_setopt_array($ch, $options);
 
         $result = curl_exec($ch);
-        $bearer = json_decode($result,true);
+        $bearer = json_decode($result, true);
 
 
         return $bearer["access_token"];
     }
 
-    public function getValues($tokenString){
+    /**
+     * @param string $tokenString
+     * @return array
+     */
+    public function getValues($tokenString)
+    {
         return array("tk" => $tokenString, "exp" => 0);
     }
 

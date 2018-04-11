@@ -1,4 +1,5 @@
 <?php
+
 namespace Socialstream\SocialStream\Utility\Token;
 
 
@@ -33,45 +34,67 @@ namespace Socialstream\SocialStream\Utility\Token;
 class InstagramUtility extends \Socialstream\SocialStream\Utility\Token\TokenUtility
 {
     /**
-     * __construct
+     * InstagramUtility constructor.
+     * @param integer $pid
      */
     public function __construct($pid)
     {
-        $this->initTSFE($pid,0);
+        $this->initTSFE($pid, 0);
         $this->initSettings();
     }
 
+    /**
+     * @return string
+     */
     public function getAccessUrl()
     {
-        $url = "https://api.instagram.com/oauth/authorize/?client_id=" . $this->settings["instaappid"] . "&response_type=token&redirect_uri=";
+        $url = "https://api.instagram.com/oauth/authorize/?client_id=" . $this->settings["instaappid"] .
+            "&response_type=token&redirect_uri=";
+
         return $url;
     }
-    public function getTokenJavascript($accessUrl,$actualUrl){
-        $script = '
-<script>
-    var hash = window.location.hash;
-    if(hash == ""){
-        window.location.replace("'.$accessUrl.'");
-    }else{
-        window.location.replace("'.$actualUrl.'&"+hash.substring(1));
-    }
-</script>
-';
+
+    /**
+     * @param string $accessUrl
+     * @param string $actualUrl
+     * @return string
+     */
+    public function getTokenJavascript($accessUrl, $actualUrl)
+    {
+        $script = '<script>
+            var hash = window.location.hash;
+            if(hash == ""){
+                window.location.replace("'.$accessUrl.'");
+            }else{
+                window.location.replace("'.$actualUrl.'&"+hash.substring(1));
+            }
+        </script>';
+
         return $script;
     }
 
-    public function retrieveToken($url){
+    /**
+     * @param string $url
+     * @return string|bool
+     */
+    public function retrieveToken($url)
+    {
         $parts = parse_url($url);
         parse_str($parts['query'], $params);
 
-        if(!$params["access_token"]){
+        if (!$params["access_token"]) {
             return false;
-        }else{
+        } else {
             return $params["access_token"];
         }
     }
 
-    public function getValues($tokenString){
+    /**
+     * @param string $tokenString
+     * @return array
+     */
+    public function getValues($tokenString)
+    {
         return array("tk" => $tokenString, "exp" => 0);
     }
 

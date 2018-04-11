@@ -1,4 +1,5 @@
 <?php
+
 namespace Socialstream\SocialStream\Utility\Feed;
 
 
@@ -40,45 +41,62 @@ class FlickrUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUtility
 {
 
     /**
-     * __construct
+     * FlickrUtility constructor.
+     * @param int $pid
      */
-    public function __construct($pid=0)
+    public function __construct($pid = 0)
     {
-        if($pid) {
+        if ($pid) {
             $this->initTSFE($pid, 0);
             $this->initSettings();
         }
     }
 
-    public function getChannel(\Socialstream\SocialStream\Domain\Model\Channel $channel,$isProcessing=0)
+    /**
+     * @param \Socialstream\SocialStream\Domain\Model\Channel $channel
+     * @param int $isProcessing
+     * @return bool|\Socialstream\SocialStream\Domain\Model\Channel
+     */
+    public function getChannel(\Socialstream\SocialStream\Domain\Model\Channel $channel, $isProcessing = 0)
     {
 
-        $url = "https://api.flickr.com/services/rest/?method=flickr.people.getInfo&api_key=" . $channel->getToken() . "&user_id=" . $channel->getObjectId() . "&format=json&nojsoncallback=1";
+        $url = "https://api.flickr.com/services/rest/?method=flickr.people.getInfo&api_key=".$channel->getToken(
+            )."&user_id=".$channel->getObjectId()."&format=json&nojsoncallback=1";
 
-        if($this->get_http_response_code($url) == 200) {
+        if ($this->get_http_response_code($url) == 200) {
             $elem = $this->getElems($url);
 
             $channel->setTitle($elem->person->realname->_content);
-            if ($elem->about) $channel->setAbout($elem->person->description->_content);
+            if ($elem->about) {
+                $channel->setAbout($elem->person->description->_content);
+            }
             //if($elem->description)$channel->setDescription($elem->description);
             $channel->setLink($elem->person->profileurl->_content);
 
             if ($isProcessing == 0) {
-                $imageUrl = "http://farm" . $elem->person->iconfarm . ".staticflickr.com/" . $elem->person->iconserver . "/buddyicons/" . $elem->person->id . ".jpg";
+                $imageUrl = "http://farm".$elem->person->iconfarm.".staticflickr.com/".$elem->person->iconserver."/buddyicons/".$elem->person->id.".jpg";
                 if ($this->exists($imageUrl)) {
                     $this->processChannelMedia($channel, $imageUrl);
                 }
             }
-        }else{
+        } else {
             if ($isProcessing == 0) {
-                if($this->settings["sysmail"]) {
-                    $this->sendTokenInfoMail($channel,$this->settings["sysmail"],$this->settings["sendermail"]);
+                if ($this->settings["sysmail"]) {
+                    $this->sendTokenInfoMail($channel, $this->settings["sysmail"], $this->settings["sendermail"]);
                 }
-            }else{
+            } else {
                 $msg = "Fehler: Channel konnte nicht gecrawlt werden. Object Id oder Token falsch.";
                 //$this->addFlashMessage($msg, '', AbstractMessage::ERROR);
-                $this->objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
-                $this->addFlashMessage($msg, '', FlashMessage::ERROR,$this->objectManager->get(FlashMessageService::class));
+                $this->objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
+                    'TYPO3\\CMS\\Extbase\\Object\\ObjectManager'
+                );
+                $this->addFlashMessage(
+                    $msg,
+                    '',
+                    FlashMessage::ERROR,
+                    $this->objectManager->get(FlashMessageService::class)
+                );
+
                 return false;
             }
         }
@@ -86,17 +104,34 @@ class FlickrUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUtility
         return $channel;
     }
 
-    public function renewToken(\Socialstream\SocialStream\Domain\Model\Channel $channel){
+    /**
+     * @param \Socialstream\SocialStream\Domain\Model\Channel $channel
+     * @return \Socialstream\SocialStream\Domain\Model\Channel
+     */
+    public function renewToken(\Socialstream\SocialStream\Domain\Model\Channel $channel)
+    {
         return $channel;
     }
 
-    public function getFeed(\Socialstream\SocialStream\Domain\Model\Channel $channel,$limit=100){
-        $this->persistenceManager = GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Persistence\\Generic\\PersistenceManager');
-        $this->newsRepository = GeneralUtility::makeInstance('Socialstream\\SocialStream\\Domain\\Repository\\NewsRepository');
-        $this->categoryRepository = GeneralUtility::makeInstance('GeorgRinger\\News\\Domain\\Repository\\CategoryRepository');
+    /**
+     * @param \Socialstream\SocialStream\Domain\Model\Channel $channel
+     * @param int $limit
+     */
+    public function getFeed(\Socialstream\SocialStream\Domain\Model\Channel $channel, $limit = 100)
+    {
+        $this->persistenceManager = GeneralUtility::makeInstance(
+            'TYPO3\\CMS\\Extbase\\Persistence\\Generic\\PersistenceManager'
+        );
+        $this->newsRepository = GeneralUtility::makeInstance(
+            'Socialstream\\SocialStream\\Domain\\Repository\\NewsRepository'
+        );
+        $this->categoryRepository = GeneralUtility::makeInstance(
+            'GeorgRinger\\News\\Domain\\Repository\\CategoryRepository'
+        );
 
         //$url = "https://graph.facebook.com/".$channel->getObjectId()."/feed?fields=id,created_time,link,permalink_url,place,type,message,full_picture,object_id,picture,name,caption,description,story,source,from&access_token=".$channel->getToken()."&limit=".$limit;
-        $url = "https://api.flickr.com/services/rest/?method=flickr.photosets.getList&api_key=" . $channel->getToken() . "&user_id=" . $channel->getObjectId() . "&format=json&nojsoncallback=1";
+        $url = "https://api.flickr.com/services/rest/?method=flickr.photosets.getList&api_key=".$channel->getToken(
+            )."&user_id=".$channel->getObjectId()."&format=json&nojsoncallback=1";
 
 
         $elem = $this->getElems($url);
@@ -105,10 +140,10 @@ class FlickrUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUtility
 
             $new = 0;
 
-            $id = explode("_",$entry->id);
-            if($id[0]){
+            $id = explode("_", $entry->id);
+            if ($id[0]) {
                 $newsId = $id[0];
-            }else{
+            } else {
                 $newsId = $entry->id;
             }
 
@@ -132,12 +167,12 @@ class FlickrUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUtility
 
             $news->addCategory($cat);
 
-            $subcat = $this->getCategory($channel->getTitle() . "@Flickr", $cat);
+            $subcat = $this->getCategory($channel->getTitle()."@Flickr", $cat);
             $news->addCategory($subcat);
 
             $news->setObjectId($newsId);
 
-            $news->setLink("https://www.flickr.com/photos/vpnoeat/albums/" . $entry->id);
+            $news->setLink("https://www.flickr.com/photos/vpnoeat/albums/".$entry->id);
 
             if ($entry->description) {
                 $news->setBodytext($entry->description->_content);
@@ -152,16 +187,17 @@ class FlickrUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUtility
             $this->persistenceManager->persistAll();
 
             $imageUrl = '';
-            if($entry->farm && $entry->server && $entry->primary && $entry->secret)
-            $imageUrl = "https://farm" . $entry->farm . ".static.flickr.com/" . $entry->server . "/" . $entry->primary . "_" . $entry->secret . "_b.jpg";
+            if ($entry->farm && $entry->server && $entry->primary && $entry->secret) {
+                $imageUrl = "https://farm".$entry->farm.".static.flickr.com/".$entry->server."/".$entry->primary."_".$entry->secret."_b.jpg";
+            }
 
             $media = $this->validateMedia($channel, $imageUrl);
 
-            if(is_array($media)){
-                if($media['link']){
+            if (is_array($media)) {
+                if ($media['link']) {
                     $news->setMediaUrl($media['link']);
                 }
-                if($media['media_url']){
+                if ($media['media_url']) {
                     $this->processNewsMedia($news, $media['media_url']);
                 }
             }
@@ -170,16 +206,26 @@ class FlickrUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUtility
             $this->persistenceManager->persistAll();
         }
     }
-    protected function getCategory($type,\GeorgRinger\News\Domain\Model\Category $parent = NULL){
+
+    /**
+     * @param string $type
+     * @param \GeorgRinger\News\Domain\Model\Category|null $parent
+     * @return \GeorgRinger\News\Domain\Model\Category
+     */
+    protected function getCategory($type, \GeorgRinger\News\Domain\Model\Category $parent = null)
+    {
         $title = $this->getType($type);
         $cat = $this->categoryRepository->findOneByTitle($title);
-        if(!$cat){
+        if (!$cat) {
             $cat = new \GeorgRinger\News\Domain\Model\Category();
             $cat->setTitle($title);
-            if($parent)$cat->setParentcategory($parent);
+            if ($parent) {
+                $cat->setParentcategory($parent);
+            }
             $this->categoryRepository->add($cat);
             $this->persistenceManager->persistAll();
         }
+
         return $cat;
     }
 }
