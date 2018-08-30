@@ -1,0 +1,49 @@
+{
+  "name": "siwaonline/social_stream",
+  "type": "typo3-cms-extension",
+  "description": "Social Stream - Crawls the data from a Social Media Page and saves it as news record",
+  "homepage": "https://www.siwa.at",
+  "license": [
+    "GPL-2.0+"
+  ],
+  "keywords": [
+    "TYPO3 CMS",
+    "Social Stream",
+    "Siwa"
+  ],
+  "support": {
+    "issues": "https://github.com/siwaonline/social_stream/issues"
+  },
+  "require": {
+    "typo3/cms-core": "^7.6.13 || >=8.7.0 <9",
+    "georgringer/news": ">=4.3.0"
+  },
+  "version": "2.1.0",
+  "config": {
+    "vendor-dir": ".Build/vendor",
+    "bin-dir": ".Build/bin"
+  },
+  "scripts": {
+    "post-autoload-dump": [
+      "mkdir -p .Build/Web/typo3conf/ext/",
+      "[ -L .Build/Web/typo3conf/ext/social_stream ] || ln -snvf ../../../../. .Build/Web/typo3conf/ext/social_stream"
+    ],
+    "post-update-cmd": [
+      "php .Build/Web/typo3/cli_dispatch.phpsh extbase extension:install social_stream"
+    ]
+  },
+  "extra": {
+    "branch-alias": {
+      "master": "1.0.0"
+    },
+    "typo3/cms": {
+      "cms-package-dir": "{$vendor-dir}/typo3/cms",
+      "web-dir": ".Build/Web"
+    }
+  },
+  "autoload": {
+    "psr-4": {
+      "Socialstream\\SocialStream\\": "Classes"
+    }
+  }
+}

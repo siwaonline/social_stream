@@ -1,0 +1,14 @@
+config.tx_extbase {
+    objects{
+        GeorgRinger\News\Domain\Model\News.className = Socialstream\SocialStream\Domain\Model\News
+    }
+    persistence{
+        classes{
+            Socialstream\SocialStream\Domain\Model\News {
+                mapping {
+                    tableName = tx_news_domain_model_news
+                }
+            }
+        }
+    }
+}

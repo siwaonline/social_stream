@@ -1,0 +1,33 @@
+module.tx_socialstream {
+    persistence {
+        storagePid = {$module.tx_socialstream.persistence.storagePid}
+    }
+    settings{
+        storagePid = {$module.tx_socialstream.persistence.storagePid}
+        sysmail = {$module.tx_socialstream.settings.sysmail}
+        sendermail = {$module.tx_socialstream.settings.sendermail}
+        limitPosts = {$module.tx_socialstream.settings.limitPosts}
+        tmp = {$module.tx_socialstream.settings.tmp}
+        storage = {$module.tx_socialstream.settings.storage}
+        folder = {$module.tx_socialstream.settings.folder}
+        maxFilesize = {$module.tx_socialstream.settings.maxFilesize}
+
+        fbappid = {$module.tx_socialstream.settings.fbappid}
+        fbappsecret = {$module.tx_socialstream.settings.fbappsecret}
+        instaappid = {$module.tx_socialstream.settings.instaappid}
+        instaappsecret = {$module.tx_socialstream.settings.instaappsecret}
+        ytappid = {$module.tx_socialstream.settings.ytappid}
+        ytappsecret = {$module.tx_socialstream.settings.ytappsecret}
+        twappid = {$module.tx_socialstream.settings.twappid}
+        twappsecret = {$module.tx_socialstream.settings.twappsecret}
+        xingappid = {$module.tx_socialstream.settings.xingappid}
+        xingappsecret = {$module.tx_socialstream.settings.xingappsecret}
+        liappid = {$module.tx_socialstream.settings.liappid}
+        liappsecret = {$module.tx_socialstream.settings.liappsecret}
+        flickrappid = {$module.tx_socialstream.settings.flickrappid}
+        flickrappsecret = {$module.tx_socialstream.settings.flickrappsecret}
+        youtubeclientid = {$module.tx_socialstream.settings.youtubeclientid}
+        youtubeclientsecret = {$module.tx_socialstream.settings.youtubeclientsecret}
+        youtubeapikey = {$module.tx_socialstream.settings.youtubeapikey}
+    }
+}

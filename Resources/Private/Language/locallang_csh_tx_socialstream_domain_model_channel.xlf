@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<xliff version="1.0">
+	<file source-language="en" datatype="plaintext" original="messages" date="2016-09-29T11:36:38Z" product-name="social_stream">
+		<header/>
+		<body>
+			<trans-unit id="object_id.description">
+				<source>objectId</source>
+			</trans-unit>
+			<trans-unit id="title.description">
+				<source>title</source>
+			</trans-unit>
+			<trans-unit id="about.description">
+				<source>about</source>
+			</trans-unit>
+			<trans-unit id="description.description">
+				<source>description</source>
+			</trans-unit>
+			<trans-unit id="user.description">
+				<source>user</source>
+			</trans-unit>
+			<trans-unit id="type.description">
+				<source>type</source>
+			</trans-unit>
+			<trans-unit id="posttype.description">
+				<source>posttype</source>
+			</trans-unit>
+			<trans-unit id="videosync.description">
+				<source>videosync</source>
+			</trans-unit>
+			<trans-unit id="link.description">
+				<source>link</source>
+			</trans-unit>
+			<trans-unit id="image.description">
+				<source>image</source>
+			</trans-unit>
+			<trans-unit id="token.description">
+				<source>token</source>
+			</trans-unit>
+			<trans-unit id="refresh_token.description">
+				<source>refresh token</source>
+			</trans-unit>
+			<trans-unit id="expires.description">
+				<source>expires</source>
+			</trans-unit>
+			<trans-unit id="news.description">
+				<source>news</source>
+			</trans-unit>
+		</body>
+	</file>
+</xliff>
