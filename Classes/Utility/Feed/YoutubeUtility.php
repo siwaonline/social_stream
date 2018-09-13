@@ -35,9 +35,9 @@ use \TYPO3\CMS\Core\Messaging\FlashMessage;
 use \TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
- * YouTubeUtility
+ * YoutubeUtility
  */
-class YouTubeUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUtility
+class YoutubeUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUtility
 {
     /**
      * @param \Socialstream\SocialStream\Domain\Model\Channel $channel
@@ -123,6 +123,7 @@ class YouTubeUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUtility
         $this->categoryRepository = GeneralUtility::makeInstance('GeorgRinger\\News\\Domain\\Repository\\CategoryRepository');
 
         $response = $this->loadChannel($channel, 1);
+
         if ($response->items && is_array($response->items)) {
             $youtubeChannel = $response->items[0];
             if ($youtubeChannel->kind === "youtube#channel") {

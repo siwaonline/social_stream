@@ -29,9 +29,9 @@ namespace Socialstream\SocialStream\Utility\Token;
  ***************************************************************/
 
 /**
- * YouTubeUtility
+ * YoutubeUtility
  */
-class YouTubeUtility extends \Socialstream\SocialStream\Utility\Token\TokenUtility
+class YoutubeUtility extends \Socialstream\SocialStream\Utility\Token\TokenUtility
 {
     protected $redirectUrl = '';
 

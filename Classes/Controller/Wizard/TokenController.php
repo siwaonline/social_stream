@@ -17,7 +17,7 @@ namespace Socialstream\SocialStream\Controller\Wizard;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Socialstream\SocialStream\Utility\Token\YouTubeUtility;
+use Socialstream\SocialStream\Utility\Token\YoutubeUtility;
 use TYPO3\CMS\Core\Database\RelationHandler;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -146,7 +146,7 @@ class TokenController extends \TYPO3\CMS\Backend\Controller\Wizard\AbstractWizar
             $redirectUrl = $base . $redirectUrl;
         }
 
-        if ($utility instanceof YouTubeUtility) {
+        if ($utility instanceof YoutubeUtility) {
             $utility->setRedirectUrl($redirectUrl);
         }
 
@@ -163,7 +163,7 @@ class TokenController extends \TYPO3\CMS\Backend\Controller\Wizard\AbstractWizar
             $res = $utility->getValues($tokenString);
             $tk = $res["tk"];
             $exp = $res["exp"];
-            if ($utility instanceof YouTubeUtility) {
+            if ($utility instanceof YoutubeUtility) {
                 $rf_tk = $res["rf_tk"];
                 $this->content .= "
 <script>
