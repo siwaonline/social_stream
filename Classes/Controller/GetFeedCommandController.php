@@ -80,8 +80,8 @@ class GetFeedCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\Command
 
     /**
      * @param int $rootPage
-     *
-     * @return bool
+     * @throws \TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException
+     * @throws \TYPO3\CMS\Extbase\Persistence\Exception\UnknownObjectException
      */
     public function getFeedCommand($rootPage = 1)
     {

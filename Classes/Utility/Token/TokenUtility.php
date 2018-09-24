@@ -47,10 +47,21 @@ class TokenUtility extends \Socialstream\SocialStream\Utility\BaseUtility
     public function initSettings(){
         parent::initSettings();
     }
-    public static function getUtility($type,$pid=0){
+
+    /**
+     * @param $type
+     * @param int $pid
+     * @return mixed
+     */
+    public static function getUtility($type, $pid=0){
         $classname = "\\Socialstream\\SocialStream\\Utility\\Token\\".ucfirst($type)."Utility";
         return new $classname($pid);
     }
+
+    /**
+     * @param $url
+     * @return array
+     */
     public function splitRedirectUrl($url){
         $url_parts = explode("?",$url);
         $params = str_replace("&",",",$url_parts[1]);

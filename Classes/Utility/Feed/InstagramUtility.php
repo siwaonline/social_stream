@@ -1,4 +1,5 @@
 <?php
+
 namespace Socialstream\SocialStream\Utility\Feed;
 
 
@@ -39,12 +40,16 @@ use \TYPO3\CMS\Core\Utility\GeneralUtility;
 class InstagramUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUtility
 {
 
-    public function getChannel(\Socialstream\SocialStream\Domain\Model\Channel $channel,$isProcessing=0)
+    /**
+     * @param \Socialstream\SocialStream\Domain\Model\Channel $channel
+     * @param int $isProcessing
+     * @return bool|\Socialstream\SocialStream\Domain\Model\Channel
+     */
+    public function getChannel(\Socialstream\SocialStream\Domain\Model\Channel $channel, $isProcessing = 0)
     {
-        $url = "https://api.instagram.com/v1/users/".$channel->getObjectId()."/?access_token=".$channel->getToken();
-        if($this->get_http_response_code($url) == 200) {
+        $url = "https://api.instagram.com/v1/users/" . $channel->getObjectId() . "/?access_token=" . $channel->getToken();
+        if ($this->get_http_response_code($url) == 200) {
             $elem = $this->getElems($url);
-
 
 
             $channel->setObjectId($elem->data->id);
@@ -60,16 +65,16 @@ class InstagramUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUtili
                     $this->processChannelMedia($channel, $imageUrl);
                 }
             }
-        }else{
+        } else {
             if ($isProcessing == 0) {
-                if($this->settings["sysmail"]) {
-                    $this->sendTokenInfoMail($channel,$this->settings["sysmail"],$this->settings["sendermail"]);
+                if ($this->settings["sysmail"]) {
+                    $this->sendTokenInfoMail($channel, $this->settings["sysmail"], $this->settings["sendermail"]);
                 }
-            }else{
+            } else {
                 $msg = "Fehler: Channel konnte nicht gecrawlt werden. Object Id oder Token falsch.";
                 //$this->addFlashMessage($msg, '', AbstractMessage::ERROR);
                 $this->objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
-                $this->addFlashMessage($msg, '', FlashMessage::ERROR,$this->objectManager->get(FlashMessageService::class));
+                $this->addFlashMessage($msg, '', FlashMessage::ERROR, $this->objectManager->get(FlashMessageService::class));
                 return false;
             }
         }
@@ -77,7 +82,12 @@ class InstagramUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUtili
         return $channel;
     }
 
-    public function renewToken(\Socialstream\SocialStream\Domain\Model\Channel $channel){
+    /**
+     * @param \Socialstream\SocialStream\Domain\Model\Channel $channel
+     * @return \Socialstream\SocialStream\Domain\Model\Channel
+     */
+    public function renewToken(\Socialstream\SocialStream\Domain\Model\Channel $channel)
+    {
         /*$expdiff = ($channel->getExpires() - time())/86400;
         if($expdiff <= 5){
             $url = "https://graph.facebook.com/oauth/access_token?grant_type=fb_exchange_token&client_id=" . $this->settings["fbappid"] . "&client_secret=" . $this->settings["fbappsecret"] . "&fb_exchange_token=aaa" . $channel->getToken();
@@ -97,122 +107,128 @@ class InstagramUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUtili
         return $channel;
     }
 
-    public function getFeed(\Socialstream\SocialStream\Domain\Model\Channel $channel,$limit=100){
+    /**
+     * @param \Socialstream\SocialStream\Domain\Model\Channel $channel
+     * @param int $limit
+     * @throws \TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException
+     * @throws \TYPO3\CMS\Extbase\Persistence\Exception\UnknownObjectException
+     */
+    public function getFeed(\Socialstream\SocialStream\Domain\Model\Channel $channel, $limit = 100)
+    {
         $this->persistenceManager = GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Persistence\\Generic\\PersistenceManager');
         $this->newsRepository = GeneralUtility::makeInstance('Socialstream\\SocialStream\\Domain\\Repository\\NewsRepository');
         $this->categoryRepository = GeneralUtility::makeInstance('GeorgRinger\\News\\Domain\\Repository\\CategoryRepository');
 
-        $url = "https://api.instagram.com/v1/users/".$channel->getObjectId()."/media/recent/?access_token=".$channel->getToken()."&count=".$limit;
+        $url = "https://api.instagram.com/v1/users/" . $channel->getObjectId() . "/media/recent/?access_token=" . $channel->getToken() . "&count=" . $limit;
         $elem = $this->getElems($url);
 
         foreach ($elem->data as $entry) {
 
-                $new = 0;
+            $new = 0;
 
-                $id = explode("_",$entry->id);
-                if($id[0]){
-                    $newsId = $id[0];
-                }else{
-                    $newsId = $entry->id;
-                }
+            $id = explode("_", $entry->id);
+            if ($id[0]) {
+                $newsId = $id[0];
+            } else {
+                $newsId = $entry->id;
+            }
 
-                $news = $this->newsRepository->findHiddenById($newsId, $channel->getUid());
+            $news = $this->newsRepository->findHiddenById($newsId, $channel->getUid());
 
-                if (!$news) {
-                    $news = new \Socialstream\SocialStream\Domain\Model\News();
-                    $new = 1;
-                }
+            if (!$news) {
+                $news = new \Socialstream\SocialStream\Domain\Model\News();
+                $new = 1;
+            }
 
-                $createTime = new \DateTime();
-                $createTime->setTimestamp($entry->created_time);
-                $news->setDatetime($createTime);
+            $createTime = new \DateTime();
+            $createTime->setTimestamp($entry->created_time);
+            $news->setDatetime($createTime);
 
-                $news->setTitle($entry->user->username);
+            $news->setTitle($entry->user->username);
 
-                $news->setType(0);
-                $news->setChannel($channel);
+            $news->setType(0);
+            $news->setChannel($channel);
 
-                $cat = $this->getCategory($channel->getType());
+            $cat = $this->getCategory($channel->getType());
 
-                $news->addCategory($cat);
+            $news->addCategory($cat);
 
-                $subcat = $this->getCategory($channel->getTitle() . "@Instagram", $cat);
-                $news->addCategory($subcat);
+            $subcat = $this->getCategory($channel->getTitle() . "@Instagram", $cat);
+            $news->addCategory($subcat);
 
-                $news->setObjectId($newsId);
+            $news->setObjectId($newsId);
 
-                if ($entry->link) $news->setLink($entry->link);
-                $news->setAuthor($entry->user->full_name);
+            if ($entry->link) $news->setLink($entry->link);
+            $news->setAuthor($entry->user->full_name);
 
 
-                if ($entry->location) {
-                    $news->setPlaceName($entry->location->name);
-                    $news->setPlaceLat($entry->location->latitude);
-                    $news->setPlaceLng($entry->location->longitude);
-                }
+            if ($entry->location) {
+                $news->setPlaceName($entry->location->name);
+                $news->setPlaceLat($entry->location->latitude);
+                $news->setPlaceLng($entry->location->longitude);
+            }
 
-                if ($entry->caption->text) {
-                    $news->setBodytext($entry->caption->text);
-                    $news->setDescription($entry->caption->text);
-                }
+            if ($entry->caption->text) {
+                $news->setBodytext($entry->caption->text);
+                $news->setDescription($entry->caption->text);
+            }
 
-                if ($new) {
-                    $this->newsRepository->add($news);
-                } else {
-                    $this->newsRepository->update($news);
-                }
-                $this->persistenceManager->persistAll();
-
-                $imageUrl = '';
-                $videoUrl = '';
-
-                if($entry->type == "image"){
-                    $imageUrl = $entry->images->standard_resolution->url;
-                }else if($entry->type == "video"){
-                    $videoUrl = $entry->videos->standard_resolution->url;
-                }
-
-                $media = $this->validateMedia($channel, $imageUrl, $videoUrl);
-
-                if(is_array($media)){
-                    if($media['link']){
-                        $news->setMediaUrl($media['link']);
-                    }
-                    if($media['media_url']){
-                        $this->processNewsMedia($news, $media['media_url']);
-                    }
-                }
-
-                if($entry->type == "carousel"){
-                    $mediaUrlSet = false;
-                    foreach($entry->carousel_media as $carouselMedia){
-                        $imageUrl = '';
-                        $videoUrl = '';
-
-                        if($carouselMedia->type == "image"){
-                            $imageUrl = $carouselMedia->images->standard_resolution->url;
-                        }else if($carouselMedia->type == "video"){
-                            $videoUrl = $carouselMedia->videos->standard_resolution->url;
-                        }
-
-                        $media = $this->validateMedia($channel, $imageUrl, $videoUrl);
-
-                        if(is_array($media)){
-                            if($media['link']){
-                                if(!$mediaUrlSet){
-                                    $news->setMediaUrl($media['link']);
-                                    $mediaUrlSet = true;
-                                }
-                            }
-                            if($media['media_url']){
-                                $this->processNewsMedia($news, $media['media_url']);
-                            }
-                        }
-                    }
-                }
-
+            if ($new) {
+                $this->newsRepository->add($news);
+            } else {
                 $this->newsRepository->update($news);
-                $this->persistenceManager->persistAll();
+            }
+            $this->persistenceManager->persistAll();
+
+            $imageUrl = $entry->images->standard_resolution->url;
+            $videoUrl = '';
+
+            if ($entry->type == "video") {
+                $videoUrl = $entry->videos->standard_resolution->url;
+            }
+
+            $media = $this->validateMedia($channel, $imageUrl, $videoUrl);
+
+            if (is_array($media)) {
+                if ($media['link']) {
+                    $news->setMediaUrl($media['link']);
+                }
+                if ($media['media_url']) {
+                    $this->processNewsMedia($news, $media['media_url']);
+                }
+            }
+
+            if ($entry->type == "carousel") {
+                $mediaUrlSet = false;
+                foreach ($entry->carousel_media as $carouselMedia) {
+                    $imageUrl = '';
+                    $videoUrl = '';
+
+                    if ($carouselMedia->type == "image") {
+                        $imageUrl = $carouselMedia->images->standard_resolution->url;
+                    } else if ($carouselMedia->type == "video") {
+                        $imageUrl = $entry->images->standard_resolution->url;
+                        $videoUrl = $carouselMedia->videos->standard_resolution->url;
+                    }
+
+                    $media = $this->validateMedia($channel, $imageUrl, $videoUrl);
+
+                    if (is_array($media)) {
+                        if ($media['link']) {
+                            if (!$mediaUrlSet) {
+                                $news->setMediaUrl($media['link']);
+                                $mediaUrlSet = true;
+                            }
+                        }
+                        if ($media['media_url']) {
+                            $this->processNewsMedia($news, $media['media_url']);
+                        }
+                    }
+                }
+            }
+
+            $this->newsRepository->update($news);
+            $this->persistenceManager->persistAll();
         }
     }
 }

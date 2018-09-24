@@ -109,6 +109,13 @@ class Channel extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
      * @var string
      */
     protected $token = '';
+
+    /**
+     * refreshToken
+     *
+     * @var string
+     */
+    protected $refreshToken = '';
     
     /**
      * expires
@@ -377,7 +384,23 @@ class Channel extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     {
         $this->token = $token;
     }
-    
+
+    /**
+     * @return string
+     */
+    public function getRefreshToken(): string
+    {
+        return $this->refreshToken;
+    }
+
+    /**
+     * @param string $refreshToken
+     */
+    public function setRefreshToken(string $refreshToken): void
+    {
+        $this->refreshToken = $refreshToken;
+    }
+
     /**
      * Returns the expires
      *

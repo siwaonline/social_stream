@@ -26,10 +26,6 @@ module.tx_socialstream {
         instaappid =
         # cat=social_stream_keys/keys/d; type=string; label= Instagram App Secret
         instaappsecret =
-        # cat=social_stream_keys/keys/e; type=string; label= YouTube App ID
-        ytappid =
-        # cat=social_stream_keys/keys/f; type=string; label= YouTube App Secret
-        ytappsecret =
         # cat=social_stream_keys/keys/g; type=string; label= Twitter App ID
         twappid =
         # cat=social_stream_keys/keys/h; type=string; label= Twitter App Secret
@@ -46,5 +42,11 @@ module.tx_socialstream {
         flickrappid =
         # cat=social_stream_keys/keys/n; type=string; label= Flickr App Secret
         flickrappsecret =
+        # cat=social_stream_keys/keys/o; type=string; label= YouTube Client ID
+        youtubeclientid =
+        # cat=social_stream_keys/keys/p; type=string; label= YouTube Client Secret
+        youtubeclientsecret =
+        # cat=social_stream_keys/keys/q; type=string; label= YouTube API Key
+        youtubeapikey =
     }
 }

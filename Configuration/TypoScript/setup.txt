@@ -16,8 +16,6 @@ module.tx_socialstream {
         fbappsecret = {$module.tx_socialstream.settings.fbappsecret}
         instaappid = {$module.tx_socialstream.settings.instaappid}
         instaappsecret = {$module.tx_socialstream.settings.instaappsecret}
-        ytappid = {$module.tx_socialstream.settings.ytappid}
-        ytappsecret = {$module.tx_socialstream.settings.ytappsecret}
         twappid = {$module.tx_socialstream.settings.twappid}
         twappsecret = {$module.tx_socialstream.settings.twappsecret}
         xingappid = {$module.tx_socialstream.settings.xingappid}
@@ -26,5 +24,8 @@ module.tx_socialstream {
         liappsecret = {$module.tx_socialstream.settings.liappsecret}
         flickrappid = {$module.tx_socialstream.settings.flickrappid}
         flickrappsecret = {$module.tx_socialstream.settings.flickrappsecret}
+        youtubeclientid = {$module.tx_socialstream.settings.youtubeclientid}
+        youtubeclientsecret = {$module.tx_socialstream.settings.youtubeclientsecret}
+        youtubeapikey = {$module.tx_socialstream.settings.youtubeapikey}
     }
 }

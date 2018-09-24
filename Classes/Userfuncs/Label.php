@@ -32,6 +32,10 @@ namespace Socialstream\SocialStream\Userfuncs;
  */
 class Label
 {
+    /**
+     * @param $parameters
+     * @param $parentObject
+     */
     public function getPageLabel(&$parameters, $parentObject)
     {
         $record = \TYPO3\CMS\Backend\Utility\BackendUtility::getRecord($parameters['table'], $parameters['row']['uid']);
