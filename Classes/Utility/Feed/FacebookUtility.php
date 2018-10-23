@@ -116,7 +116,7 @@ class FacebookUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUtilit
         foreach ($elem->data as $entry) {
             if ($entry->name || $entry->message) {
                 $new = 0;
-                $news = $this->newsRepository->findHiddenById($entry->id, $channel->getUid());
+                $news = $this->newsRepository->findHiddenById($entry->id, $channel->getUid(), 1);
                 if (!$news) {
                     $news = new \Socialstream\SocialStream\Domain\Model\News();
                     $new = 1;

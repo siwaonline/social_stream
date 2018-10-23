@@ -32,9 +32,13 @@ namespace Socialstream\SocialStream\Domain\Repository;
  */
 class NewsRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
 {
-    public function findHiddenById($objectId,$channel) {
-        $id = explode("_",$objectId);
-        $id = array_values(array_slice($id, -1))[0];
+    public function findHiddenById($objectId,$channel,$split=0) {
+        if($split) {
+            $id = explode("_", $objectId);
+            $id = array_values(array_slice($id, -1))[0];
+        }else{
+            $id = $objectId;
+        }
         $query = $this->createQuery();
         $query->getQuerySettings()->setIgnoreEnableFields(TRUE);
         $query->matching(
@@ -43,5 +47,5 @@ class NewsRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
         );
         return $query->execute()->getFirst();
     }
-    
+
 }
