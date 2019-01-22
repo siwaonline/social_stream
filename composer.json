@@ -15,10 +15,10 @@
     "issues": "https://github.com/siwaonline/social_stream/issues"
   },
   "require": {
-    "typo3/cms-core": "^7.6.13 || >=8.7.0 <9",
-    "georgringer/news": ">=4.3.0"
+    "typo3/cms-core": "^9.5",
+    "georgringer/news": ">=7.0.0"
   },
-  "version": "2.1.0",
+  "version": "3.0.0-dev",
   "config": {
     "vendor-dir": ".Build/vendor",
     "bin-dir": ".Build/bin"
