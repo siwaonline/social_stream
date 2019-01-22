@@ -18,7 +18,7 @@
     "typo3/cms-core": "^9.5",
     "georgringer/news": ">=7.0.0"
   },
-  "version": "3.0.0-dev",
+  "version": "3.0.0",
   "config": {
     "vendor-dir": ".Build/vendor",
     "bin-dir": ".Build/bin"
@@ -33,6 +33,9 @@
     ]
   },
   "extra": {
+    "branch-alias": {
+      "master": "3.0.0-dev"
+    },
     "typo3/cms": {
       "cms-package-dir": "{$vendor-dir}/typo3/cms",
       "web-dir": ".Build/Web"
