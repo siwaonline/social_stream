@@ -15,7 +15,7 @@ if ($params == "") {
     if(hash == ""){
         alert("Error");
     }else{
-        window.location.replace("' . $url . '"+hash.substring(1));
+        window.location.replace("' . $url . '?"+hash.substring(1));
     }
 </script>';
 

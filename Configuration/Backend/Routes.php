@@ -15,6 +15,6 @@ return [
     // Register token wizard
     'wizard_token' => [
         'path' => '/wizard/token',
-        'target' => Controller\Wizard\TokenController::class . '::mainAction'
+        'target' => \Socialstream\SocialStream\Controller\Wizard\TokenController::class . '::mainAction'
     ],    
 ];

@@ -18,11 +18,10 @@ namespace Socialstream\SocialStream\Controller\Wizard;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Socialstream\SocialStream\Utility\Token\YoutubeUtility;
-use TYPO3\CMS\Core\Database\RelationHandler;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Core\Utility\HttpUtility;
-use TYPO3\CMS\Core\Utility\MathUtility;
+use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Backend\Template\ModuleTemplate;
 
 use Socialstream\SocialStream\Utility\Token\TokenUtility;
 
@@ -46,11 +45,20 @@ class TokenController extends \TYPO3\CMS\Backend\Controller\Wizard\AbstractWizar
     public $doClose;
 
     /**
+     * ModuleTemplate object
+     *
+     * @var ModuleTemplate
+     */
+    protected $moduleTemplate;
+
+
+    /**
      * Constructor
      */
     public function __construct()
     {
-        parent::__construct();
+        //parent::__construct();
+        $this->moduleTemplate = GeneralUtility::makeInstance(ModuleTemplate::class);
         $this->getLanguageService()->includeLLFile('EXT:lang/locallang_wizards.xlf');
         $GLOBALS['SOBE'] = $this;
 
@@ -109,9 +117,10 @@ class TokenController extends \TYPO3\CMS\Backend\Controller\Wizard\AbstractWizar
             throw new \RuntimeException('Wizard Error: No reference to record', 1294587125);
         }
 
-        $pageRes = $GLOBALS['TYPO3_DB']->exec_SELECTquery("pid", "pages", "uid=" . $this->P['pid']);
-        while ($pageRow = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($pageRes)) {
-            $pid = $pageRow['pid'];
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('pages');
+        $pageRes = $queryBuilder->select("pid")->from("pages")->where($queryBuilder->expr()->eq('uid', $this->P['pid']))->setMaxResults(1)->execute()->fetchAll();
+        foreach ($pageRes as $page){
+            $pid = $page['pid'];
         }
         if ($pid <= 0) $pid = $this->P["pid"];
 

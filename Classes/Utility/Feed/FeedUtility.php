@@ -29,7 +29,8 @@ namespace Socialstream\SocialStream\Utility\Feed;
  ***************************************************************/
 
 use TYPO3\CMS\Core\Resource\Folder;
-use \TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Database\ConnectionPool;
 
 /**
  * FeedUtility
@@ -271,13 +272,23 @@ class FeedUtility extends \Socialstream\SocialStream\Utility\BaseUtility
 
             if ($table == "tx_socialstream_domain_model_channel") {
                 if ($model->getImage()) {
-                    $GLOBALS["TYPO3_DB"]->exec_UPDATEquery("sys_file_reference", "uid=" . $model->getImage()->getUid(), array('deleted' => '1'));
+                    $databaseConnection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable('sys_file_reference');
+                    $databaseConnection->update(
+                        'sys_file_reference',
+                        array('deleted' => '1'),
+                        ['uid' => '= ' . $model->getImage()->getUid()]
+                    );
                 }
             } elseif ($table == "tx_news_domain_model_news") {
                 if (count($model->getFalMedia()) > 0) {
                     $media = $model->getFalMedia()->current();
                     if ($media) {
-                        $GLOBALS["TYPO3_DB"]->exec_UPDATEquery("sys_file_reference", "uid=" . $media->getUid(), array('deleted' => '1'));
+                        $databaseConnection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable('sys_file_reference');
+                        $databaseConnection->update(
+                            'sys_file_reference',
+                            array('deleted' => '1'),
+                            ['uid' => '= ' . $media->getUid()]
+                        );
                     }
                 }
             }

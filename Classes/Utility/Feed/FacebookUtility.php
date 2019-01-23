@@ -143,13 +143,13 @@ class FacebookUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUtilit
                     $news->setTitle($entry->from->name);
                 }
                 if ($entry->place) {
-                    $news->setPlaceName($entry->place->name);
-                    $news->setPlaceCity($entry->place->location->city);
-                    $news->setPlaceCountry($entry->place->location->country);
-                    $news->setPlaceLat($entry->place->location->latitude);
-                    $news->setPlaceLng($entry->place->location->longitude);
-                    $news->setPlaceStreet($entry->place->location->street);
-                    $news->setPlaceZip($entry->place->location->zip);
+                    if($entry->place->name) $news->setPlaceName($entry->place->name);
+                    if($entry->place->location->city) $news->setPlaceCity($entry->place->location->city);
+                    if($entry->place->location->country) $news->setPlaceCountry($entry->place->location->country);
+                    if($entry->place->location->latitude) $news->setPlaceLat($entry->place->location->latitude);
+                    if($entry->place->location->longitude) $news->setPlaceLng($entry->place->location->longitude);
+                    if($entry->place->location->street) $news->setPlaceStreet($entry->place->location->street);
+                    if($entry->place->location->zip) $news->setPlaceZip($entry->place->location->zip);
                 }
 
                 if ($entry->message) {

@@ -65,6 +65,7 @@ class TokenUtility extends \Socialstream\SocialStream\Utility\BaseUtility
     public function splitRedirectUrl($url){
         $url_parts = explode("?",$url);
         $params = str_replace("&",",",$url_parts[1]);
+        $params = str_replace("=","%3D",$params);
         $base = explode("/typo3/",$url_parts[0]);
         return array("base"=>$base[0]."/typo3conf/ext/social_stream/Redirect.php","state"=>$params);
     }

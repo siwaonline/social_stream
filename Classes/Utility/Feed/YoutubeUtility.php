@@ -33,6 +33,7 @@ use TYPO3\CMS\Core\Resource\OnlineMedia\Helpers\YouTubeHelper;
 use \TYPO3\CMS\Core\Messaging\FlashMessageService;
 use \TYPO3\CMS\Core\Messaging\FlashMessage;
 use \TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Database\ConnectionPool;
 
 /**
  * YoutubeUtility
@@ -180,7 +181,12 @@ class YoutubeUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUtility
                                         if (count($news->getFalMedia()) > 0) {
                                             $media = $news->getFalMedia()->current();
                                             if ($media) {
-                                                $GLOBALS["TYPO3_DB"]->exec_UPDATEquery("sys_file_reference", "uid=" . $media->getUid(), array('deleted' => '1'));
+                                                $databaseConnection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable('sys_file_reference');
+                                                $databaseConnection->update(
+                                                    'sys_file_reference',
+                                                    array('deleted' => '1'),
+                                                    ['uid' => '= ' . $media->getUid()]
+                                                );
                                             }
                                         }
 

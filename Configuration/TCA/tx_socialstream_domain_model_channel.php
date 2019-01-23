@@ -4,7 +4,7 @@ return array(
     'ctrl' => array(
         'title' => 'LLL:EXT:social_stream/Resources/Private/Language/locallang_db.xlf:tx_socialstream_domain_model_channel',
         'label' => 'object_id',
-        'label_userFunc' => 'EXT:social_stream/Classes/Userfuncs/Label.php:Socialstream\\SocialStream\\Userfuncs\\Label->getPageLabel',
+        'label_userFunc' => 'Socialstream\\SocialStream\\Userfuncs\\Label->getPageLabel',
         'tstamp' => 'tstamp',
         'crdate' => 'crdate',
         'cruser_id' => 'cruser_id',
@@ -41,7 +41,7 @@ return array(
         'showRecordFieldList' => 'sys_language_uid, l10n_parent, l10n_diffsource, hidden, object_id, title, about, description, type, posttype, videosync, link, image, token, refresh_token, expires',
     ),
     'types' => array(
-        '1' => array('showitem' => 'sys_language_uid;;;;1-1-1, l10n_parent, l10n_diffsource, hidden;;1, --palette--;;paletteTitle, --palette--;;paletteAbout, --palette--;;paletteType, image, --palette--;;paletteToken, --div--;LLL:EXT:cms/locallang_ttc.xlf:tabs.access, starttime, endtime'),
+        '1' => array('showitem' => 'sys_language_uid;;;;1-1-1, l10n_parent, l10n_diffsource, hidden;;1, --palette--;;paletteTitle, --palette--;;paletteAbout, --palette--;;paletteType, image, --palette--;;paletteToken, --div--;LLL:EXT:frontend/Resources/Private/Language/locallang_tca.xlf:pages.tabs.access, starttime, endtime'),
     ),
     'palettes' => array(
         'paletteTitle' => array(
@@ -61,22 +61,25 @@ return array(
 
         'sys_language_uid' => array(
             'exclude' => 1,
-            'label' => 'LLL:EXT:lang/locallang_general.xlf:LGL.language',
+            'label' => 'LLL:EXT:lang/Resources/Private/Language/locallang_general.xlf:LGL.language',
             'config' => array(
                 'type' => 'select',
                 'renderType' => 'selectSingle',
-                'foreign_table' => 'sys_language',
-                'foreign_table_where' => 'ORDER BY sys_language.title',
+                'special' => 'languages',
                 'items' => array(
-                    array('LLL:EXT:lang/locallang_general.xlf:LGL.allLanguages', -1),
-                    array('LLL:EXT:lang/locallang_general.xlf:LGL.default_value', 0)
+                    array(
+                        'LLL:EXT:lang/Resources/Private/Language/locallang_general.xlf:LGL.allLanguages',
+                        -1,
+                        'flags-multiple'
+                    ),
                 ),
-            ),
+                'default' => 0,
+            )
         ),
         'l10n_parent' => array(
             'displayCond' => 'FIELD:sys_language_uid:>:0',
             'exclude' => 1,
-            'label' => 'LLL:EXT:lang/locallang_general.xlf:LGL.l18n_parent',
+            'label' => 'LLL:EXT:lang/Resources/Private/Language/locallang_general.xlf:LGL.l18n_parent',
             'config' => array(
                 'type' => 'select',
                 'renderType' => 'selectSingle',
@@ -104,7 +107,7 @@ return array(
 
         'hidden' => array(
             'exclude' => 1,
-            'label' => 'LLL:EXT:lang/locallang_general.xlf:LGL.hidden',
+            'label' => 'LLL:EXT:lang/Resources/Private/Language/locallang_general.xlf:LGL.hidden',
             'config' => array(
                 'type' => 'check',
             ),
@@ -112,7 +115,7 @@ return array(
         'starttime' => array(
             'exclude' => 1,
             'l10n_mode' => 'mergeIfNotBlank',
-            'label' => 'LLL:EXT:lang/locallang_general.xlf:LGL.starttime',
+            'label' => 'LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:starttime_formlabel',
             'config' => array(
                 'type' => 'input',
                 'size' => 13,
@@ -128,7 +131,7 @@ return array(
         'endtime' => array(
             'exclude' => 1,
             'l10n_mode' => 'mergeIfNotBlank',
-            'label' => 'LLL:EXT:lang/locallang_general.xlf:LGL.endtime',
+            'label' => 'LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:endtime_formlabel',
             'config' => array(
                 'type' => 'input',
                 'size' => 13,
@@ -148,7 +151,7 @@ return array(
             'config' => array(
                 'type' => 'input',
                 'size' => 30,
-                'eval' => 'trim'
+                'eval' => 'trim,required'
             ),
         ),
         'title' => array(
@@ -302,15 +305,11 @@ return array(
                 'type' => 'input',
                 'size' => 30,
                 'eval' => 'trim',
-                'wizards' => array(
+                'fieldControl' => array(
                     'token' => array(
-                        'type' => 'popup',
-                        'module' => array(
-                            'name' => 'wizard_token',
-                        ),
-                        'JSopenParams' => 'height=700,width=1000,status=0,menubar=0,scrollbars=1',
-                        'icon' => 'actions-system-extension-configure',
-                    )
+                        'renderType' => 'tokenNode',
+                        'iconIdentifier' => 'actions-system-extension-configure'
+                    ),
                 )
             ),
         ),
@@ -330,7 +329,7 @@ return array(
             'config' => array(
                 'type' => 'input',
                 'size' => 4,
-                'eval' => 'int'
+                'eval' => 'int,trim'
             )
         ),
         'news' => array(
