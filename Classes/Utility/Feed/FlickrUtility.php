@@ -84,9 +84,8 @@ class FlickrUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUtility
         $this->newsRepository = GeneralUtility::makeInstance('Socialstream\\SocialStream\\Domain\\Repository\\NewsRepository');
         $this->categoryRepository = GeneralUtility::makeInstance('GeorgRinger\\News\\Domain\\Repository\\CategoryRepository');
 
-        //$url = "https://graph.facebook.com/".$channel->getObjectId()."/feed?fields=id,created_time,link,permalink_url,place,type,message,full_picture,object_id,picture,name,caption,description,story,source,from&access_token=".$channel->getToken()."&limit=".$limit;
         $url = "https://api.flickr.com/services/rest/?method=flickr.photosets.getList&api_key=" . $channel->getToken() . "&user_id=" . $channel->getObjectId() . "&format=json&nojsoncallback=1";
-
+        //flickr.people.getPhotos
 
         $elem = $this->getElems($url);
 
@@ -126,7 +125,7 @@ class FlickrUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUtility
 
             $news->setObjectId($newsId);
 
-            $news->setLink("https://www.flickr.com/photos/vpnoeat/albums/" . $entry->id);
+            $news->setLink("https://www.flickr.com/photos/" . $channel->getObjectId() . "/albums/" . $entry->id);
 
             if ($entry->description) {
                 $news->setBodytext($entry->description->_content);

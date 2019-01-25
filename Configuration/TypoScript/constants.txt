@@ -9,7 +9,7 @@ module.tx_socialstream {
         # cat=social_stream//h; type=string; label= Notification Sender E-Mail
         sendermail =
         # cat=social_stream//c; type=int; label= Limit for Posts to fetch
-        limitPosts = 100
+        limitPosts = 50
         # cat=social_stream//d; type=string; label= tmp Folder
         tmp = /tmp/
         # cat=social_stream//e; type=int; label= File Storage

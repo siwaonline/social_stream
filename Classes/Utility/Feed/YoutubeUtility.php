@@ -179,35 +179,37 @@ class YoutubeUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUtility
 
                                     if ($youTubeFile = $youTubeHelper->transformUrlToFile("https://www.youtube.com/watch?v=" . $playlistItem->snippet->resourceId->videoId, $folder)) {
                                         if (count($news->getFalMedia()) > 0) {
-                                            $media = $news->getFalMedia()->current();
+                                            /*$media = $news->getFalMedia()->current();
                                             if ($media) {
-                                                $databaseConnection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable('sys_file_reference');
-                                                $databaseConnection->update(
-                                                    'sys_file_reference',
-                                                    array('deleted' => '1'),
-                                                    ['uid' => '= ' . $media->getUid()]
-                                                );
-                                            }
+                                                $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('sys_file_reference');
+                                                $queryBuilder
+                                                    ->update('sys_file_reference')
+                                                    ->where(
+                                                        $queryBuilder->expr()->eq('uid', $media->getUid())
+                                                    )
+                                                    ->set('deleted', 1)
+                                                    ->execute();
+                                            }*/
+                                        }else {
+                                            $data = array();
+                                            $data['sys_file_reference']['NEW12345'] = array(
+                                                'uid_local' => $youTubeFile->getUid(),
+                                                'uid_foreign' => $news->getUid(),
+                                                'tablenames' => 'tx_news_domain_model_news',
+                                                'fieldname' => 'fal_media',
+                                                'pid' => $this->settings["storagePid"],
+                                                'table_local' => 'sys_file',
+                                                'showinpreview' => 1,
+                                            );
+                                            $data['tx_news_domain_model_news'][$news->getUid()] = array('fal_media' => 'NEW12345');
+
+                                            /** @var \TYPO3\CMS\Core\DataHandling\DataHandler $tce */
+                                            $tce = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Core\DataHandling\DataHandler');
+                                            $tce->bypassAccessCheckForRecords = TRUE;
+                                            $tce->start($data, array());
+                                            $tce->admin = TRUE;
+                                            $tce->process_datamap();
                                         }
-
-                                        $data = array();
-                                        $data['sys_file_reference']['NEW12345'] = array(
-                                            'uid_local' => $youTubeFile->getUid(),
-                                            'uid_foreign' => $news->getUid(),
-                                            'tablenames' => 'tx_news_domain_model_news',
-                                            'fieldname' => 'fal_media',
-                                            'pid' => $this->settings["storagePid"],
-                                            'table_local' => 'sys_file',
-                                            'showinpreview' => 1,
-                                        );
-                                        $data['tx_news_domain_model_news'][$news->getUid()] = array('fal_media' => 'NEW12345');
-
-                                        /** @var \TYPO3\CMS\Core\DataHandling\DataHandler $tce */
-                                        $tce = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Core\DataHandling\DataHandler');
-                                        $tce->bypassAccessCheckForRecords = TRUE;
-                                        $tce->start($data, array());
-                                        $tce->admin = TRUE;
-                                        $tce->process_datamap();
                                     }
                                 }
                             }

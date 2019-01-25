@@ -157,7 +157,12 @@ return array(
         'title' => array(
             'exclude' => 1,
             'label' => 'LLL:EXT:social_stream/Resources/Private/Language/locallang_db.xlf:tx_socialstream_domain_model_channel.title',
-            'displayCond' => 'FIELD:token:REQ:TRUE',
+            'displayCond' => array(
+                'OR' => array(
+                    'FIELD:token:REQ:TRUE',
+                    'FIELD:title:REQ:TRUE'
+                )
+            ),
             'config' => array(
                 'type' => 'input',
                 'size' => 30,
@@ -168,7 +173,12 @@ return array(
         'about' => array(
             'exclude' => 1,
             'label' => 'LLL:EXT:social_stream/Resources/Private/Language/locallang_db.xlf:tx_socialstream_domain_model_channel.about',
-            'displayCond' => 'FIELD:token:REQ:TRUE',
+            'displayCond' => array(
+                'OR' => array(
+                    'FIELD:token:REQ:TRUE',
+                    'FIELD:about:REQ:TRUE'
+                )
+            ),
             'config' => array(
                 'type' => 'input',
                 'size' => 30,
@@ -178,7 +188,12 @@ return array(
         'description' => array(
             'exclude' => 1,
             'label' => 'LLL:EXT:social_stream/Resources/Private/Language/locallang_db.xlf:tx_socialstream_domain_model_channel.description',
-            'displayCond' => 'FIELD:token:REQ:TRUE',
+            'displayCond' => array(
+                'OR' => array(
+                    'FIELD:token:REQ:TRUE',
+                    'FIELD:description:REQ:TRUE'
+                )
+            ),
             'config' => array(
                 'type' => 'input',
                 'size' => 30,
@@ -188,7 +203,12 @@ return array(
         'user' => array(
             'exclude' => 1,
             'label' => 'LLL:EXT:social_stream/Resources/Private/Language/locallang_db.xlf:tx_socialstream_domain_model_channel.user',
-            'displayCond' => 'FIELD:token:REQ:TRUE',
+            'displayCond' => array(
+                'OR' => array(
+                    'FIELD:token:REQ:TRUE',
+                    'FIELD:user:REQ:TRUE'
+                )
+            ),
             'config' => array(
                 'type' => 'check',
                 'default' => 0
@@ -244,7 +264,12 @@ return array(
         'link' => array(
             'exclude' => 1,
             'label' => 'LLL:EXT:social_stream/Resources/Private/Language/locallang_db.xlf:tx_socialstream_domain_model_channel.link',
-            'displayCond' => 'FIELD:token:REQ:TRUE',
+            'displayCond' => array(
+                'OR' => array(
+                    'FIELD:token:REQ:TRUE',
+                    'FIELD:link:REQ:TRUE'
+                )
+            ),
             'config' => array(
                 'type' => 'input',
                 'size' => 30,
@@ -254,7 +279,12 @@ return array(
         'image' => array(
             'exclude' => 1,
             'label' => 'LLL:EXT:social_stream/Resources/Private/Language/locallang_db.xlf:tx_socialstream_domain_model_channel.image',
-            'displayCond' => 'FIELD:token:REQ:TRUE',
+            'displayCond' => array(
+                'OR' => array(
+                    'FIELD:token:REQ:TRUE',
+                    'FIELD:image:REQ:TRUE'
+                )
+            ),
             'config' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::getFileFieldTCAConfig(
                 'image',
                 array(
@@ -335,7 +365,12 @@ return array(
         'news' => array(
             'exclude' => 1,
             'label' => 'LLL:EXT:social_stream/Resources/Private/Language/locallang_db.xlf:tx_socialstream_domain_model_channel.news',
-            'displayCond' => 'FIELD:token:REQ:TRUE',
+            'displayCond' => array(
+                'OR' => array(
+                    'FIELD:token:REQ:TRUE',
+                    'FIELD:news:REQ:TRUE'
+                )
+            ),
             'config' => array(
                 'type' => 'inline',
                 'foreign_table' => 'tx_news_domain_model_news',

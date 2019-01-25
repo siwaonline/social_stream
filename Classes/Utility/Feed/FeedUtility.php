@@ -272,23 +272,27 @@ class FeedUtility extends \Socialstream\SocialStream\Utility\BaseUtility
 
             if ($table == "tx_socialstream_domain_model_channel") {
                 if ($model->getImage()) {
-                    $databaseConnection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable('sys_file_reference');
-                    $databaseConnection->update(
-                        'sys_file_reference',
-                        array('deleted' => '1'),
-                        ['uid' => '= ' . $model->getImage()->getUid()]
-                    );
+                    $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('sys_file_reference');
+                    $queryBuilder
+                        ->update('sys_file_reference')
+                        ->where(
+                            $queryBuilder->expr()->eq('uid', $model->getImage()->getUid())
+                        )
+                        ->set('deleted', 1)
+                        ->execute();
                 }
             } elseif ($table == "tx_news_domain_model_news") {
                 if (count($model->getFalMedia()) > 0) {
                     $media = $model->getFalMedia()->current();
                     if ($media) {
-                        $databaseConnection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable('sys_file_reference');
-                        $databaseConnection->update(
-                            'sys_file_reference',
-                            array('deleted' => '1'),
-                            ['uid' => '= ' . $media->getUid()]
-                        );
+                        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('sys_file_reference');
+                        $queryBuilder
+                            ->update('sys_file_reference')
+                            ->where(
+                                $queryBuilder->expr()->eq('uid', $media->getUid())
+                            )
+                            ->set('deleted', 1)
+                            ->execute();
                     }
                 }
             }
