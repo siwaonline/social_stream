@@ -159,6 +159,7 @@ class YoutubeUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUtility
                                     $news->addCategory($subcat);
 
                                     $news->setObjectId($playlistItem->snippet->resourceId->videoId);
+                                    if(!$news->getPathSegment()) $news->setPathSegment($this->getSlug($news->getUid(),$news->getTitle()));
 
                                     $news->setLink("https://www.youtube.com/watch?v=" . $playlistItem->snippet->resourceId->videoId);
                                     $news->setAuthor($playlistItem->snippet->channelTitle);

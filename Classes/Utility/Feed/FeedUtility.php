@@ -31,6 +31,8 @@ namespace Socialstream\SocialStream\Utility\Feed;
 use TYPO3\CMS\Core\Resource\Folder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\DataHandling\SlugHelper;
+use TYPO3\CMS\Core\DataHandling\Model\RecordStateFactory;
 
 /**
  * FeedUtility
@@ -426,4 +428,16 @@ class FeedUtility extends \Socialstream\SocialStream\Utility\BaseUtility
         return $cat;
     }
 
+    protected function getSlug($uid,$string){
+        $slugHelper = GeneralUtility::makeInstance(SlugHelper::class, 'tx_news_domain_model_news', 'path_segment', $GLOBALS['TCA']['tx_news_domain_model_news']['columns']['path_segment']['config']);
+        $slug = $slugHelper->generate(["title" => $string], $this->settings["storagePid"]);
+
+        $state = RecordStateFactory::forName('tx_news_domain_model_news')
+            ->fromArray(["title" => $string], $this->settings["storagePid"], $uid ? $uid : 0);
+        if (!$slugHelper->isUniqueInSite($slug, $state)) {
+            $slug = $slugHelper->buildSlugForUniqueInSite($slug, $state);
+        }
+
+        return $slug;
+    }
 }

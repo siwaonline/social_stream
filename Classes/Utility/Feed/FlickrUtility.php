@@ -124,6 +124,7 @@ class FlickrUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUtility
             $news->addCategory($subcat);
 
             $news->setObjectId($newsId);
+            if(!$news->getPathSegment()) $news->setPathSegment($this->getSlug($news->getUid(),$news->getTitle()));
 
             $news->setLink("https://www.flickr.com/photos/" . $channel->getObjectId() . "/albums/" . $entry->id);
 

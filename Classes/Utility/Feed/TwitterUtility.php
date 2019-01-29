@@ -194,6 +194,7 @@ class TwitterUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUtility
                 $news->addCategory($subcat);
 
                 $news->setObjectId($newsId);
+                if(!$news->getPathSegment()) $news->setPathSegment($this->getSlug($news->getUid(),$news->getTitle()));
 
                 $news->setLink("https://www.twitter.com/" . $entry["user"]["screen_name"] . "/status/" . $entry["id_str"]);
                 $news->setAuthor($entry["user"]["name"]);

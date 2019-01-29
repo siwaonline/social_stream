@@ -157,6 +157,7 @@ class InstagramUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUtili
             $news->addCategory($subcat);
 
             $news->setObjectId($newsId);
+            if(!$news->getPathSegment()) $news->setPathSegment($this->getSlug($news->getUid(),$news->getTitle()));
 
             if ($entry->link) $news->setLink($entry->link);
             $news->setAuthor($entry->user->full_name);

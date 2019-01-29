@@ -142,6 +142,7 @@ class FacebookUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUtilit
                 } else {
                     $news->setTitle($entry->from->name);
                 }
+                if(!$news->getPathSegment()) $news->setPathSegment($this->getSlug($news->getUid(),$news->getTitle()));
                 if ($entry->place) {
                     if($entry->place->name) $news->setPlaceName($entry->place->name);
                     if($entry->place->location->city) $news->setPlaceCity($entry->place->location->city);

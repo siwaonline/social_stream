@@ -72,6 +72,7 @@ class FacebookeventUtility extends \Socialstream\SocialStream\Utility\Feed\Faceb
             if($entry->link)$news->setLink($entry->link);
             $news->setAuthor($entry->owner->name);
             if($entry->name)$news->setTitle($entry->name);
+            if(!$news->getPathSegment()) $news->setPathSegment($this->getSlug($news->getUid(),$news->getTitle()));
             if($entry->place){
                 $news->setPlaceName($entry->place->name);
                 $news->setPlaceCity($entry->place->location->city);
