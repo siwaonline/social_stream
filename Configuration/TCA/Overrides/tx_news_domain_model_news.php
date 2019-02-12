@@ -140,6 +140,7 @@ $tmp_social_stream_columns = array(
 			'type' => 'input',
 			'size' => 16,
 			'max' => 20,
+			'default' => 0,
 			'eval' => 'datetime',
 		),
 	),
@@ -153,6 +154,7 @@ $tmp_social_stream_columns = array(
             'items' => array(
                 array('', 0),
             ),
+			'default' => 0,
 			'minitems' => 0,
 			'maxitems' => 1,
 		),
