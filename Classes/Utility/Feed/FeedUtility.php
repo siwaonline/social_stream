@@ -28,6 +28,7 @@ namespace Socialstream\SocialStream\Utility\Feed;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use GeorgRinger\News\Domain\Model\Category;
 use TYPO3\CMS\Core\Resource\Folder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Database\ConnectionPool;
@@ -46,11 +47,13 @@ class FeedUtility extends \Socialstream\SocialStream\Utility\BaseUtility
      */
     public $clearStrings = array('\ud83c\u', '\ud83d\u', '\ud83e\u', '\u2600\u');
 
+
     /**
      * __construct
      */
     public function __construct($pid = 0)
     {
+        parent::__construct();
         if ($pid) {
             $this->initTSFE($pid, 0);
             $this->initSettings();
@@ -70,6 +73,7 @@ class FeedUtility extends \Socialstream\SocialStream\Utility\BaseUtility
     /**
      * @param $type
      * @param int $pid
+     * @param int $storagePid
      * @return mixed
      */
     public static function getUtility($type, $pid = 0)
@@ -209,7 +213,7 @@ class FeedUtility extends \Socialstream\SocialStream\Utility\BaseUtility
     /**
      * @param string $url
      * @param $model
-     * @return array
+     * @return array | bool
      */
     function grabImage($url, $model)
     {
@@ -220,7 +224,7 @@ class FeedUtility extends \Socialstream\SocialStream\Utility\BaseUtility
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_ENCODING => "",
             CURLOPT_MAXREDIRS => 10,
-            CURLOPT_TIMEOUT => 30,
+            CURLOPT_TIMEOUT => 300,
             CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
             CURLOPT_CUSTOMREQUEST => "GET",
             CURLOPT_HTTPHEADER => array(
@@ -241,6 +245,7 @@ class FeedUtility extends \Socialstream\SocialStream\Utility\BaseUtility
             );
         }
         curl_close($curl);
+        return false;
     }
 
     /**
@@ -254,81 +259,83 @@ class FeedUtility extends \Socialstream\SocialStream\Utility\BaseUtility
     {
         $imageArray = $this->grabImage($imageUrl, $model);
 
-        $imageName = $imageArray['imageName'];
+        if (!empty($imageArray)) {
+            $imageName = $imageArray['imageName'];
 
-        $storage = $this->getStorage();
+            $storage = $this->getStorage();
 
-        if ((!$folder->hasFile($imageName) && $imageName) || ($storage->getFileInFolder($imageName, $folder)->getSize() <= 0 && $folder->hasFile($imageName) && $imageName)) {
-            if (file_exists($this->settings["tmp"] . $imageName)) {
-                unlink($this->settings["tmp"] . $imageName);
-            }
-            $fp = fopen($this->settings["tmp"] . $imageName, 'x');
-            fwrite($fp, $imageArray['image']);
-            fclose($fp);
-
-            if (filesize($this->settings["tmp"] . $imageName) > 0) {
-                $movedNewFile = $storage->addFile($this->settings["tmp"] . $imageName, $folder, $imageName, \TYPO3\CMS\Core\Resource\DuplicationBehavior::REPLACE);
-                $image = $movedNewFile->getUid();
-            }
-
-            if ($table == "tx_socialstream_domain_model_channel") {
-                if ($model->getImage()) {
-                    $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('sys_file_reference');
-                    $queryBuilder
-                        ->update('sys_file_reference')
-                        ->where(
-                            $queryBuilder->expr()->eq('uid', $model->getImage()->getUid())
-                        )
-                        ->set('deleted', 1)
-                        ->execute();
+            if ((!$folder->hasFile($imageName) && $imageName) || ($storage->getFileInFolder($imageName, $folder)->getSize() <= 0 && $folder->hasFile($imageName) && $imageName)) {
+                if (file_exists($this->settings["tmp"] . $imageName)) {
+                    unlink($this->settings["tmp"] . $imageName);
                 }
-            } elseif ($table == "tx_news_domain_model_news") {
-                if (count($model->getFalMedia()) > 0) {
-                    $media = $model->getFalMedia()->current();
-                    if ($media) {
+                $fp = fopen($this->settings["tmp"] . $imageName, 'x');
+                fwrite($fp, $imageArray['image']);
+                fclose($fp);
+
+                if (filesize($this->settings["tmp"] . $imageName) > 0) {
+                    $movedNewFile = $storage->addFile($this->settings["tmp"] . $imageName, $folder, $imageName, \TYPO3\CMS\Core\Resource\DuplicationBehavior::REPLACE);
+                    $image = $movedNewFile->getUid();
+                }
+
+                if ($table == "tx_socialstream_domain_model_channel") {
+                    if ($model->getImage()) {
                         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('sys_file_reference');
                         $queryBuilder
                             ->update('sys_file_reference')
                             ->where(
-                                $queryBuilder->expr()->eq('uid', $media->getUid())
+                                $queryBuilder->expr()->eq('uid', $model->getImage()->getUid())
                             )
                             ->set('deleted', 1)
                             ->execute();
                     }
+                } elseif ($table == "tx_news_domain_model_news") {
+                    if (count($model->getFalMedia()) > 0) {
+                        $media = $model->getFalMedia()->current();
+                        if ($media) {
+                            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('sys_file_reference');
+                            $queryBuilder
+                                ->update('sys_file_reference')
+                                ->where(
+                                    $queryBuilder->expr()->eq('uid', $media->getUid())
+                                )
+                                ->set('deleted', 1)
+                                ->execute();
+                        }
+                    }
+                }
+            } elseif ($table == "tx_socialstream_domain_model_channel") {
+                if (!$model->getImage() && $imageName) {
+                    $image = $storage->getFileInFolder($imageName, $folder);
+                    $image = $image->getUid();
+                }
+            } elseif ($table == "tx_news_domain_model_news") {
+                if (count($model->getFalMedia()) <= 0 && $imageName) {
+                    $image = $storage->getFileInFolder($imageName, $folder);
+                    $image = $image->getUid();
                 }
             }
-        } elseif ($table == "tx_socialstream_domain_model_channel") {
-            if (!$model->getImage() && $imageName) {
-                $image = $storage->getFileInFolder($imageName, $folder);
-                $image = $image->getUid();
-            }
-        } elseif ($table == "tx_news_domain_model_news") {
-            if (count($model->getFalMedia()) <= 0 && $imageName) {
-                $image = $storage->getFileInFolder($imageName, $folder);
-                $image = $image->getUid();
-            }
-        }
 
-        if ($image) {
-            $data = array();
-            $data['sys_file_reference']['NEW12345'] = array(
-                'uid_local' => $image,
-                'uid_foreign' => $model->getUid(), // uid of your content record
-                'tablenames' => $table,
-                'fieldname' => $field,
-                'pid' => $this->settings["storagePid"], // parent id of the parent page
-                'table_local' => 'sys_file',
-                'showinpreview' => 1,
-            );
-            $data[$table][$model->getUid()] = array($field => 'NEW12345'); // set to the number of images?
+            if ($image) {
+                $data = array();
+                $data['sys_file_reference']['NEW12345'] = array(
+                    'uid_local' => $image,
+                    'uid_foreign' => $model->getUid(), // uid of your content record
+                    'tablenames' => $table,
+                    'fieldname' => $field,
+                    'pid' => $this->settings["storagePid"], // parent id of the parent page
+                    'table_local' => 'sys_file',
+                    'showinpreview' => 1,
+                );
+                $data[$table][$model->getUid()] = array($field => 'NEW12345'); // set to the number of images?
 
-            /** @var \TYPO3\CMS\Core\DataHandling\DataHandler $tce */
-            $tce = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Core\DataHandling\DataHandler'); // create TCE instance
-            $tce->bypassAccessCheckForRecords = TRUE;
-            $tce->start($data, array());
-            $tce->admin = TRUE;
-            $tce->process_datamap();
-            $clear = 1;
+                /** @var \TYPO3\CMS\Core\DataHandling\DataHandler $tce */
+                $tce = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Core\DataHandling\DataHandler'); // create TCE instance
+                $tce->bypassAccessCheckForRecords = TRUE;
+                $tce->start($data, array());
+                $tce->admin = TRUE;
+                $tce->process_datamap();
+                $clear = 1;
+            }
         }
     }
 
@@ -368,9 +375,6 @@ class FeedUtility extends \Socialstream\SocialStream\Utility\BaseUtility
      */
     public function sendTokenInfoMail(\Socialstream\SocialStream\Domain\Model\Channel $channel, $sysmail, $sendermail = "")
     {
-        //$this->uriBuilder->reset();
-        //$this->uriBuilder->setCreateAbsoluteUri(1);
-        //$url = explode("?",$this->uriBuilder->buildBackendUri())[0];
         $uriBuilder = $this->objectManager->get('TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder');
         $uriBuilder->initializeObject();
         $uriBuilder->setCreateAbsoluteUri(1);
@@ -410,6 +414,7 @@ class FeedUtility extends \Socialstream\SocialStream\Utility\BaseUtility
      * @param \GeorgRinger\News\Domain\Model\Category|NULL $parent
      * @return \GeorgRinger\News\Domain\Model\Category
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException
+     * @throws \TYPO3\CMS\Extbase\Persistence\Exception\UnknownObjectException
      */
     protected function getCategory($type, \GeorgRinger\News\Domain\Model\Category $parent = NULL)
     {
@@ -417,12 +422,23 @@ class FeedUtility extends \Socialstream\SocialStream\Utility\BaseUtility
 
         $cat = $this->categoryRepository->findOneByTitle($title);
 
-        if (!$cat) {
+        if (!$cat instanceof Category) {
             $cat = new \GeorgRinger\News\Domain\Model\Category();
             $cat->setTitle($title);
-            if ($parent) $cat->setParentcategory($parent);
+            if ($parent) {
+                $cat->setParentcategory($parent);
+            }
+            $cat->setPid($this->getStoragePid());
             $this->categoryRepository->add($cat);
             $this->persistenceManager->persistAll();
+        } else {
+            if ($cat instanceof Category) {
+                if ($parent) {
+                    $cat->setParentcategory($parent);
+                    $this->categoryRepository->update($cat);
+                    $this->persistenceManager->persistAll();
+                }
+            }
         }
         return $cat;
     }

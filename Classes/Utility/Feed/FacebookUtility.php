@@ -28,18 +28,14 @@ namespace Socialstream\SocialStream\Utility\Feed;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use \TYPO3\CMS\Extbase\Utility\LocalizationUtility;
-use \TYPO3\CMS\Core\Messaging\AbstractMessage;
-use \TYPO3\CMS\Core\Messaging\FlashMessageService;
-use \TYPO3\CMS\Core\Messaging\FlashMessage;
-use \TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Messaging\FlashMessage;
+use TYPO3\CMS\Core\Messaging\FlashMessageService;
 
 /**
  * FacebookUtility
  */
 class FacebookUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUtility
 {
-
     public function getChannel(\Socialstream\SocialStream\Domain\Model\Channel $channel, $isProcessing = 0)
     {
         $url = "https://graph.facebook.com/" . $channel->getObjectId() . "/?fields=id,name,about,link,picture,cover&access_token=" . $channel->getToken();
@@ -84,9 +80,6 @@ class FacebookUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUtilit
             $url = "https://graph.facebook.com/oauth/access_token?grant_type=fb_exchange_token&client_id=" . $this->settings["fbappid"] . "&client_secret=" . $this->settings["fbappsecret"] . "&fb_exchange_token=" . $channel->getToken();
             if ($this->get_http_response_code($url) == 200) {
                 $token = file_get_contents($url);
-                /*$infos = explode("&", $token);
-                $tk = explode("=", $infos[0])[1];
-                $exp = time() + explode("=", $infos[1])[1];*/
                 $tk = json_decode($token);
                 $channel->setToken($tk->access_token);
                 $channel->setExpires(time() + $tk->expires_in);
@@ -101,10 +94,6 @@ class FacebookUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUtilit
 
     public function getFeed(\Socialstream\SocialStream\Domain\Model\Channel $channel, $limit = 100)
     {
-        $this->persistenceManager = GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Persistence\\Generic\\PersistenceManager');
-        $this->newsRepository = GeneralUtility::makeInstance('Socialstream\\SocialStream\\Domain\\Repository\\NewsRepository');
-        $this->categoryRepository = GeneralUtility::makeInstance('GeorgRinger\\News\\Domain\\Repository\\CategoryRepository');
-
         if ($channel->getPosttype() == "1") {
             $url = "https://graph.facebook.com/" . $channel->getObjectId() . "/posts?fields=id,created_time,link,permalink_url,place,type,message,full_picture,object_id,picture,name,caption,description,story,source,from&access_token=" . $channel->getToken() . "&limit=" . $limit;
         } else {
@@ -172,6 +161,8 @@ class FacebookUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUtilit
                 }
                 if ($entry->story) $news->setDescription($entry->story);
 
+                $news->setPid($this->getStoragePid());
+
                 if ($new) {
                     $this->newsRepository->add($news);
                 } else {
@@ -179,25 +170,19 @@ class FacebookUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUtilit
                 }
                 $this->persistenceManager->persistAll();
 
-                $singlePost = json_decode(file_get_contents("https://graph.facebook.com/" . $entry->id . "/?fields=full_picture,source&access_token=" . $channel->getToken()));
 
                 $imageUrl = '';
                 $videoUrl = '';
 
                 if ($entry->source) {
                     $videoUrl = $entry->source;
-                } else if ($singlePost->source) {
-                    $videoUrl = $singlePost->source;
                 }
+
                 if ($entry->full_picture) {
                     $imageUrl = $entry->full_picture;
-                } else if ($singlePost->full_picture) {
-                    $imageUrl = $singlePost->full_picture;
                 }
 
-
                 $media = $this->validateMedia($channel, $imageUrl, $videoUrl);
-
 
                 if (is_array($media)) {
                     if ($media['link']) {

@@ -2,48 +2,39 @@
 namespace Socialstream\SocialStream\Utility\Feed;
 
 
-    /***************************************************************
-     *
-     *  Copyright notice
-     *
-     *  (c) 2016
-     *
-     *  All rights reserved
-     *
-     *  This script is part of the TYPO3 project. The TYPO3 project is
-     *  free software; you can redistribute it and/or modify
-     *  it under the terms of the GNU General Public License as published by
-     *  the Free Software Foundation; either version 3 of the License, or
-     *  (at your option) any later version.
-     *
-     *  The GNU General Public License can be found at
-     *  http://www.gnu.org/copyleft/gpl.html.
-     *
-     *  This script is distributed in the hope that it will be useful,
-     *  but WITHOUT ANY WARRANTY; without even the implied warranty of
-     *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-     *  GNU General Public License for more details.
-     *
-     *  This copyright notice MUST APPEAR in all copies of the script!
-     ***************************************************************/
-    
-use \TYPO3\CMS\Extbase\Utility\LocalizationUtility;
-use \TYPO3\CMS\Core\Messaging\AbstractMessage;
-use \TYPO3\CMS\Core\Messaging\FlashMessageService;
-use \TYPO3\CMS\Core\Messaging\FlashMessage;
-use \TYPO3\CMS\Core\Utility\GeneralUtility;
+/***************************************************************
+ *
+ *  Copyright notice
+ *
+ *  (c) 2016
+ *
+ *  All rights reserved
+ *
+ *  This script is part of the TYPO3 project. The TYPO3 project is
+ *  free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  The GNU General Public License can be found at
+ *  http://www.gnu.org/copyleft/gpl.html.
+ *
+ *  This script is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  This copyright notice MUST APPEAR in all copies of the script!
+ ***************************************************************/
+
 
 /**
  * FacebookeventUtility
  */
 class FacebookeventUtility extends \Socialstream\SocialStream\Utility\Feed\FacebookUtility
 {
-        
-    public function getFeed(\Socialstream\SocialStream\Domain\Model\Channel $channel,$limit=100){
-        $this->persistenceManager = GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Persistence\\Generic\\PersistenceManager');
-        $this->newsRepository = GeneralUtility::makeInstance('Socialstream\\SocialStream\\Domain\\Repository\\NewsRepository');
-        $this->categoryRepository = GeneralUtility::makeInstance('GeorgRinger\\News\\Domain\\Repository\\CategoryRepository');
 
+    public function getFeed(\Socialstream\SocialStream\Domain\Model\Channel $channel,$limit=100){
         $url = "https://graph.facebook.com/".$channel->getObjectId()."/events?fields=id,start_time,end_time,name,description,place,cover,owner&access_token=".$channel->getToken()."&limit=".$limit;
         $elem = $this->getElems($url);
 
@@ -74,19 +65,22 @@ class FacebookeventUtility extends \Socialstream\SocialStream\Utility\Feed\Faceb
             if($entry->name)$news->setTitle($entry->name);
             if(!$news->getPathSegment()) $news->setPathSegment($this->getSlug($news->getUid(),$news->getTitle()));
             if($entry->place){
-                $news->setPlaceName($entry->place->name);
-                $news->setPlaceCity($entry->place->location->city);
-                $news->setPlaceCountry($entry->place->location->country);
-                $news->setPlaceLat($entry->place->location->latitude);
-                $news->setPlaceLng($entry->place->location->longitude);
-                $news->setPlaceStreet($entry->place->location->street);
-                $news->setPlaceZip($entry->place->location->zip);
+                if($entry->place->name) $news->setPlaceName($entry->place->name);
+                if($entry->place->location->city) $news->setPlaceCity($entry->place->location->city);
+                if($entry->place->location->country) $news->setPlaceCountry($entry->place->location->country);
+                if($entry->place->location->latitude) $news->setPlaceLat($entry->place->location->latitude);
+                if($entry->place->location->longitude) $news->setPlaceLng($entry->place->location->longitude);
+                if($entry->place->location->street) $news->setPlaceStreet($entry->place->location->street);
+                if($entry->place->location->zip) $news->setPlaceZip($entry->place->location->zip);
             }
-            
+
             if($entry->description) {
                 $message = str_replace("\n", "<br/>", $entry->description);
                 $news->setBodytext(str_replace("<br/><br/>", "<br/>", $message));
             }
+
+            $news->setPid($this->getStoragePid());
+
             if ($new) {
                 $this->newsRepository->add($news);
             } else {
@@ -110,7 +104,7 @@ class FacebookeventUtility extends \Socialstream\SocialStream\Utility\Feed\Faceb
                     $this->processNewsMedia($news, $media['media_url']);
                 }
             }
-            
+
             $this->newsRepository->update($news);
             $this->persistenceManager->persistAll();
         }

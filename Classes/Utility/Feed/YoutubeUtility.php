@@ -29,11 +29,10 @@ namespace Socialstream\SocialStream\Utility\Feed;
  ***************************************************************/
 
 use Socialstream\SocialStream\Domain\Model\Channel;
+use Socialstream\SocialStream\Domain\Model\News;
+use TYPO3\CMS\Core\Messaging\FlashMessage;
+use TYPO3\CMS\Core\Messaging\FlashMessageService;
 use TYPO3\CMS\Core\Resource\OnlineMedia\Helpers\YouTubeHelper;
-use \TYPO3\CMS\Core\Messaging\FlashMessageService;
-use \TYPO3\CMS\Core\Messaging\FlashMessage;
-use \TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Core\Database\ConnectionPool;
 
 /**
  * YoutubeUtility
@@ -119,10 +118,6 @@ class YoutubeUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUtility
      */
     public function getFeed(\Socialstream\SocialStream\Domain\Model\Channel $channel, $limit = 50)
     {
-        $this->persistenceManager = GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Persistence\\Generic\\PersistenceManager');
-        $this->newsRepository = GeneralUtility::makeInstance('Socialstream\\SocialStream\\Domain\\Repository\\NewsRepository');
-        $this->categoryRepository = GeneralUtility::makeInstance('GeorgRinger\\News\\Domain\\Repository\\CategoryRepository');
-
         $response = $this->loadChannel($channel, 1);
 
         if ($response->items && is_array($response->items)) {
@@ -139,7 +134,7 @@ class YoutubeUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUtility
 
                                     $news = $this->newsRepository->findHiddenById($playlistItem->snippet->resourceId->videoId, $channel->getUid());
 
-                                    if (!$news) {
+                                    if (!$news instanceof News) {
                                         $news = new \Socialstream\SocialStream\Domain\Model\News();
                                         $new = 1;
                                     }
@@ -167,6 +162,8 @@ class YoutubeUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUtility
                                     $news->setBodytext($playlistItem->snippet->description);
                                     $news->setDescription($playlistItem->snippet->description);
 
+                                    $news->setPid($this->getStoragePid());
+
                                     if ($new) {
                                         $this->newsRepository->add($news);
                                     } else {
@@ -179,19 +176,7 @@ class YoutubeUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUtility
                                     $folder = $this->getSubFolder($this->getSubFolder($this->getSubFolder($this->getMainFolder(), $news->getChannel()->getType()), $news->getChannel()->getObjectId()), "news");
 
                                     if ($youTubeFile = $youTubeHelper->transformUrlToFile("https://www.youtube.com/watch?v=" . $playlistItem->snippet->resourceId->videoId, $folder)) {
-                                        if (count($news->getFalMedia()) > 0) {
-                                            /*$media = $news->getFalMedia()->current();
-                                            if ($media) {
-                                                $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('sys_file_reference');
-                                                $queryBuilder
-                                                    ->update('sys_file_reference')
-                                                    ->where(
-                                                        $queryBuilder->expr()->eq('uid', $media->getUid())
-                                                    )
-                                                    ->set('deleted', 1)
-                                                    ->execute();
-                                            }*/
-                                        }else {
+                                        if (count($news->getFalMedia()) <= 0) {
                                             $data = array();
                                             $data['sys_file_reference']['NEW12345'] = array(
                                                 'uid_local' => $youTubeFile->getUid(),

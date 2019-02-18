@@ -27,11 +27,8 @@ namespace Socialstream\SocialStream\Utility\Feed;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use \TYPO3\CMS\Extbase\Utility\LocalizationUtility;
-use \TYPO3\CMS\Core\Messaging\AbstractMessage;
-use \TYPO3\CMS\Core\Messaging\FlashMessageService;
-use \TYPO3\CMS\Core\Messaging\FlashMessage;
-use \TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Messaging\FlashMessage;
+use TYPO3\CMS\Core\Messaging\FlashMessageService;
 
 /**
  * FlickrUtility
@@ -49,7 +46,6 @@ class FlickrUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUtility
 
             $channel->setTitle($elem->person->realname->_content);
             if ($elem->about) $channel->setAbout($elem->person->description->_content);
-            //if($elem->description)$channel->setDescription($elem->description);
             $channel->setLink($elem->person->profileurl->_content);
 
             if ($isProcessing == 0) {
@@ -80,12 +76,8 @@ class FlickrUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUtility
     }
 
     public function getFeed(\Socialstream\SocialStream\Domain\Model\Channel $channel,$limit=100){
-        $this->persistenceManager = GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Persistence\\Generic\\PersistenceManager');
-        $this->newsRepository = GeneralUtility::makeInstance('Socialstream\\SocialStream\\Domain\\Repository\\NewsRepository');
-        $this->categoryRepository = GeneralUtility::makeInstance('GeorgRinger\\News\\Domain\\Repository\\CategoryRepository');
-
         $url = "https://api.flickr.com/services/rest/?method=flickr.photosets.getList&api_key=" . $channel->getToken() . "&user_id=" . $channel->getObjectId() . "&format=json&nojsoncallback=1";
-        //flickr.people.getPhotos
+
 
         $elem = $this->getElems($url);
 
@@ -133,6 +125,8 @@ class FlickrUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUtility
                 $news->setDescription($entry->description->_content);
             }
 
+            $news->setPid($this->getStoragePid());
+
             if ($new) {
                 $this->newsRepository->add($news);
             } else {
@@ -142,7 +136,7 @@ class FlickrUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUtility
 
             $imageUrl = '';
             if($entry->farm && $entry->server && $entry->primary && $entry->secret)
-            $imageUrl = "https://farm" . $entry->farm . ".static.flickr.com/" . $entry->server . "/" . $entry->primary . "_" . $entry->secret . "_b.jpg";
+                $imageUrl = "https://farm" . $entry->farm . ".static.flickr.com/" . $entry->server . "/" . $entry->primary . "_" . $entry->secret . "_b.jpg";
 
             $media = $this->validateMedia($channel, $imageUrl);
 
