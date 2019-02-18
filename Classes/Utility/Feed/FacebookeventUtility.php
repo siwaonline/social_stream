@@ -26,12 +26,7 @@ namespace Socialstream\SocialStream\Utility\Feed;
      *
      *  This copyright notice MUST APPEAR in all copies of the script!
      ***************************************************************/
-    
-use \TYPO3\CMS\Extbase\Utility\LocalizationUtility;
-use \TYPO3\CMS\Core\Messaging\AbstractMessage;
-use \TYPO3\CMS\Core\Messaging\FlashMessageService;
-use \TYPO3\CMS\Core\Messaging\FlashMessage;
-use \TYPO3\CMS\Core\Utility\GeneralUtility;
+
 
 /**
  * FacebookeventUtility
@@ -40,10 +35,6 @@ class FacebookeventUtility extends \Socialstream\SocialStream\Utility\Feed\Faceb
 {
         
     public function getFeed(\Socialstream\SocialStream\Domain\Model\Channel $channel,$limit=100){
-        $this->persistenceManager = GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Persistence\\Generic\\PersistenceManager');
-        $this->newsRepository = GeneralUtility::makeInstance('Socialstream\\SocialStream\\Domain\\Repository\\NewsRepository');
-        $this->categoryRepository = GeneralUtility::makeInstance('GeorgRinger\\News\\Domain\\Repository\\CategoryRepository');
-
         $url = "https://graph.facebook.com/".$channel->getObjectId()."/events?fields=id,start_time,end_time,name,description,place,cover,owner&access_token=".$channel->getToken()."&limit=".$limit;
         $elem = $this->getElems($url);
 
@@ -87,6 +78,9 @@ class FacebookeventUtility extends \Socialstream\SocialStream\Utility\Feed\Faceb
                 $message = str_replace("\n", "<br/>", $entry->description);
                 $news->setBodytext(str_replace("<br/><br/>", "<br/>", $message));
             }
+
+            $news->setPid($this->getStoragePid());
+
             if ($new) {
                 $this->newsRepository->add($news);
             } else {

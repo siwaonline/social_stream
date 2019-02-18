@@ -42,36 +42,40 @@ class ChannelProcessDatamap
         $objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
         $channelRepository = $objectManager->get('Socialstream\\SocialStream\\Domain\\Repository\\ChannelRepository');
 
-        if ($table == 'tx_socialstream_domain_model_channel') {
-            if ($status == "update") {
-                $channel = $channelRepository->findHidden($id)->getFirst();
-            } else {
-                $channel = new \Socialstream\SocialStream\Domain\Model\Channel();
-            }
-            if (array_key_exists('type', $fieldArray)) $channel->setType($fieldArray["type"]);
-            if (array_key_exists('object_id', $fieldArray)) $channel->setObjectId($fieldArray["object_id"]);
-            if (array_key_exists('token', $fieldArray)) $channel->setToken($fieldArray["token"]);
-            if ($channel) {
-                if (($channel->getObjectId() && $channel->getToken()) || ($channel->getType() === "youtube" && $channel->getToken()) || ($channel->getType() === "youtube" && $channel->getObjectId())) {
+        if (array_key_exists('hidden', $fieldArray)) {
+            return;
+        } else {
+            if ($table == 'tx_socialstream_domain_model_channel') {
+                if ($status == "update") {
+                    $channel = $channelRepository->findHidden($id)->getFirst();
+                } else {
+                    $channel = new \Socialstream\SocialStream\Domain\Model\Channel();
+                }
+                if (array_key_exists('type', $fieldArray)) $channel->setType($fieldArray["type"]);
+                if (array_key_exists('object_id', $fieldArray)) $channel->setObjectId($fieldArray["object_id"]);
+                if (array_key_exists('token', $fieldArray)) $channel->setToken($fieldArray["token"]);
+                if ($channel) {
+                    if (($channel->getObjectId() && $channel->getToken()) || ($channel->getType() === "youtube" && $channel->getToken()) || ($channel->getType() === "youtube" && $channel->getObjectId())) {
 
-                    $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('pages');
-                    $pageRes = $queryBuilder->select("pid")->from("pages")->where($queryBuilder->expr()->eq('uid', $reference->checkValue_currentRecord["pid"]))->setMaxResults(1)->execute()->fetchAll();
-                    foreach ($pageRes as $page){
-                        $pid = $page['pid'];
-                    }
-                    if ($pid <= 0) $pid = $reference->checkValue_currentRecord["pid"];
+                        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('pages');
+                        $pageRes = $queryBuilder->select("pid")->from("pages")->where($queryBuilder->expr()->eq('uid', $reference->checkValue_currentRecord["pid"]))->setMaxResults(1)->execute()->fetchAll();
+                        foreach ($pageRes as $page) {
+                            $pid = $page['pid'];
+                        }
+                        if ($pid <= 0) $pid = $reference->checkValue_currentRecord["pid"];
 
-                    $utility = FeedUtility::getUtility($channel->getType(),$pid);
-                    $channel = $utility->getChannel($channel, 1);
+                        $utility = FeedUtility::getUtility($channel->getType(), $pid);
+                        $channel = $utility->getChannel($channel, 1);
 
-                    if ($channel) {
-                        $fieldArray['object_id'] = $channel->getObjectId();
-                        $fieldArray['title'] = $channel->getTitle();
-                        $fieldArray['about'] = $channel->getAbout();
-                        //$fieldArray['description'] = $channel->getDescription();
-                        $fieldArray['link'] = $channel->getLink();
-                    } else {
-                        $fieldArray = array();
+                        if ($channel) {
+                            $fieldArray['object_id'] = $channel->getObjectId();
+                            $fieldArray['title'] = $channel->getTitle();
+                            $fieldArray['about'] = $channel->getAbout();
+                            //$fieldArray['description'] = $channel->getDescription();
+                            $fieldArray['link'] = $channel->getLink();
+                        } else {
+                            $fieldArray = array();
+                        }
                     }
                 }
             }

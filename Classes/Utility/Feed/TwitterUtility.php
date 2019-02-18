@@ -27,11 +27,8 @@ namespace Socialstream\SocialStream\Utility\Feed;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use \TYPO3\CMS\Extbase\Utility\LocalizationUtility;
-use \TYPO3\CMS\Core\Messaging\AbstractMessage;
-use \TYPO3\CMS\Core\Messaging\FlashMessageService;
-use \TYPO3\CMS\Core\Messaging\FlashMessage;
-use \TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Messaging\FlashMessage;
+use TYPO3\CMS\Core\Messaging\FlashMessageService;
 
 /**
  * TwitterUtility
@@ -71,11 +68,9 @@ class TwitterUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUtility
             $channel->setObjectId($elem["id_str"]);
             $channel->setTitle($elem["screen_name"]);
             if ($elem["description"]) $channel->setAbout($elem["description"]);
-            //if($elem->description)$channel->setDescription($elem->description);
             $channel->setLink("https://www.twitter.com/" . $elem["screen_name"] . "/");
 
             if ($isProcessing == 0) {
-                //$picStream = json_decode(file_get_contents("https://graph.facebook.com/" . $channel->getObjectId() . "/picture?redirect=0&width=900&access_token=" . $channel->getToken()));
                 $imageUrl = $elem["profile_image_url"];
                 $imageUrl = str_replace('_normal', '', $imageUrl);
                 if ($this->exists($imageUrl)) {
@@ -89,7 +84,6 @@ class TwitterUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUtility
                 }
             }else{
                 $msg = "Fehler: Channel konnte nicht gecrawlt werden. Object Id oder Token falsch.";
-                //$this->addFlashMessage($msg, '', AbstractMessage::ERROR);
                 $this->objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
                 $this->addFlashMessage($msg, '', FlashMessage::ERROR,$this->objectManager->get(FlashMessageService::class));
                 return false;
@@ -100,33 +94,10 @@ class TwitterUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUtility
     }
 
     public function renewToken(\Socialstream\SocialStream\Domain\Model\Channel $channel){
-        /*$expdiff = ($channel->getExpires() - time())/86400;
-        if($expdiff <= 5){
-            $url = "https://graph.facebook.com/oauth/access_token?grant_type=fb_exchange_token&client_id=" . $this->settings["fbappid"] . "&client_secret=" . $this->settings["fbappsecret"] . "&fb_exchange_token=aaa" . $channel->getToken();
-            if($this->get_http_response_code($url) == 200) {
-                $token = file_get_contents($url);
-                $infos = explode("&", $token);
-                $tk = explode("=", $infos[0])[1];
-                $exp = time() + explode("=", $infos[1])[1];
-                $channel->setToken($tk);
-                $channel->setExpires($exp);
-            }else{
-                if($this->settings["sysmail"]) {
-                    $this->sendTokenInfoMail($channel,$this->settings["sysmail"],$this->settings["sendermail"]);
-                }
-            }
-        }*/
         return $channel;
     }
 
     public function getFeed(\Socialstream\SocialStream\Domain\Model\Channel $channel,$limit=100){
-        $this->persistenceManager = GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Persistence\\Generic\\PersistenceManager');
-        $this->newsRepository = GeneralUtility::makeInstance('Socialstream\\SocialStream\\Domain\\Repository\\NewsRepository');
-        $this->categoryRepository = GeneralUtility::makeInstance('GeorgRinger\\News\\Domain\\Repository\\CategoryRepository');
-
-        //$url = "https://api.instagram.com/v1/users/".$channel->getObjectId()."/media/recent/?access_token=".$channel->getToken()."&count=".$limit;
-        //$elem = $this->getElems($url);
-
         if($channel->getPosttype() == "1"){
             $url = "https://api.twitter.com/1.1/statuses/user_timeline.json?user_id=" . $channel->getObjectId() . "&count=" . $limit . "&exclude_replies=true";
         }else{
@@ -208,6 +179,8 @@ class TwitterUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUtility
                     $news->setBodytext($entry["text"]);
                     $news->setDescription($entry["text"]);
                 }
+
+                $news->setPid($this->getStoragePid());
 
                 if ($new) {
                     $this->newsRepository->add($news);

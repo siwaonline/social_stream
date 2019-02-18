@@ -37,6 +37,7 @@ class TokenUtility extends \Socialstream\SocialStream\Utility\BaseUtility
      */
     public function __construct($pid)
     {
+        parent::__construct();
         $this->initTSFE($pid,0);
         $this->initSettings();
     }

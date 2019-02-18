@@ -1,5 +1,4 @@
 <?php
-use Socialstream\SocialStream\Controller;
 
 /**
  * Definitions for routes provided by EXT:backend

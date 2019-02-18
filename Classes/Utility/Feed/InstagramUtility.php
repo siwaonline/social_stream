@@ -28,11 +28,8 @@ namespace Socialstream\SocialStream\Utility\Feed;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use \TYPO3\CMS\Extbase\Utility\LocalizationUtility;
-use \TYPO3\CMS\Core\Messaging\AbstractMessage;
-use \TYPO3\CMS\Core\Messaging\FlashMessageService;
-use \TYPO3\CMS\Core\Messaging\FlashMessage;
-use \TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Messaging\FlashMessage;
+use TYPO3\CMS\Core\Messaging\FlashMessageService;
 
 /**
  * InstagramUtility
@@ -55,11 +52,9 @@ class InstagramUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUtili
             $channel->setObjectId($elem->data->id);
             $channel->setTitle($elem->data->username);
             if ($elem->data->bio) $channel->setAbout($elem->data->bio);
-            //if($elem->description)$channel->setDescription($elem->description);
             $channel->setLink("https://www.instagram.com/" . $elem->data->username . "/");
 
             if ($isProcessing == 0) {
-                //$picStream = json_decode(file_get_contents("https://graph.facebook.com/" . $channel->getObjectId() . "/picture?redirect=0&width=900&access_token=" . $channel->getToken()));
                 $imageUrl = $elem->data->profile_picture;
                 if ($this->exists($imageUrl)) {
                     $this->processChannelMedia($channel, $imageUrl);
@@ -72,7 +67,6 @@ class InstagramUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUtili
                 }
             } else {
                 $msg = "Fehler: Channel konnte nicht gecrawlt werden. Object Id oder Token falsch.";
-                //$this->addFlashMessage($msg, '', AbstractMessage::ERROR);
                 $this->objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
                 $this->addFlashMessage($msg, '', FlashMessage::ERROR, $this->objectManager->get(FlashMessageService::class));
                 return false;
@@ -88,22 +82,6 @@ class InstagramUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUtili
      */
     public function renewToken(\Socialstream\SocialStream\Domain\Model\Channel $channel)
     {
-        /*$expdiff = ($channel->getExpires() - time())/86400;
-        if($expdiff <= 5){
-            $url = "https://graph.facebook.com/oauth/access_token?grant_type=fb_exchange_token&client_id=" . $this->settings["fbappid"] . "&client_secret=" . $this->settings["fbappsecret"] . "&fb_exchange_token=aaa" . $channel->getToken();
-            if($this->get_http_response_code($url) == 200) {
-                $token = file_get_contents($url);
-                $infos = explode("&", $token);
-                $tk = explode("=", $infos[0])[1];
-                $exp = time() + explode("=", $infos[1])[1];
-                $channel->setToken($tk);
-                $channel->setExpires($exp);
-            }else{
-                if($this->settings["sysmail"]) {
-                    $this->sendTokenInfoMail($channel,$this->settings["sysmail"],$this->settings["sendermail"]);
-                }
-            }
-        }*/
         return $channel;
     }
 
@@ -115,10 +93,6 @@ class InstagramUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUtili
      */
     public function getFeed(\Socialstream\SocialStream\Domain\Model\Channel $channel, $limit = 100)
     {
-        $this->persistenceManager = GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Persistence\\Generic\\PersistenceManager');
-        $this->newsRepository = GeneralUtility::makeInstance('Socialstream\\SocialStream\\Domain\\Repository\\NewsRepository');
-        $this->categoryRepository = GeneralUtility::makeInstance('GeorgRinger\\News\\Domain\\Repository\\CategoryRepository');
-
         $url = "https://api.instagram.com/v1/users/" . $channel->getObjectId() . "/media/recent/?access_token=" . $channel->getToken() . "&count=" . $limit;
         $elem = $this->getElems($url);
 
@@ -173,6 +147,8 @@ class InstagramUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUtili
                 $news->setBodytext($entry->caption->text);
                 $news->setDescription($entry->caption->text);
             }
+
+            $news->setPid($this->getStoragePid());
 
             if ($new) {
                 $this->newsRepository->add($news);
