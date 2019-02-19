@@ -53,9 +53,21 @@ Go to the List View ov you storage Folder and create a new Social Stream Channel
 
 Select your Type, enter your Object ID and save.
 
+If you want to access a person - not a page - enter ``me``.
+
 After you saved, you have to get your Access Token - click on the button.
 
 The PopUp redirects you to your Social Media Page - you have to log in and accept the plugin.
+
+Use the eID Controller for external persons
+-----------------------------------------------------------------------------
+
+
+Just call ``/?eID=generate_token&channel=5`` (replace 5 with the ID of the channel) or send the link to the owner of the Facebook Page.
+
+Only works for Facebook yet.
+
+
 
 Get the name or id of your facebook page
 -----------------------------------------------------------------------------
@@ -105,4 +117,3 @@ The templating is now up to you.
 
 You can use the standard news template or design your own one.
 
------------------------------------------------------------------------------

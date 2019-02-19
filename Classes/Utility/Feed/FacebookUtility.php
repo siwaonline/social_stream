@@ -47,7 +47,7 @@ class FacebookUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUtilit
             $channel->setTitle($elem->name);
             if ($elem->about) $channel->setAbout($elem->about);
             //if($elem->description)$channel->setDescription($elem->description);
-            $channel->setLink($elem->link);
+            if ($elem->link) $channel->setLink($elem->link);
 
             if ($isProcessing == 0) {
                 $picStream = json_decode(file_get_contents("https://graph.facebook.com/" . $channel->getObjectId() . "/picture?redirect=0&width=900&access_token=" . $channel->getToken()));

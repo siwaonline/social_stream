@@ -7,6 +7,9 @@ use TYPO3\CMS\Core\TypoScript\TypoScriptService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 use TYPO3\CMS\Frontend\Utility\EidUtility;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
 class EidController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
 {
@@ -25,7 +28,6 @@ class EidController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
 
         $feUserObj = EidUtility::initFeUser();
         $pageId = GeneralUtility::_GET('id') ?: 1;
-        /** @var TypoScriptFrontendController $typoScriptFrontendController */
         $typoScriptFrontendController = GeneralUtility::makeInstance(
             'TYPO3\\CMS\\Frontend\\Controller\\TypoScriptFrontendController',
             $GLOBALS['TYPO3_CONF_VARS'],
@@ -41,15 +43,21 @@ class EidController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
         $typoScriptFrontendController->initTemplate();
         $typoScriptFrontendController->getConfigArray();
         //EidUtility::initTCA();
-        /** @var TypoScriptService $typoScriptService */
         $typoScriptService = GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Service\\TypoScriptService');
         $pluginConfiguration = $typoScriptService->convertTypoScriptArrayToPlainArray($typoScriptFrontendController->tmpl->setup['module.']['tx_socialstream.']);
-        // Set configuration to call the plugin
-        $this->settings = $pluginConfiguration['settings'];
 
+        $this->settings = $pluginConfiguration['settings'];
     }
 
-    public function generateTokenAction()
+    /**
+     * get titles from database
+     *
+     * @param ServerRequestInterface $request
+     * @param ResponseInterface $response
+     *
+     * @return ResponseInterface
+     */
+    public function generateTokenAction(ServerRequestInterface $request, ResponseInterface $response)
     {
         if ($channelID = GeneralUtility::_GET('channel')) {
             $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tx_socialstream_domain_model_channel');
@@ -78,7 +86,7 @@ class EidController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
                                 $statement = $statement->set('expires', time() + $expires_in);
                             }
                             if ($statement->execute()) {
-                                echo '<p>Zugriff erfolgreich erlaubt. Sie können dieses Fenster nun schließen</p>';
+                                echo '<p>'.LocalizationUtility::translate('eid.success', 'social_stream').'</p>';
                             }
                         } else {
                             $http = isset($_SERVER['HTTPS']) ? "https" : "http";
@@ -121,14 +129,15 @@ class EidController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
 </script>";
                         }
                     }else{
-                        echo '<p>Der Zugriff wurde bereits erlaubt. Sie können dieses Fenster nun schließen.</p>';
+                        echo '<p>'.LocalizationUtility::translate('eid.already', 'social_stream').'</p>';
                     }
                 }else{
-                    echo '<p>Die angeforderte Facebook Seite wurde nicht gefunden.</p>';
+                    echo '<p>'.LocalizationUtility::translate('eid.notfound', 'social_stream').'</p>';
                 }
             }else{
-                echo '<p>Die angeforderte Facebook Seite wurde nicht gefunden.</p>';
+                echo '<p>'.LocalizationUtility::translate('eid.notfound', 'social_stream').'</p>';
             }
         }
+        return $response;
     }
 }

@@ -110,6 +110,15 @@
 				<source>Please log into the TYPO3 Backend and refresh the token.</source>
 			</trans-unit>
 
+			<trans-unit id="eid.success">
+				<source>Access successfully granted. Please close this window.</source>
+			</trans-unit>
+			<trans-unit id="eid.already">
+				<source>Access already granted. Please close this window.</source>
+			</trans-unit>
+			<trans-unit id="eid.notfound">
+				<source>The requested page was not found.</source>
+			</trans-unit>
 		</body>
 	</file>
 </xliff>
