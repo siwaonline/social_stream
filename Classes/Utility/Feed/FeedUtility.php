@@ -445,14 +445,13 @@ class FeedUtility extends \Socialstream\SocialStream\Utility\BaseUtility
 
     protected function getSlug($uid,$string){
         $slugHelper = GeneralUtility::makeInstance(SlugHelper::class, 'tx_news_domain_model_news', 'path_segment', $GLOBALS['TCA']['tx_news_domain_model_news']['columns']['path_segment']['config']);
-        $slug = $slugHelper->generate(["title" => $string], $this->settings["storagePid"]);
+        $slug = $slugHelper->generate(["title" => $string], $this->getStoragePid());
 
         $state = RecordStateFactory::forName('tx_news_domain_model_news')
-            ->fromArray(["title" => $string], $this->settings["storagePid"], $uid ? $uid : 0);
+            ->fromArray(["title" => $string], $this->getStoragePid(), $uid ? $uid : 0);
         if (!$slugHelper->isUniqueInSite($slug, $state)) {
             $slug = $slugHelper->buildSlugForUniqueInSite($slug, $state);
         }
-
         return $slug;
     }
 }
