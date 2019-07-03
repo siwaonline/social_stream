@@ -1,0 +1,14 @@
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers" data-namespace-typo3-fluid="true">
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+<div class="container d-flex align-items-center justify-content-center h-100">
+    <a class="btn btn-lg btn-success" href="https://api.instagram.com/oauth/authorize/?client_id=<f:format.raw>{instaappid}</f:format.raw>&scope=public_content&response_type=token&&redirect_uri=<f:format.urlencode>{url}</f:format.urlencode>">Instagram
+        Zugriff erlauben</a>
+</div>
+<script>
+    var hashArray = window.location.hash.split('#');
+    if (hashArray.length > 1 && hashArray[1].includes('access_token')) {
+        var newUrl = window.location.origin + window.location.search + '&' + hashArray[1];
+        window.location.href = newUrl;
+    }
+</script>
+</html>

@@ -3,13 +3,12 @@
 namespace Socialstream\SocialStream\Controller;
 
 use TYPO3\CMS\Core\Database\ConnectionPool;
-use TYPO3\CMS\Core\TypoScript\TypoScriptService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
+use TYPO3\CMS\Extbase\Configuration\ConfigurationManager;
+use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Frontend\Utility\EidUtility;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
 class EidController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
 {
@@ -19,12 +18,25 @@ class EidController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
     protected $settings;
 
     /**
+     * @var ObjectManager
+     */
+    protected $objectManager;
+
+    /**
+     * @var ConfigurationManager
+     */
+    protected $configurationManager;
+
+    /**
      * Initialize frontend environment
      * @throws \TYPO3\CMS\Core\Error\Http\ServiceUnavailableException
      */
     public function __construct()
     {
         parent::__construct();
+
+        $this->objectManager = GeneralUtility::makeInstance(ObjectManager::class);
+        $this->configurationManager = $this->objectManager->get(ConfigurationManager::class);
 
         $feUserObj = EidUtility::initFeUser();
         $pageId = GeneralUtility::_GET('id') ?: 1;
@@ -36,13 +48,11 @@ class EidController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
             true
         );
         $GLOBALS['TSFE'] = $typoScriptFrontendController;
-        //$typoScriptFrontendController->connectToDB();
         $typoScriptFrontendController->fe_user = $feUserObj;
         $typoScriptFrontendController->id = $pageId;
         $typoScriptFrontendController->determineId();
         $typoScriptFrontendController->initTemplate();
         $typoScriptFrontendController->getConfigArray();
-        //EidUtility::initTCA();
         $typoScriptService = GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Service\\TypoScriptService');
         $pluginConfiguration = $typoScriptService->convertTypoScriptArrayToPlainArray($typoScriptFrontendController->tmpl->setup['module.']['tx_socialstream.']);
 
@@ -59,10 +69,15 @@ class EidController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
      */
     public function generateTokenAction(ServerRequestInterface $request, ResponseInterface $response)
     {
+        /** @var \TYPO3\CMS\Fluid\View\StandaloneView $emailView */
+        $authorizationView = $this->objectManager->get('TYPO3\\CMS\\Fluid\\View\\StandaloneView');
+
+        $authorizationView->setFormat('html');
+
         if ($channelID = GeneralUtility::_GET('channel')) {
             $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tx_socialstream_domain_model_channel');
             $statement = $queryBuilder
-                ->select('uid', 'token')
+                ->select('uid', 'token', 'type')
                 ->from('tx_socialstream_domain_model_channel')
                 ->where(
                     $queryBuilder->expr()->eq('uid', $queryBuilder->createNamedParameter($channelID, \PDO::PARAM_INT))
@@ -86,56 +101,48 @@ class EidController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
                                 $statement = $statement->set('expires', time() + $expires_in);
                             }
                             if ($statement->execute()) {
-                                echo '<p>'.LocalizationUtility::translate('eid.success', 'social_stream').'</p>';
+                                $templatePathAndFilename = 'EXT:social_stream/Resources/Private/Templates/Eid/Success.html';
+                                $authorizationView->setTemplatePathAndFilename($templatePathAndFilename);
+                                echo $authorizationView->render();
                             }
                         } else {
                             $http = isset($_SERVER['HTTPS']) ? "https" : "http";
                             $host = $_SERVER["HTTP_HOST"];
                             $url = $http . "://" . $host . $_SERVER["REQUEST_URI"];
-
-                            echo "<p><a href=\"#\" onClick=\"logInWithFacebook(); return false;\">Facebookzugriff erlauben</a></p>
-
-<script>
-  logInWithFacebook = function() {
-    FB.login(function(response) {
-      if (response.authResponse) {
-        console.log(response.authResponse);
-        if(response.authResponse.accessToken){
-            window.location.replace('" . $url . "&access_token=' + response.authResponse.accessToken + '&expires_in=' + response.authResponse.expiresIn);
-        }
-        // Now you can redirect the user or do an AJAX request to
-        // a PHP script that grabs the signed request from the cookie.
-      } else {
-        alert('User cancelled login or did not fully authorize.');
-      }
-    });
-    return false;
-  };
-  window.fbAsyncInit = function() {
-    FB.init({
-      appId: '" . $this->settings["fbappid"] . "',
-      cookie: true, // This is important, it's not enabled by default
-      version: 'v2.2'
-    });
-  };
-
-  (function(d, s, id){
-    var js, fjs = d.getElementsByTagName(s)[0];
-    if (d.getElementById(id)) {return;}
-    js = d.createElement(s); js.id = id;
-    js.src = \"https://connect.facebook.net/en_US/sdk.js\";
-    fjs.parentNode.insertBefore(js, fjs);
-  }(document, 'script', 'facebook-jssdk'));
-</script>";
+                            switch ($result['type']) {
+                                case 'instagram':
+                                    $templatePathAndFilename = 'EXT:social_stream/Resources/Private/Templates/Eid/Instagram.html';
+                                    $authorizationView->setTemplatePathAndFilename($templatePathAndFilename);
+                                    $authorizationView->assignMultiple(['instaappid' => $this->settings["instaappid"], 'url' => $url]);
+                                    echo $authorizationView->render();
+                                    break;
+                                case 'facebook':
+                                    $templatePathAndFilename = 'EXT:social_stream/Resources/Private/Templates/Eid/Facebook.html';
+                                    $authorizationView->setTemplatePathAndFilename($templatePathAndFilename);
+                                    $authorizationView->assignMultiple(['fbappid' => $this->settings["fbappid"], 'url' => $url]);
+                                    echo $authorizationView->render();
+                                    break;
+                                default:
+                                    $templatePathAndFilename = 'EXT:social_stream/Resources/Private/Templates/Eid/TokenNotFound.html';
+                                    $authorizationView->setTemplatePathAndFilename($templatePathAndFilename);
+                                    echo $authorizationView->render();
+                                    break;
+                            }
                         }
-                    }else{
-                        echo '<p>'.LocalizationUtility::translate('eid.already', 'social_stream').'</p>';
+                    } else {
+                        $templatePathAndFilename = 'EXT:social_stream/Resources/Private/Templates/Eid/AlreadyGranted.html';
+                        $authorizationView->setTemplatePathAndFilename($templatePathAndFilename);
+                        echo $authorizationView->render();
                     }
-                }else{
-                    echo '<p>'.LocalizationUtility::translate('eid.notfound', 'social_stream').'</p>';
+                } else {
+                    $templatePathAndFilename = 'EXT:social_stream/Resources/Private/Templates/Eid/TokenNotFound.html';
+                    $authorizationView->setTemplatePathAndFilename($templatePathAndFilename);
+                    echo $authorizationView->render();
                 }
-            }else{
-                echo '<p>'.LocalizationUtility::translate('eid.notfound', 'social_stream').'</p>';
+            } else {
+                $templatePathAndFilename = 'EXT:social_stream/Resources/Private/Templates/Eid/TokenNotFound.html';
+                $authorizationView->setTemplatePathAndFilename($templatePathAndFilename);
+                echo $authorizationView->render();
             }
         }
         return $response;
