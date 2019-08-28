@@ -26,81 +26,65 @@ namespace Socialstream\SocialStream\Controller;
      *  This copyright notice MUST APPEAR in all copies of the script!
      ***************************************************************/
 
-use Socialstream\SocialStream\Utility\Feed\FeedUtility;    
-
-/**
- * GetFeedCommandController
- */
-class GetFeedCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\CommandController
-{
+    use Socialstream\SocialStream\Domain\Model\Channel;
+    use Socialstream\SocialStream\Utility\BaseUtility;
+    use Socialstream\SocialStream\Utility\Feed\FeedUtility;
+    use TYPO3\CMS\Core\Utility\GeneralUtility;
 
     /**
-     * @var \TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager
-     * @inject
+     * GetFeedCommandController
      */
-    protected $persistenceManager;
-
-
-    /**
-     * @var \TYPO3\CMS\Extbase\Configuration\ConfigurationManager
-     * @inject
-     */
-    protected $configurationManager;
-
-    /**
-     * The settings.
-     * @var array
-     */
-    protected $settings = array();
-
-    /**
-     * channelRepository
-     *
-     * @var \Socialstream\SocialStream\Domain\Repository\ChannelRepository
-     * @inject
-     */
-    protected $channelRepository = NULL;
-
-    /**
-     * newsRepository
-     *
-     * @var \Socialstream\SocialStream\Domain\Repository\NewsRepository
-     * @inject
-     */
-    protected $newsRepository = NULL;
-
-    /**
-     * categoryRepository
-     *
-     * @var \GeorgRinger\News\Domain\Repository\CategoryRepository
-     * @inject
-     */
-    protected $categoryRepository = NULL;
-
-
-    /**
-     * @param int $rootPage
-     * @throws \TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException
-     * @throws \TYPO3\CMS\Extbase\Persistence\Exception\UnknownObjectException
-     */
-    public function getFeedCommand($rootPage = 1)
+    class GetFeedCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\CommandController
     {
-        FeedUtility::initTSFE($rootPage);
-        $this->channelRepository = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Socialstream\\SocialStream\\Domain\\Repository\\ChannelRepository');
-        $this->newsRepository = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Socialstream\\SocialStream\\Domain\\Repository\\NewsRepository');
-        $this->categoryRepository = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('GeorgRinger\\News\\Domain\\Repository\\CategoryRepository');
-        $querySettings = $this->objectManager->get('TYPO3\CMS\Extbase\Persistence\Generic\Typo3QuerySettings');
-        $querySettings->setRespectStoragePage(FALSE);
-        $this->channelRepository->setDefaultQuerySettings($querySettings);
-        $this->newsRepository->setDefaultQuerySettings($querySettings);
-        
-        $channels = $this->channelRepository->findAll();
-        foreach ($channels as $channel){
-            $utility = FeedUtility::getUtility($channel->getType(),$rootPage);
-            $channel = $utility->renewToken($channel);
-            $ch = $utility->getChannel($channel);
-            $this->channelRepository->update($ch);
-            $utility->getFeed($channel,$utility->settings["limitPosts"]);
+        /**
+         * channelRepository
+         *
+         * @var \Socialstream\SocialStream\Domain\Repository\ChannelRepository
+         * @inject
+         */
+        protected $channelRepository = NULL;
+        /**
+         * @var \TYPO3\CMS\Core\Cache\CacheManager
+         */
+        protected $cacheManager = null;
+        /**
+         * @param int $rootPage
+         * @param int $storagePid
+         */
+        public function getFeedCommand($rootPage = 1, $storagePid = 0)
+        {
+            FeedUtility::initTSFE($rootPage);
+            $this->channelRepository = GeneralUtility::makeInstance('Socialstream\\SocialStream\\Domain\\Repository\\ChannelRepository');
+            $this->cacheManager = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Cache\\CacheManager');
+            $querySettings = $this->channelRepository->createQuery()->getQuerySettings();
+            if (!empty($storagePid)) {
+                $querySettings->setStoragePageIds(explode(",", $storagePid));
+            } else {
+                $querySettings->setRespectStoragePage(FALSE);
+            }
+            $this->channelRepository->setDefaultQuerySettings($querySettings);
+            $channels = $this->channelRepository->findAll();
+            BaseUtility::log(__CLASS__, "info", "Found channels to crawl: " . $channels->count());
+            /** @var Channel $channel */
+            foreach ($channels as $channel) {
+                BaseUtility::log(__CLASS__, 'info', "Started crawling channel " . ucfirst($channel->getType()) . " - " . ($channel->getTitle() ? $channel->getTitle() : $channel->getObjectId()));
+                try {
+                    $utility = FeedUtility::getUtility($channel->getType(), $rootPage);
+                    if (!empty($storagePid)) {
+                        $utility->setStoragePid($storagePid);
+                    } else {
+                        $utility->setStoragePid($channel->getPid());
+                    }
+                    $channel = $utility->renewToken($channel);
+                    $ch = $utility->getChannel($channel);
+                    $this->channelRepository->update($ch);
+                    $utility->getFeed($channel, $utility->settings["limitPosts"]);
+                    BaseUtility::log(__CLASS__, 'info', "Finished crawling " . ucfirst($channel->getType()) . " - " . ($channel->getTitle() ? $channel->getTitle() : $channel->getObjectId()) . " successfully.");
+                } catch (\Exception $e) {
+                    BaseUtility::log(__CLASS__, 'error', $e->getMessage());
+                    BaseUtility::log(__CLASS__, 'info', "Finished crawling " . ucfirst($channel->getType()) . " - " . ($channel->getTitle() ? $channel->getTitle() : $channel->getObjectId()) . " with an error.");
+                }
+            }
+            $this->cacheManager->flushCachesByTag('tx_news');
         }
     }
-}

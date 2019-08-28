@@ -3,12 +3,9 @@
 namespace Socialstream\SocialStream\Utility;
 
 
-use GeorgRinger\News\Domain\Repository\CategoryRepository;
 use Socialstream\SocialStream\Domain\Model\Channel;
-use Socialstream\SocialStream\Domain\Repository\NewsRepository;
-use TYPO3\CMS\Extbase\Configuration\ConfigurationManager;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
-use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 
 /***************************************************************
  *
@@ -40,14 +37,69 @@ use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
  */
 class BaseUtility
 {
-    /** @var PersistenceManager $persistenceManager */
+    /**
+     * @var ObjectManager
+     */
+    protected $objectManager;
+
+    /**
+     * @var \TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager
+     * @inject
+     */
     protected $persistenceManager;
 
-    /** @var NewsRepository $newsRepository */
-    protected $newsRepository;
+    /**
+     * newsRepository
+     *
+     * @var \Socialstream\SocialStream\Domain\Repository\NewsRepository
+     * @inject
+     */
+    protected $newsRepository = NULL;
 
-    /** @var CategoryRepository $categoryRepository */
-    protected $categoryRepository;
+    /**
+     * categoryRepository
+     *
+     * @var \GeorgRinger\News\Domain\Repository\CategoryRepository
+     * @inject
+     */
+    protected $categoryRepository = NULL;
+
+    /**
+     * @var int
+     */
+    protected $storagePid = 0;
+
+    public function __construct()
+    {
+        $this->objectManager = GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
+        $this->persistenceManager = GeneralUtility::makeInstance("TYPO3\\CMS\\Extbase\\Persistence\\Generic\\PersistenceManager");
+        $this->newsRepository = $this->objectManager->get("Socialstream\\SocialStream\\Domain\\Repository\\NewsRepository");
+        $this->categoryRepository = $this->objectManager->get("GeorgRinger\\News\\Domain\\Repository\\CategoryRepository");
+
+        $querySettings = $this->newsRepository->createQuery()->getQuerySettings();
+        $querySettings->setRespectStoragePage(FALSE);
+        $this->newsRepository->setDefaultQuerySettings($querySettings);
+
+        $querySettings = $this->categoryRepository->createQuery()->getQuerySettings();
+        $querySettings->setRespectStoragePage(FALSE);
+        $this->categoryRepository->setDefaultQuerySettings($querySettings);
+    }
+
+    /**
+     * @return int
+     */
+    public function getStoragePid()
+    {
+        return $this->storagePid;
+    }
+
+    /**
+     * @param int $storagePid
+     */
+    public function setStoragePid($storagePid)
+    {
+        $this->storagePid = $storagePid;
+    }
 
     /**
      * @param int $id
@@ -57,7 +109,7 @@ class BaseUtility
     {
         \TYPO3\CMS\Frontend\Utility\EidUtility::initTCA();
         if (!is_object($GLOBALS['TT'])) {
-            $GLOBALS['TT'] = new \TYPO3\CMS\Core\TimeTracker\NullTimeTracker;
+            $GLOBALS['TT'] = new \TYPO3\CMS\Core\TimeTracker\TimeTracker();
             $GLOBALS['TT']->start();
         }
         $GLOBALS['TSFE'] = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\Controller\\TypoScriptFrontendController',
@@ -70,14 +122,6 @@ class BaseUtility
         $GLOBALS['TSFE']->initTemplate();
         $GLOBALS['TSFE']->rootLine = $GLOBALS['TSFE']->sys_page->getRootLine($id, '');
         $GLOBALS['TSFE']->getConfigArray();
-
-        if (\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::isLoaded('realurl')) {
-            $rootline = \TYPO3\CMS\Backend\Utility\BackendUtility::BEgetRootLine($id);
-            $host = \TYPO3\CMS\Backend\Utility\BackendUtility::firstDomainRecord($rootline);
-            if (!is_null($host)) {
-                $_SERVER['HTTP_HOST'] = $host;
-            }
-        }
     }
 
     /**
@@ -234,5 +278,18 @@ class BaseUtility
         }
 
         return array('link' => $link, 'media_url' => $mediaUrl);
+    }
+
+    /**
+     * @param string $class
+     * @param string $method
+     * @param string $message
+     */
+    public static function log($class = __CLASS__, $method = 'debug', $message = "Empty Logmessage")
+    {
+        $logger = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Log\LogManager::class)->getLogger($class);
+        if (method_exists($logger, $method)) {
+            $logger->{$method}($message);
+        }
     }
 }

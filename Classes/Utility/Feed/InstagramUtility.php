@@ -51,9 +51,14 @@ class InstagramUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUtili
         if ($this->get_http_response_code($url) == 200) {
             $elem = $this->getElems($url);
 
+            if(!empty($elem->data->id)){
+                $channel->setObjectId($elem->data->id);
+            }
 
-            $channel->setObjectId($elem->data->id);
-            $channel->setTitle($elem->data->username);
+            if(!empty($elem->data->username)){
+                $channel->setTitle($elem->data->username);
+            }
+
             if ($elem->data->bio) $channel->setAbout($elem->data->bio);
             //if($elem->description)$channel->setDescription($elem->description);
             $channel->setLink("https://www.instagram.com/" . $elem->data->username . "/");
@@ -172,6 +177,8 @@ class InstagramUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUtili
                 $news->setBodytext($entry->caption->text);
                 $news->setDescription($entry->caption->text);
             }
+
+            $news->setPid($this->getStoragePid());
 
             if ($new) {
                 $this->newsRepository->add($news);

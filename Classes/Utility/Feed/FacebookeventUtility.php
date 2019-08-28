@@ -86,6 +86,9 @@ class FacebookeventUtility extends \Socialstream\SocialStream\Utility\Feed\Faceb
                 $message = str_replace("\n", "<br/>", $entry->description);
                 $news->setBodytext(str_replace("<br/><br/>", "<br/>", $message));
             }
+
+            $news->setPid($this->getStoragePid());
+
             if ($new) {
                 $this->newsRepository->add($news);
             } else {

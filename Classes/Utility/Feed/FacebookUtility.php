@@ -47,8 +47,13 @@ class FacebookUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUtilit
         if ($this->get_http_response_code($url) == 200) {
             $elem = $this->getElems($url);
 
-            $channel->setObjectId($elem->id);
-            $channel->setTitle($elem->name);
+            if(!empty($elem->id)){
+                $channel->setObjectId($elem->id);
+            }
+            if(!empty($elem->name)){
+                $channel->setTitle($elem->name);
+            }
+
             if ($elem->about) $channel->setAbout($elem->about);
             //if($elem->description)$channel->setDescription($elem->description);
             $channel->setLink($elem->link);
@@ -171,6 +176,8 @@ class FacebookUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUtilit
                 }
                 if ($entry->story) $news->setDescription($entry->story);
 
+                $news->setPid($this->getStoragePid());
+
                 if ($new) {
                     $this->newsRepository->add($news);
                 } else {
@@ -194,9 +201,7 @@ class FacebookUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUtilit
                     $imageUrl = $singlePost->full_picture;
                 }
 
-
                 $media = $this->validateMedia($channel, $imageUrl, $videoUrl);
-
 
                 if (is_array($media)) {
                     if ($media['link']) {

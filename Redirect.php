@@ -15,8 +15,8 @@ if ($params == "") {
     if(hash == ""){
         alert("Error");
     }else{
-        var uri = "' . $url . '?"+hash.substring(1);
-        uri.replace("??","?");
+        hash.replace("?", "");
+        var uri = "' . reset(explode("?", $url)) . '?"+hash.substring(1);
         window.location.replace(uri);
     }
 </script>';
