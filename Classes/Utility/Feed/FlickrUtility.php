@@ -118,7 +118,7 @@ class FlickrUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUtility
             $news->setObjectId($newsId);
             if(!$news->getPathSegment()) $news->setPathSegment($this->getSlug($news->getUid(),$news->getTitle()));
 
-            $news->setLink("https://www.flickr.com/photos/vpnoeat/albums/" . $entry->id);
+            $news->setLink("https://www.flickr.com/photos/" . $channel->getObjectId() . "/albums/" . $entry->id);
 
             if ($entry->description) {
                 $news->setBodytext($entry->description->_content);
