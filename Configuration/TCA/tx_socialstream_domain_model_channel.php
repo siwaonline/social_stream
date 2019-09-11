@@ -54,7 +54,7 @@ return array(
             'showitem' => 'type, posttype, videosync, link',
         ),
         'paletteToken' => array(
-            'showitem' => 'token,refresh_token,expires',
+            'showitem' => 'token,refresh_token,expires,eid_url',
         ),
     ),
     'columns' => array(
@@ -362,15 +362,18 @@ return array(
                 'eval' => 'int,trim'
             )
         ),
+        'eid_url' => array(
+            'exclude' => 1,
+            'label' => 'Frontend Token URL (click to copy)',
+            'config' => array(
+                'type' => 'user',
+                'renderType' => 'eidNode'
+            ),
+            'displayCond' => 'FIELD:object_id:REQ:TRUE',
+        ),
         'news' => array(
             'exclude' => 1,
             'label' => 'LLL:EXT:social_stream/Resources/Private/Language/locallang_db.xlf:tx_socialstream_domain_model_channel.news',
-            'displayCond' => array(
-                'OR' => array(
-                    'FIELD:token:REQ:TRUE',
-                    'FIELD:news:REQ:TRUE'
-                )
-            ),
             'config' => array(
                 'type' => 'inline',
                 'foreign_table' => 'tx_news_domain_model_news',

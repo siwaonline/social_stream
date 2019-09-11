@@ -12,6 +12,11 @@ $GLOBALS['TYPO3_CONF_VARS']['SYS']['formEngine']['nodeRegistry'][1548167578] = [
     'priority' => 30,
     'class' => \Socialstream\SocialStream\Nodes\TokenNode::class
 ];
+$GLOBALS['TYPO3_CONF_VARS']['SYS']['formEngine']['nodeRegistry'][time()] = [
+    'nodeName' => 'eidNode',
+    'priority' => 40,
+    'class' => \Socialstream\SocialStream\Nodes\EidNode::class,
+];
 
 $GLOBALS['TYPO3_CONF_VARS']['FE']['eID_include']['generate_token'] = \Socialstream\SocialStream\Controller\EidController::class . '::generateTokenAction';
 
