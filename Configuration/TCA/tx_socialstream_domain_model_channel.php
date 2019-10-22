@@ -54,7 +54,7 @@ return array(
             'showitem' => 'type, posttype, videosync, link',
         ),
         'paletteToken' => array(
-            'showitem' => 'token,refresh_token,expires',
+            'showitem' => 'token,refresh_token,expires,eid_url',
         ),
     ),
     'columns' => array(
@@ -332,6 +332,15 @@ return array(
                 'size' => 4,
                 'eval' => 'int'
             )
+        ),
+        'eid_url' => array(
+            'exclude' => 1,
+            'label' => 'Frontend Token URL (click to copy)',
+            'config' => array(
+                'type' => 'user',
+                'userFunc' => \Socialstream\SocialStream\Userfuncs\Tca::class . '->getEidUrl',
+            ),
+            'displayCond' => 'FIELD:object_id:REQ:TRUE',
         ),
         'news' => array(
             'exclude' => 1,
