@@ -27,5 +27,7 @@ module.tx_socialstream {
         youtubeclientid = {$module.tx_socialstream.settings.youtubeclientid}
         youtubeclientsecret = {$module.tx_socialstream.settings.youtubeclientsecret}
         youtubeapikey = {$module.tx_socialstream.settings.youtubeapikey}
+        googlephotosclientid = {$module.tx_socialstream.settings.googlephotosclientid}
+        googlephotosclientsecret = {$module.tx_socialstream.settings.googlephotosclientsecret}
     }
 }

@@ -15,8 +15,7 @@ if ($params == "") {
     if(hash == ""){
         alert("Error");
     }else{
-        var uri = "' . $url . '?"+hash.substring(1);
-        uri.replace("??","?");
+        var uri = "' . $url . '"+hash.substring(1);
         window.location.replace(uri);
     }
 </script>';
@@ -42,6 +41,7 @@ if ($params == "") {
     if (array_key_exists("expires_in", $parts)) {
         $url .= "&expires_in=" . $parts["expires_in"];
     }
+
     header('Location: ' . $url);
 }
 

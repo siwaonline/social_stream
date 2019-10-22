@@ -132,7 +132,6 @@ class BaseUtility
         $this->objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
         $this->configurationManager = $this->objectManager->get('TYPO3\\CMS\\Extbase\\Configuration\\ConfigurationManager');
         $this->settings = $this->configurationManager->getConfiguration(\TYPO3\CMS\Extbase\Configuration\ConfigurationManager::CONFIGURATION_TYPE_SETTINGS, 'Socialstream');
-
     }
 
     /**
@@ -146,7 +145,8 @@ class BaseUtility
             'instagram' => 'Instagram',
             'youtube' => 'YouTube',
             'twitter' => 'Twitter',
-            'flickr' => 'Flickr'
+            'flickr' => 'Flickr',
+            'googlephotos' => 'Google Photos'
             /*'xing' => 'Xing',
             'linkedin' => 'LinkedIn',
             'soundcloud' => 'Soundcloud',*/

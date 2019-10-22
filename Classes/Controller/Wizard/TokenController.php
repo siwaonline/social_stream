@@ -17,6 +17,7 @@ namespace Socialstream\SocialStream\Controller\Wizard;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Socialstream\SocialStream\Utility\Token\GooglephotosUtility;
 use Socialstream\SocialStream\Utility\Token\YoutubeUtility;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -98,6 +99,7 @@ class TokenController extends \TYPO3\CMS\Backend\Controller\Wizard\AbstractWizar
      * just close.
      *
      * @return string
+     * @throws \ReflectionException
      */
     public function main($request)
     {
@@ -119,7 +121,7 @@ class TokenController extends \TYPO3\CMS\Backend\Controller\Wizard\AbstractWizar
 
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('pages');
         $pageRes = $queryBuilder->select("pid")->from("pages")->where($queryBuilder->expr()->eq('uid', $this->P['pid']))->setMaxResults(1)->execute()->fetchAll();
-        foreach ($pageRes as $page){
+        foreach ($pageRes as $page) {
             $pid = $page['pid'];
         }
         if ($pid <= 0) $pid = $this->P["pid"];
@@ -155,7 +157,7 @@ class TokenController extends \TYPO3\CMS\Backend\Controller\Wizard\AbstractWizar
             $redirectUrl = $base . $redirectUrl;
         }
 
-        if ($utility instanceof YoutubeUtility) {
+        if ($utility instanceof YoutubeUtility || $utility instanceof GooglephotosUtility) {
             $utility->setRedirectUrl($redirectUrl);
         }
 
@@ -172,9 +174,9 @@ class TokenController extends \TYPO3\CMS\Backend\Controller\Wizard\AbstractWizar
             $res = $utility->getValues($tokenString);
             $tk = $res["tk"];
             $exp = $res["exp"];
-            if ($utility instanceof YoutubeUtility) {
-                $rf_tk = $res["rf_tk"];
-                $this->content .= "
+            $rf_tk = $res['rf_tk'];
+
+            $this->content .= "
 <script>
     var selectorTk = 'form[name=\"" . $this->P['formName'] . "\"] [data-formengine-input-name=\"" . $this->P['itemName'] . "\"]';
     var selectorTkHidden = 'form[name=\"" . $this->P['formName'] . "\"] [name=\"" . $this->P['itemName'] . "\"]';
@@ -185,29 +187,14 @@ class TokenController extends \TYPO3\CMS\Backend\Controller\Wizard\AbstractWizar
     if (window.opener && window.opener.document && window.opener.document.querySelector(selectorTk)){
         window.opener.document.querySelector(selectorTk).value = '" . $tk . "';
         window.opener.document.querySelector(selectorTkHidden).value = '" . $tk . "';
-        window.opener.document.querySelector(selectorRfTk).value = '" . $rf_tk . "';
-        window.opener.document.querySelector(selectorRfTkHidden).value = '" . $rf_tk . "';
-        window.opener.document.querySelector(selectorExp).value = '" . $exp . "';
-        window.opener.document.querySelector(selectorExpHidden).value = '" . $exp . "';
-        close();
-    } else {
-        alert('Got Token, but cant write to window - Youtube');
-    }
-
-</script>
-";
-            } else {
-                $this->content .= "
-<script>
-    var selectorTk = 'form[name=\"" . $this->P['formName'] . "\"] [data-formengine-input-name=\"" . $this->P['itemName'] . "\"]';
-    var selectorTkHidden = 'form[name=\"" . $this->P['formName'] . "\"] [name=\"" . $this->P['itemName'] . "\"]';
-    var selectorExp = 'form[name=\"" . $this->P['formName'] . "\"] [data-formengine-input-name=\"" . str_replace("token", "expires", $this->P['itemName']) . "\"]';
-    var selectorExpHidden = 'form[name=\"" . $this->P['formName'] . "\"] [name=\"" . str_replace("token", "expires", $this->P['itemName']) . "\"]';
-    if (window.opener && window.opener.document && window.opener.document.querySelector(selectorTk)){
-        window.opener.document.querySelector(selectorTk).value = '" . $tk . "';
-        window.opener.document.querySelector(selectorTkHidden).value = '" . $tk . "';
-        window.opener.document.querySelector(selectorExp).value = '" . $exp . "';
-        window.opener.document.querySelector(selectorExpHidden).value = '" . $exp . "';
+        if(window.opener.document.querySelector(selectorTk) && window.opener.document.querySelector(selectorRfTkHidden)){
+            window.opener.document.querySelector(selectorRfTk).value = '" . $rf_tk . "';
+            window.opener.document.querySelector(selectorRfTkHidden).value = '" . $rf_tk . "';
+        }
+        if(window.opener.document.querySelector(selectorExp) && window.opener.document.querySelector(selectorExpHidden)){
+            window.opener.document.querySelector(selectorExp).value = '" . $exp . "';
+            window.opener.document.querySelector(selectorExpHidden).value = '" . $exp . "';
+        }
         close();
     } else {
         alert('Got Token, but cant write to window');
@@ -215,10 +202,7 @@ class TokenController extends \TYPO3\CMS\Backend\Controller\Wizard\AbstractWizar
 
 </script>
 ";
-            }
         }
-
-
         // Build the <body> for the module
         $this->moduleTemplate->setContent($this->content);
     }

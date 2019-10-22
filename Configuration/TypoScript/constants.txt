@@ -48,5 +48,9 @@ module.tx_socialstream {
         youtubeclientsecret =
         # cat=social_stream_keys/keys/q; type=string; label= YouTube API Key
         youtubeapikey =
+        # cat=social_stream_keys/keys/o; type=string; label= GooglePhotos Client ID
+        googlephotosclientid =
+        # cat=social_stream_keys/keys/p; type=string; label= GooglePhotos Client Secret
+        googlephotosclientsecret =
     }
 }

@@ -68,7 +68,7 @@ class ChannelProcessDatamap
                         $channel = $utility->getChannel($channel, 1);
 
                         if ($channel) {
-                            $fieldArray['object_id'] = $channel->getObjectId();
+                            // $fieldArray['object_id'] = $channel->getObjectId();
                             $fieldArray['title'] = $channel->getTitle();
                             $fieldArray['about'] = $channel->getAbout();
                             //$fieldArray['description'] = $channel->getDescription();

@@ -346,7 +346,12 @@ return array(
         'refresh_token' => array(
             'exclude' => 1,
             'label' => 'LLL:EXT:social_stream/Resources/Private/Language/locallang_db.xlf:tx_socialstream_domain_model_channel.refresh_token',
-            'displayCond' => 'FIELD:type:=:youtube',
+            'displayCond' => [
+                'OR' => [
+                    'FIELD:type:=:youtube',
+                    'FIELD:type:=:googlephotos',
+                ],
+            ],
             'config' => array(
                 'type' => 'input',
                 'size' => 30,

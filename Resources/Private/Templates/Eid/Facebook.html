@@ -27,18 +27,16 @@
                 if (response.authResponse.accessToken) {
                     window.location.replace('<f:format.raw>{url}</f:format.raw>&access_token=' + response.authResponse.accessToken + '&expires_in=' + response.authResponse.expiresIn);
                 }
-                // Now you can redirect the user or do an AJAX request to
-                // a PHP script that grabs the signed request from the cookie.
             } else {
                 alert('User cancelled login or did not fully authorize.');
             }
-        });
+        }, {scope: 'manage_pages, user_posts'});
         return false;
     };
     window.fbAsyncInit = function () {
         FB.init({
             appId: '<f:format.raw>{fbappid}</f:format.raw>',
-            cookie: true, // This is important, it's not enabled by default
+            cookie: true,
             version: 'v2.2'
         });
     };

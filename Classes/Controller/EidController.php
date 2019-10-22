@@ -2,6 +2,7 @@
 
 namespace Socialstream\SocialStream\Controller;
 
+use Google\Auth\OAuth2;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManager;
@@ -90,6 +91,8 @@ class EidController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
             if (!empty($result)) {
                 if (array_key_exists('token', $result)) {
                     if (empty($result['token'])) {
+                        $http = isset($_SERVER['HTTPS']) ? "https" : "http";
+                        $host = $_SERVER["HTTP_HOST"];
                         if ($access_token = GeneralUtility::_GET('access_token')) {
                             $statement = $queryBuilder
                                 ->update('tx_socialstream_domain_model_channel')
@@ -105,9 +108,43 @@ class EidController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
                                 $authorizationView->setTemplatePathAndFilename($templatePathAndFilename);
                                 echo $authorizationView->render();
                             }
+                        } else if ($code = GeneralUtility::_GET('code')) {
+                            $base = $http . "://" . $host;
+
+                            $oauth2 = new OAuth2([
+                                'clientId' => $this->settings["googlephotosclientid"],
+                                'clientSecret' => $this->settings["googlephotosclientsecret"],
+                                'authorizationUri' => 'https://accounts.google.com/o/oauth2/v2/auth',
+                                'redirectUri' => $base . "/typo3conf/ext/social_stream/GooglePhotos.php",
+                                'tokenCredentialUri' => 'https://www.googleapis.com/oauth2/v4/token',
+                                'scope' => ['https://www.googleapis.com/auth/photoslibrary.readonly'],
+                                'state' => 'offline'
+                            ]);
+
+                            $oauth2->setCode($code);
+                            $authToken = $oauth2->fetchAuthToken();
+
+                            if ($authToken["access_token"]) {
+                                $statement = $queryBuilder
+                                    ->update('tx_socialstream_domain_model_channel')
+                                    ->where(
+                                        $queryBuilder->expr()->eq('uid', $queryBuilder->createNamedParameter($channelID, \PDO::PARAM_INT))
+                                    )
+                                    ->set('token', $authToken['access_token']);
+
+                                if ($expires_in = $authToken['expires_in']) {
+                                    $statement = $statement->set('expires', time() + $expires_in);
+                                }
+                                if ($refresh_token = $authToken['refresh_token']) {
+                                    $statement = $statement->set('refresh_token', $refresh_token);
+                                }
+                                if ($statement->execute()) {
+                                    $templatePathAndFilename = 'EXT:social_stream/Resources/Private/Templates/Eid/Success.html';
+                                    $authorizationView->setTemplatePathAndFilename($templatePathAndFilename);
+                                    echo $authorizationView->render();
+                                }
+                            }
                         } else {
-                            $http = isset($_SERVER['HTTPS']) ? "https" : "http";
-                            $host = $_SERVER["HTTP_HOST"];
                             $url = $http . "://" . $host . $_SERVER["REQUEST_URI"];
                             switch ($result['type']) {
                                 case 'instagram':
@@ -120,6 +157,12 @@ class EidController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
                                     $templatePathAndFilename = 'EXT:social_stream/Resources/Private/Templates/Eid/Facebook.html';
                                     $authorizationView->setTemplatePathAndFilename($templatePathAndFilename);
                                     $authorizationView->assignMultiple(['fbappid' => $this->settings["fbappid"], 'url' => $url]);
+                                    echo $authorizationView->render();
+                                    break;
+                                case 'googlephotos':
+                                    $templatePathAndFilename = 'EXT:social_stream/Resources/Private/Templates/Eid/Googlephotos.html';
+                                    $authorizationView->setTemplatePathAndFilename($templatePathAndFilename);
+                                    $authorizationView->assignMultiple(['googlephotosclientid' => $this->settings["googlephotosclientid"], 'scope' => urlencode("https://www.googleapis.com/auth/photoslibrary.readonly"), 'state' => $channelID, 'url' => $url]);
                                     echo $authorizationView->render();
                                     break;
                                 default:
