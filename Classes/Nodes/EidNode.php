@@ -16,6 +16,8 @@ namespace Socialstream\SocialStream\Nodes;
  */
 
 use TYPO3\CMS\Backend\Form\AbstractNode;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Object\ObjectManager;
 
 /**
  * Script Class for rendering the Table Wizard
@@ -24,28 +26,22 @@ class EidNode extends AbstractNode
 {
     public function render()
     {
+        $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
+
+        /** @var \TYPO3\CMS\Fluid\View\StandaloneView $tcaView */
+        $tcaView = $objectManager->get('TYPO3\\CMS\\Fluid\\View\\StandaloneView');
+        $tcaView->setFormat('html');
+
         $http = isset($_SERVER['HTTPS']) ? "https" : "http";
         $host = $_SERVER["HTTP_HOST"];
         $url = $http . "://" . $host . "/?eID=generate_token&channel=" . $this->data['databaseRow']['uid'];
-        $result['html'] = '
-<script>
-function copyEidUrl() {
-  var copyText = document.getElementById("eid-url");
-  copyText.select();
-  copyText.setSelectionRange(0, 99999);
-  document.execCommand("copy");
-  alert("Copied the text: " + copyText.value);
-}
-</script>
-<style>
-    #eid-url{
-        opacity: 0;
-    }
-    .eid-url:hover, .eid-url:focus, .eid-url:active{
-        cursor: pointer;
-    }
-</style>
-<div><span class="eid-url" onclick="copyEidUrl();" >' . $url . '</span><input type="text" value="' . $url . '" id="eid-url"/></div>';
+
+        $templatePathAndFilename = 'EXT:social_stream/Resources/Private/Backend/Templates/Channel/EidUrl.html';
+        $tcaView->setTemplatePathAndFilename($templatePathAndFilename);
+        $tcaView->assign('url', $url);
+
+        $result['html'] = $tcaView->render();
+
         return $result;
     }
 

@@ -19,7 +19,7 @@
     "georgringer/news": ">=7.0.0",
     "google/photos-library": "1.4.0"
   },
-  "version": "3.2.0",
+  "version": "3.2.1",
   "config": {
     "vendor-dir": ".Build/vendor",
     "bin-dir": ".Build/bin"
