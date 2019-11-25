@@ -29,6 +29,7 @@ namespace Socialstream\SocialStream\Utility\Feed;
  ***************************************************************/
 
 use GeorgRinger\News\Domain\Model\Category;
+use Socialstream\SocialStream\Utility\BaseUtility;
 use TYPO3\CMS\Core\Resource\Folder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Database\ConnectionPool;
@@ -213,10 +214,12 @@ class FeedUtility extends \Socialstream\SocialStream\Utility\BaseUtility
     /**
      * @param string $url
      * @param $model
-     * @return array | bool
+     * @return array
      */
     function grabImage($url, $model)
     {
+        $grabedImage = [];
+
         $curl = curl_init();
 
         curl_setopt_array($curl, array(
@@ -224,7 +227,7 @@ class FeedUtility extends \Socialstream\SocialStream\Utility\BaseUtility
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_ENCODING => "",
             CURLOPT_MAXREDIRS => 10,
-            CURLOPT_TIMEOUT => 300,
+            CURLOPT_TIMEOUT => 30,
             CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
             CURLOPT_CUSTOMREQUEST => "GET",
             CURLOPT_HTTPHEADER => array(
@@ -236,16 +239,16 @@ class FeedUtility extends \Socialstream\SocialStream\Utility\BaseUtility
         $err = curl_error($curl);
 
         if ($err) {
-            echo "cURL Error #:" . $err;
+            BaseUtility::log(__CLASS__, "error", "Entry " . $model->getObjectId() . " got CURL Error: " . $err);
         } else {
             $imageName = $model->getObjectId() . "." . $this->getExtensionFromMimeType(curl_getinfo($curl, CURLINFO_CONTENT_TYPE));
-            return array(
+            $grabedImage = array(
                 'imageName' => $imageName,
                 'image' => $response
             );
         }
         curl_close($curl);
-        return false;
+        return $grabedImage;
     }
 
     /**
@@ -334,6 +337,17 @@ class FeedUtility extends \Socialstream\SocialStream\Utility\BaseUtility
                 $tce->start($data, array());
                 $tce->admin = TRUE;
                 $tce->process_datamap();
+
+                if ($newUid = $tce->substNEWwithIDs['NEW12345']) {
+                    $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('sys_file_reference');
+                    $queryBuilder
+                        ->update('sys_file_reference')
+                        ->where(
+                            $queryBuilder->expr()->eq('uid', $newUid)
+                        )
+                        ->set('showinpreview', 1)
+                        ->execute();
+                }
                 $clear = 1;
             }
         }

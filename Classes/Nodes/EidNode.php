@@ -17,6 +17,7 @@ namespace Socialstream\SocialStream\Nodes;
 
 use TYPO3\CMS\Backend\Form\AbstractNode;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 
 /**
@@ -27,15 +28,27 @@ class EidNode extends AbstractNode
     public function render()
     {
         $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
+        $page = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\Page\\PageRepository');
+
+        $rootLine = $page->getRootLine($this->data['databaseRow']['pid']);
+
+        foreach ($rootLine as $level) {
+            if ($level['is_siteroot']) {
+                $root = $level;
+            }
+        }
+
+        if (!$root) {
+            array_pop($rootLine);
+        }
+
+        $http = isset($_SERVER['HTTPS']) ? "https" : "http";
+        $host = $_SERVER["HTTP_HOST"];
+        $url = $http . "://" . $host . "/?id=" . $root["uid"] . "&eID=generate_token&channel=" . $this->data['databaseRow']['uid'];
 
         /** @var \TYPO3\CMS\Fluid\View\StandaloneView $tcaView */
         $tcaView = $objectManager->get('TYPO3\\CMS\\Fluid\\View\\StandaloneView');
         $tcaView->setFormat('html');
-
-        $http = isset($_SERVER['HTTPS']) ? "https" : "http";
-        $host = $_SERVER["HTTP_HOST"];
-        $url = $http . "://" . $host . "/?eID=generate_token&channel=" . $this->data['databaseRow']['uid'];
-
         $templatePathAndFilename = 'EXT:social_stream/Resources/Private/Backend/Templates/Channel/EidUrl.html';
         $tcaView->setTemplatePathAndFilename($templatePathAndFilename);
         $tcaView->assign('url', $url);
