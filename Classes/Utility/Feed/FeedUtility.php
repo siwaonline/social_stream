@@ -317,6 +317,10 @@ class FeedUtility extends \Socialstream\SocialStream\Utility\BaseUtility
                 $tce->start($data, array());
                 $tce->admin = TRUE;
                 $tce->process_datamap();
+
+                if ($newUid = $tce->substNEWwithIDs['NEW12345']) {
+                    $GLOBALS["TYPO3_DB"]->exec_UPDATEquery("sys_file_reference", "uid=" . $newUid, array('showinpreview' => 1));
+                }
                 $clear = 1;
             }
         }
