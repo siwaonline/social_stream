@@ -78,11 +78,7 @@ class TwitterUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUtility
                 }
             }
         }else{
-            if ($isProcessing == 0) {
-                if($this->settings["sysmail"]) {
-                    $this->sendTokenInfoMail($channel,$this->settings["sysmail"],$this->settings["sendermail"]);
-                }
-            }else{
+            if ($isProcessing !== 0) {
                 $msg = "Fehler: Channel konnte nicht gecrawlt werden. Object Id oder Token falsch.";
                 $this->objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
                 $this->addFlashMessage($msg, '', FlashMessage::ERROR,$this->objectManager->get(FlashMessageService::class));

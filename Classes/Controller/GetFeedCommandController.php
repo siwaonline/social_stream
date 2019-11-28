@@ -30,7 +30,9 @@ namespace Socialstream\SocialStream\Controller;
 use Socialstream\SocialStream\Domain\Model\Channel;
 use Socialstream\SocialStream\Utility\BaseUtility;
 use Socialstream\SocialStream\Utility\Feed\FeedUtility;
+use TYPO3\CMS\Core\Mail\MailMessage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 
 /**
  * GetFeedCommandController
@@ -51,11 +53,26 @@ class GetFeedCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\Command
     protected $cacheManager = null;
 
     /**
+     * @var \TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface
+     * @inject
+     */
+    protected $configurationManager;
+
+    /**
+     * @var array
+     */
+    protected $settings = [];
+
+    /**
      * @param int $rootPage
      * @param int $storagePid
      */
     public function getFeedCommand($rootPage = 1, $storagePid = 0)
     {
+        $this->settings = $this->configurationManager->getConfiguration(
+            ConfigurationManagerInterface::CONFIGURATION_TYPE_SETTINGS
+        );
+
         FeedUtility::initTSFE($rootPage);
         $this->channelRepository = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Socialstream\\SocialStream\\Domain\\Repository\\ChannelRepository');
         $this->cacheManager = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Cache\\CacheManager');
@@ -88,6 +105,20 @@ class GetFeedCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\Command
                 $utility->getFeed($channel, $utility->settings["limitPosts"]);
                 BaseUtility::log(__CLASS__, 'info', "Finished crawling " . ucfirst($channel->getType()) . " - " . ($channel->getTitle() ? $channel->getTitle() : $channel->getObjectId()) . " successfully.");
             } catch (\Exception $e) {
+                if ($this->settings['sysmail'] && $this->settings['sendermail']) {
+                    /** @var \TYPO3\CMS\Fluid\View\StandaloneView $emailView */
+                    $errorEmailView = $this->objectManager->get('TYPO3\\CMS\\Fluid\\View\\StandaloneView');
+                    $errorEmailView->setFormat('html');
+                    $templatePathAndFilename = 'EXT:social_stream/Resources/Private/Templates/Email/Error.html';
+                    $errorEmailView->setTemplatePathAndFilename($templatePathAndFilename);
+                    $errorEmailView->assignMultiple(['error' => $e->getMessage(), 'channel' => $channel]);
+                    $errorEmailContent = $errorEmailView->render();
+
+                    /** @var MailMessage $email */
+                    $email = GeneralUtility::makeInstance(MailMessage::class);
+                    $email->setFrom($this->settings['sendermail'])->setTo($this->settings['sysmail'])->setSubject('Social Stream failed crawling channel: [' . $channel->getUid() . "] " . $channel->getTitle())->setBody($errorEmailContent, 'text/html')->send();
+                }
+
                 BaseUtility::log(__CLASS__, 'error', $e->getMessage());
                 BaseUtility::log(__CLASS__, 'info', "Finished crawling " . ucfirst($channel->getType()) . " - " . ($channel->getTitle() ? $channel->getTitle() : $channel->getObjectId()) . " with an error.");
             }

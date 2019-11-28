@@ -57,13 +57,8 @@ class FacebookUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUtilit
                 }
             }
         } else {
-            if ($isProcessing == 0) {
-                if ($this->settings["sysmail"]) {
-                    $this->sendTokenInfoMail($channel, $this->settings["sysmail"], $this->settings["sendermail"]);
-                }
-            } else {
+            if ($isProcessing !== 0) {
                 $msg = "Fehler: Channel konnte nicht gecrawlt werden. Object Id oder Token falsch.";
-                //$this->addFlashMessage($msg, '', AbstractMessage::ERROR);
                 $this->objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
                 $this->addFlashMessage($msg, '', FlashMessage::ERROR, $this->objectManager->get(FlashMessageService::class));
                 return false;
@@ -83,10 +78,6 @@ class FacebookUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUtilit
                 $tk = json_decode($token);
                 $channel->setToken($tk->access_token);
                 $channel->setExpires(time() + $tk->expires_in);
-            } else {
-                if ($this->settings["sysmail"]) {
-                    $this->sendTokenInfoMail($channel, $this->settings["sysmail"], $this->settings["sendermail"]);
-                }
             }
         }
         return $channel;
