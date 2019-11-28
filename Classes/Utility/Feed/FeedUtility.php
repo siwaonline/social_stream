@@ -362,9 +362,6 @@ class FeedUtility extends \Socialstream\SocialStream\Utility\BaseUtility
      */
     public function sendTokenInfoMail(\Socialstream\SocialStream\Domain\Model\Channel $channel, $sysmail, $sendermail = "")
     {
-        //$this->uriBuilder->reset();
-        //$this->uriBuilder->setCreateAbsoluteUri(1);
-        //$url = explode("?",$this->uriBuilder->buildBackendUri())[0];
         $uriBuilder = $this->objectManager->get('TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder');
         $uriBuilder->initializeObject();
         $uriBuilder->setCreateAbsoluteUri(1);

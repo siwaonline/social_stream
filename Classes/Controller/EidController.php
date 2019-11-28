@@ -3,7 +3,9 @@
 namespace Socialstream\SocialStream\Controller;
 
 use Google\Auth\OAuth2;
+use Socialstream\SocialStream\Domain\Model\Channel;
 use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Mail\MailMessage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManager;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
@@ -60,6 +62,43 @@ class EidController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
         $this->settings = $pluginConfiguration['settings'];
     }
 
+    protected function getChannelFromDatabase($channelID)
+    {
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tx_socialstream_domain_model_channel');
+
+        $statement = $queryBuilder
+            ->select('uid', 'token', 'type', 'title', 'pid')
+            ->from('tx_socialstream_domain_model_channel')
+            ->where(
+                $queryBuilder->expr()->eq('uid', $queryBuilder->createNamedParameter($channelID, \PDO::PARAM_INT))
+            )
+            ->setMaxResults(1)
+            ->execute();
+
+        $channel = $statement->fetch();
+        return $channel;
+    }
+
+    protected function sendTokenGeneratedMail($channel)
+    {
+        if ($this->settings['sysmail'] && $this->settings['sendermail']) {
+            /** @var \TYPO3\CMS\Fluid\View\StandaloneView $tokenGeneratedEmailView */
+            $tokenGeneratedEmailView = $this->objectManager->get('TYPO3\\CMS\\Fluid\\View\\StandaloneView');
+            $tokenGeneratedEmailView->setFormat('html');
+            $templatePathAndFilename = 'EXT:social_stream/Resources/Private/Templates/Email/TokenGenerated.html';
+            $tokenGeneratedEmailView->setTemplatePathAndFilename($templatePathAndFilename);
+
+            $tokenGeneratedEmailView->assignMultiple(['channel' => $channel]);
+
+            $tokenGeneratedEmailContent = $tokenGeneratedEmailView->render();
+
+            /** @var MailMessage $email */
+            $email = GeneralUtility::makeInstance(MailMessage::class);
+
+            $email->setFrom($this->settings['sendermail'])->setTo($this->settings['sysmail'])->setSubject('Social Stream Token generated')->setBody($tokenGeneratedEmailContent, 'text/html')->send();
+        }
+    }
+
     /**
      * get titles from database
      *
@@ -77,17 +116,7 @@ class EidController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
 
         if ($channelID = GeneralUtility::_GET('channel')) {
             $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tx_socialstream_domain_model_channel');
-            $statement = $queryBuilder
-                ->select('uid', 'token', 'type')
-                ->from('tx_socialstream_domain_model_channel')
-                ->where(
-                    $queryBuilder->expr()->eq('uid', $queryBuilder->createNamedParameter($channelID, \PDO::PARAM_INT))
-                )
-                ->setMaxResults(1)
-                ->execute();
-
-            $result = $statement->fetch();
-
+            $result = $this->getChannelFromDatabase($channelID);
             if (!empty($result)) {
                 if (array_key_exists('token', $result)) {
                     if (empty($result['token'])) {
@@ -107,6 +136,11 @@ class EidController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
                                 $templatePathAndFilename = 'EXT:social_stream/Resources/Private/Templates/Eid/Success.html';
                                 $authorizationView->setTemplatePathAndFilename($templatePathAndFilename);
                                 echo $authorizationView->render();
+
+                                $channel = $this->getChannelFromDatabase($channelID);
+                                if ($channel && array_key_exists('uid', $channel)) {
+                                    $this->sendTokenGeneratedMail($channel);
+                                }
                             }
                         } else if ($code = GeneralUtility::_GET('code')) {
                             $base = $http . "://" . $host;
@@ -142,6 +176,11 @@ class EidController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
                                     $templatePathAndFilename = 'EXT:social_stream/Resources/Private/Templates/Eid/Success.html';
                                     $authorizationView->setTemplatePathAndFilename($templatePathAndFilename);
                                     echo $authorizationView->render();
+
+                                    $channel = $this->getChannelFromDatabase($channelID);
+                                    if ($channel && array_key_exists('uid', $channel)) {
+                                        $this->sendTokenGeneratedMail($channel);
+                                    }
                                 }
                             }
                         } else {

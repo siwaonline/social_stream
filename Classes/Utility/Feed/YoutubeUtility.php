@@ -28,6 +28,7 @@ namespace Socialstream\SocialStream\Utility\Feed;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use mysql_xdevapi\Exception;
 use Socialstream\SocialStream\Domain\Model\Channel;
 use TYPO3\CMS\Core\Resource\OnlineMedia\Helpers\YouTubeHelper;
 use \TYPO3\CMS\Core\Messaging\FlashMessageService;
@@ -99,9 +100,7 @@ class YoutubeUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUtility
             curl_close($curl);
 
             if ($err) {
-                if ($this->settings["sysmail"]) {
-                    $this->sendTokenInfoMail($channel, $this->settings["sysmail"], $this->settings["sendermail"]);
-                }
+                throw new Exception($err);
             } else {
                 $jsonResponse = json_decode($response);
                 $channel->setToken($jsonResponse->access_token);
@@ -246,9 +245,7 @@ class YoutubeUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUtility
 
             if ($err) {
                 if ($isProcessing == 0) {
-                    if ($this->settings["sysmail"]) {
-                        $this->sendTokenInfoMail($channel, $this->settings["sysmail"], $this->settings["sendermail"]);
-                    }
+                    throw new Exception($err);
                 } else {
                     $this->addFlashMessage($err, '', FlashMessage::ERROR, $objectManager->get(FlashMessageService::class));
                 }
@@ -257,9 +254,7 @@ class YoutubeUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUtility
             }
         } else {
             if ($isProcessing == 0) {
-                if ($this->settings["sysmail"]) {
-                    $this->sendTokenInfoMail($channel, $this->settings["sysmail"], $this->settings["sendermail"]);
-                }
+                throw new Exception("No Object ID or Google API Key - Type: " . $channel->getType());
             } else {
                 $this->addFlashMessage("No Object ID or Google API Key - Type: " . $channel->getType(), '', FlashMessage::ERROR, $objectManager->get(FlashMessageService::class));
             }
