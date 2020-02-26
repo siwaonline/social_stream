@@ -146,6 +146,7 @@ class BaseUtility
             'instagram' => 'Instagram',
             'youtube' => 'YouTube',
             'twitter' => 'Twitter',
+            'nextcloud' => 'Nextcloud',
             'flickr' => 'Flickr'
             /*'xing' => 'Xing',
             'linkedin' => 'LinkedIn',

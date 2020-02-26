@@ -5,8 +5,8 @@ CREATE TABLE tx_news_domain_model_news (
 
   datetimeend int(11) DEFAULT '0' NOT NULL,
 	object_id varchar(255) DEFAULT '' NOT NULL,
-	link varchar(255) DEFAULT '' NOT NULL,
-	media_url varchar(255) DEFAULT '' NOT NULL,
+	link text,
+	media_url text,
 	place_name varchar(255) DEFAULT '' NOT NULL,
 	place_street varchar(255) DEFAULT '' NOT NULL,
 	place_zip varchar(255) DEFAULT '' NOT NULL,

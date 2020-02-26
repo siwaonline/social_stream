@@ -27,5 +27,8 @@ module.tx_socialstream {
         youtubeclientid = {$module.tx_socialstream.settings.youtubeclientid}
         youtubeclientsecret = {$module.tx_socialstream.settings.youtubeclientsecret}
         youtubeapikey = {$module.tx_socialstream.settings.youtubeapikey}
+        webdavrooturl = {$module.tx_socialstream.settings.webdavrooturl}
+        webdavuser = {$module.tx_socialstream.settings.webdavuser}
+        webdavpw = {$module.tx_socialstream.settings.webdavpw}
     }
 }
