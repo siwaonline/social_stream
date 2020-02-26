@@ -65,9 +65,9 @@ class GetFeedCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\Command
 
     /**
      * @param int $rootPage
-     * @param int $storagePid
+     * @param string $storagePid
      */
-    public function getFeedCommand($rootPage = 1, $storagePid = 0)
+    public function getFeedCommand($rootPage = 1, $storagePid = null)
     {
         $this->settings = $this->configurationManager->getConfiguration(
             ConfigurationManagerInterface::CONFIGURATION_TYPE_SETTINGS

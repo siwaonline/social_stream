@@ -167,7 +167,7 @@ class FacebookUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUtilit
                 }
                 if ($entry->story) $news->setDescription($entry->story);
 
-                $news->setPid($this->getStoragePid());
+                $news->setPid($channel->getPid());
 
                 if ($new) {
                     $this->newsRepository->add($news);

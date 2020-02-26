@@ -164,7 +164,7 @@ class YoutubeUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUtility
                                     $news->setBodytext($playlistItem->snippet->description);
                                     $news->setDescription($playlistItem->snippet->description);
 
-                                    $news->setPid($this->getStoragePid());
+                                    $news->setPid($channel->getPid());
 
                                     if ($new) {
                                         $this->newsRepository->add($news);

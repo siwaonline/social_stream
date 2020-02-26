@@ -153,7 +153,7 @@ class InstagramUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUtili
                 $news->setDescription($entry->caption->text);
             }
 
-            $news->setPid($this->getStoragePid());
+            $news->setPid($channel->getPid());
 
             if ($new) {
                 $this->newsRepository->add($news);

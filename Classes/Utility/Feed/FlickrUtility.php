@@ -134,7 +134,7 @@ class FlickrUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUtility
                 $news->setDescription($entry->description->_content);
             }
 
-            $news->setPid($this->getStoragePid());
+            $news->setPid($channel->getPid());
 
             if ($new) {
                 $this->newsRepository->add($news);

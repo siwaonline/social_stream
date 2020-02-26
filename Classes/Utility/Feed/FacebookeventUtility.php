@@ -87,7 +87,7 @@ class FacebookeventUtility extends \Socialstream\SocialStream\Utility\Feed\Faceb
                 $news->setBodytext(str_replace("<br/><br/>", "<br/>", $message));
             }
 
-            $news->setPid($this->getStoragePid());
+            $news->setPid($channel->getPid());
 
             if ($new) {
                 $this->newsRepository->add($news);

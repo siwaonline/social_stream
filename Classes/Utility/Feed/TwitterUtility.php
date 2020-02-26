@@ -189,7 +189,7 @@ class TwitterUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUtility
                     $news->setDescription($entry["text"]);
                 }
 
-                $news->setPid($this->getStoragePid());
+                $news->setPid($channel->getPid());
 
                 if ($new) {
                     $this->newsRepository->add($news);
