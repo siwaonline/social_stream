@@ -69,9 +69,15 @@ class GetFeedCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\Command
      */
     public function getFeedCommand($rootPage = 1, $storagePid = null)
     {
+        $this->objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
+        $this->configurationManager = $this->objectManager->get(\Socialstream\SocialStream\Configuration\ConfigurationManager::class);
+        $this->configurationManager->getConcreteConfigurationManager()->setCurrentPageId($rootPage);
+        $this->settings = $this->configurationManager->getConfiguration(\TYPO3\CMS\Extbase\Configuration\ConfigurationManager::CONFIGURATION_TYPE_SETTINGS, 'Socialstream');
+        /*
         $this->settings = $this->configurationManager->getConfiguration(
             ConfigurationManagerInterface::CONFIGURATION_TYPE_SETTINGS
         );
+        */
 
         FeedUtility::initTSFE($rootPage);
         $this->channelRepository = GeneralUtility::makeInstance('Socialstream\\SocialStream\\Domain\\Repository\\ChannelRepository');
