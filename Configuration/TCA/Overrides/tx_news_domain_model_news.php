@@ -17,18 +17,20 @@ $tmp_social_stream_columns = array(
 		'exclude' => 1,
 		'label' => 'LLL:EXT:social_stream/Resources/Private/Language/locallang_db.xlf:tx_socialstream_domain_model_news.link',
 		'config' => array(
-			'type' => 'input',
-			'size' => 30,
-			'eval' => 'trim'
+            'type' => 'text',
+            'cols' => 40,
+            'rows' => 15,
+            'eval' => 'trim',
 		),
 	),
 	'media_url' => array(
 		'exclude' => 1,
 		'label' => 'LLL:EXT:social_stream/Resources/Private/Language/locallang_db.xlf:tx_socialstream_domain_model_news.media_url',
 		'config' => array(
-			'type' => 'input',
-			'size' => 30,
-			'eval' => 'trim'
+            'type' => 'text',
+            'cols' => 40,
+            'rows' => 15,
+            'eval' => 'trim',
 		),
 	),
 	'place_name' => array(

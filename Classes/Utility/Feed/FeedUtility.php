@@ -56,8 +56,8 @@ class FeedUtility extends \Socialstream\SocialStream\Utility\BaseUtility
     {
         parent::__construct();
         if ($pid) {
-            $this->initTSFE($pid, 0);
-            $this->initSettings();
+            //$this->initTSFE($pid, 0);
+            $this->initSettings($pid);
         }
     }
 
@@ -66,9 +66,9 @@ class FeedUtility extends \Socialstream\SocialStream\Utility\BaseUtility
         parent::initTSFE($id, $typeNum);
     }
 
-    public function initSettings()
+    public function initSettings($pid)
     {
-        parent::initSettings();
+        parent::initSettings($pid);
     }
 
     /**
@@ -426,11 +426,12 @@ class FeedUtility extends \Socialstream\SocialStream\Utility\BaseUtility
     /**
      * @param $type
      * @param \GeorgRinger\News\Domain\Model\Category|NULL $parent
+     * @param \Socialstream\SocialStream\Domain\Model\Channel $channel
      * @return \GeorgRinger\News\Domain\Model\Category
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\UnknownObjectException
      */
-    protected function getCategory($type, \GeorgRinger\News\Domain\Model\Category $parent = NULL)
+    protected function getCategory($type, \GeorgRinger\News\Domain\Model\Category $parent = NULL, $channel)
     {
         $title = $this->getType($type);
 
@@ -442,7 +443,7 @@ class FeedUtility extends \Socialstream\SocialStream\Utility\BaseUtility
             if ($parent) {
                 $cat->setParentcategory($parent);
             }
-            $cat->setPid($this->getStoragePid());
+            $cat->setPid($channel->getPid());
             $this->categoryRepository->add($cat);
             $this->persistenceManager->persistAll();
         } else {
@@ -457,12 +458,12 @@ class FeedUtility extends \Socialstream\SocialStream\Utility\BaseUtility
         return $cat;
     }
 
-    protected function getSlug($uid,$string){
+    protected function getSlug($uid,$string,$channel){
         $slugHelper = GeneralUtility::makeInstance(SlugHelper::class, 'tx_news_domain_model_news', 'path_segment', $GLOBALS['TCA']['tx_news_domain_model_news']['columns']['path_segment']['config']);
-        $slug = $slugHelper->generate(["title" => $string], $this->getStoragePid());
+        $slug = $slugHelper->generate(["title" => $string], $channel->getPid());
 
         $state = RecordStateFactory::forName('tx_news_domain_model_news')
-            ->fromArray(["title" => $string], $this->getStoragePid(), $uid ? $uid : 0);
+            ->fromArray(["title" => $string], $channel->getPid(), $uid ? $uid : 0);
         if (!$slugHelper->isUniqueInSite($slug, $state)) {
             $slug = $slugHelper->buildSlugForUniqueInSite($slug, $state);
         }

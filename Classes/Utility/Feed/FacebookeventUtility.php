@@ -48,9 +48,9 @@ class FacebookeventUtility extends \Socialstream\SocialStream\Utility\Feed\Faceb
 
             $news->setType(0);
             $news->setChannel($channel);
-            $cat = $this->getCategory($channel->getType());
+            $cat = $this->getCategory($channel->getType(), null, $channel);
             $news->addCategory($cat);
-            $subcat = $this->getCategory($channel->getTitle(),$cat);
+            $subcat = $this->getCategory($channel->getTitle(),$cat, $channel);
             $news->addCategory($subcat);
             $id = explode("_",$entry->id);
             if($id[1]){
@@ -63,7 +63,7 @@ class FacebookeventUtility extends \Socialstream\SocialStream\Utility\Feed\Faceb
             if($entry->link)$news->setLink($entry->link);
             $news->setAuthor($entry->owner->name);
             if($entry->name)$news->setTitle($entry->name);
-            if(!$news->getPathSegment()) $news->setPathSegment($this->getSlug($news->getUid(),$news->getTitle()));
+            if(!$news->getPathSegment()) $news->setPathSegment($this->getSlug($news->getUid(),$news->getTitle(), $channel));
             if($entry->place){
                 if($entry->place->name) $news->setPlaceName($entry->place->name);
                 if($entry->place->location->city) $news->setPlaceCity($entry->place->location->city);
@@ -79,7 +79,7 @@ class FacebookeventUtility extends \Socialstream\SocialStream\Utility\Feed\Faceb
                 $news->setBodytext(str_replace("<br/><br/>", "<br/>", $message));
             }
 
-            $news->setPid($this->getStoragePid());
+            $news->setPid($channel->getPid());
 
             if ($new) {
                 $this->newsRepository->add($news);

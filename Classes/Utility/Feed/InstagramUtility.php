@@ -119,15 +119,15 @@ class InstagramUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUtili
             $news->setType(0);
             $news->setChannel($channel);
 
-            $cat = $this->getCategory($channel->getType());
+            $cat = $this->getCategory($channel->getType(), null, $channel);
 
             $news->addCategory($cat);
 
-            $subcat = $this->getCategory($channel->getTitle() . "@Instagram", $cat);
+            $subcat = $this->getCategory($channel->getTitle() . "@Instagram", $cat, $channel);
             $news->addCategory($subcat);
 
             $news->setObjectId($newsId);
-            if(!$news->getPathSegment()) $news->setPathSegment($this->getSlug($news->getUid(),$news->getTitle()));
+            if(!$news->getPathSegment()) $news->setPathSegment($this->getSlug($news->getUid(),$news->getTitle(), $channel));
 
             if ($entry->link) $news->setLink($entry->link);
             $news->setAuthor($entry->user->full_name);
@@ -144,7 +144,7 @@ class InstagramUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUtili
                 $news->setDescription($entry->caption->text);
             }
 
-            $news->setPid($this->getStoragePid());
+            $news->setPid($channel->getPid());
 
             if ($new) {
                 $this->newsRepository->add($news);

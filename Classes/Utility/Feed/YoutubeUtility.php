@@ -145,15 +145,15 @@ class YoutubeUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUtility
                                     $news->setType(0);
                                     $news->setChannel($channel);
 
-                                    $cat = $this->getCategory($channel->getType());
+                                    $cat = $this->getCategory($channel->getType(), null, $channel);
 
                                     $news->addCategory($cat);
 
-                                    $subcat = $this->getCategory($channel->getTitle() . "@YouTube", $cat);
+                                    $subcat = $this->getCategory($channel->getTitle() . "@YouTube", $cat, $channel);
                                     $news->addCategory($subcat);
 
                                     $news->setObjectId($playlistItem->snippet->resourceId->videoId);
-                                    if(!$news->getPathSegment()) $news->setPathSegment($this->getSlug($news->getUid(),$news->getTitle()));
+                                    if(!$news->getPathSegment()) $news->setPathSegment($this->getSlug($news->getUid(),$news->getTitle(), $channel));
 
                                     $news->setLink("https://www.youtube.com/watch?v=" . $playlistItem->snippet->resourceId->videoId);
                                     $news->setAuthor($playlistItem->snippet->channelTitle);
@@ -161,7 +161,7 @@ class YoutubeUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUtility
                                     $news->setBodytext($playlistItem->snippet->description);
                                     $news->setDescription($playlistItem->snippet->description);
 
-                                    $news->setPid($this->getStoragePid());
+                                    $news->setPid($channel->getPid());
 
                                     if ($new) {
                                         $this->newsRepository->add($news);

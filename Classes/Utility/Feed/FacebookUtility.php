@@ -28,6 +28,7 @@ namespace Socialstream\SocialStream\Utility\Feed;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use Sabre\Xml\Element\KeyValue;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Messaging\FlashMessageService;
 
@@ -38,6 +39,7 @@ class FacebookUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUtilit
 {
     public function getChannel(\Socialstream\SocialStream\Domain\Model\Channel $channel, $isProcessing = 0)
     {
+
         $url = "https://graph.facebook.com/" . $channel->getObjectId() . "/?fields=id,name,about,link,picture,cover&access_token=" . $channel->getToken();
 
         if ($this->get_http_response_code($url) == 200) {
@@ -90,7 +92,6 @@ class FacebookUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUtilit
         } else {
             $url = "https://graph.facebook.com/" . $channel->getObjectId() . "/feed?fields=id,created_time,link,permalink_url,place,type,message,full_picture,object_id,picture,name,caption,description,story,source,from&access_token=" . $channel->getToken() . "&limit=" . $limit;
         }
-
         $elem = $this->getElems($url);
 
         foreach ($elem->data as $entry) {
@@ -104,9 +105,9 @@ class FacebookUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUtilit
 
                 $news->setType(0);
                 $news->setChannel($channel);
-                $cat = $this->getCategory($channel->getType());
+                $cat = $this->getCategory($channel->getType(), null, $channel);
                 $news->addCategory($cat);
-                $subcat = $this->getCategory($channel->getTitle(), $cat);
+                $subcat = $this->getCategory($channel->getTitle(), $cat, $channel);
                 $news->addCategory($subcat);
                 $id = explode("_", $entry->id);
                 if ($id[1]) {
@@ -122,7 +123,7 @@ class FacebookUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUtilit
                 } else {
                     $news->setTitle($entry->from->name);
                 }
-                if(!$news->getPathSegment()) $news->setPathSegment($this->getSlug($news->getUid(),$news->getTitle()));
+                if(!$news->getPathSegment()) $news->setPathSegment($this->getSlug($news->getUid(),$news->getTitle(), $channel));
                 if ($entry->place) {
                     if($entry->place->name) $news->setPlaceName($entry->place->name);
                     if($entry->place->location->city) $news->setPlaceCity($entry->place->location->city);
@@ -152,7 +153,7 @@ class FacebookUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUtilit
                 }
                 if ($entry->story) $news->setDescription($entry->story);
 
-                $news->setPid($this->getStoragePid());
+                $news->setPid($channel->getPid());
 
                 if ($new) {
                     $this->newsRepository->add($news);

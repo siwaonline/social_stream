@@ -103,7 +103,7 @@ class GooglephotosUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUt
                     }
 
                     $news->setTitle($entry->getTitle());
-                    $news->setPid($this->getStoragePid());
+                    $news->setPid($channel->getPid());
                     $news->setType(0);
                     $news->setChannel($channel);
 
@@ -111,16 +111,16 @@ class GooglephotosUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUt
                     $createTime->modify("+" . $index . " ms");
                     $news->setDatetime($createTime);
 
-                    $cat = $this->getCategory($channel->getType());
+                    $cat = $this->getCategory($channel->getType(), null, $channel);
 
                     $news->addCategory($cat);
 
-                    $subcat = $this->getCategory($channel->getObjectId() . "@GooglePhotos", $cat);
+                    $subcat = $this->getCategory($channel->getObjectId() . "@GooglePhotos", $cat, $channel);
                     $news->addCategory($subcat);
 
                     $news->setObjectId($newsId);
 
-                    if (!$news->getPathSegment()) $news->setPathSegment($this->getSlug($news->getUid(), $news->getTitle()));
+                    if (!$news->getPathSegment()) $news->setPathSegment($this->getSlug($news->getUid(), $news->getTitle(), $channel));
 
                     $news->setLink($entry->getProductUrl());
 

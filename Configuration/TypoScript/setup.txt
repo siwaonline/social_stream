@@ -29,5 +29,8 @@ module.tx_socialstream {
         youtubeapikey = {$module.tx_socialstream.settings.youtubeapikey}
         googlephotosclientid = {$module.tx_socialstream.settings.googlephotosclientid}
         googlephotosclientsecret = {$module.tx_socialstream.settings.googlephotosclientsecret}
+        webdavrooturl = {$module.tx_socialstream.settings.webdavrooturl}
+        webdavuser = {$module.tx_socialstream.settings.webdavuser}
+        webdavpw = {$module.tx_socialstream.settings.webdavpw}
     }
 }

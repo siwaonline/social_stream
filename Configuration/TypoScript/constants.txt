@@ -52,5 +52,11 @@ module.tx_socialstream {
         googlephotosclientid =
         # cat=social_stream_keys/keys/p; type=string; label= GooglePhotos Client Secret
         googlephotosclientsecret =
+        # cat=social_stream_keys/keys/t; type=string; label= Webdav base url
+        webdavrooturl =
+        # cat=social_stream_keys/keys/u; type=string; label= Webdav username
+        webdavuser =
+        # cat=social_stream_keys/keys/v; type=string; label= Webdav password
+        webdavpw =
     }
 }

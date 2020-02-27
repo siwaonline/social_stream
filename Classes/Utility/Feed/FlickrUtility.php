@@ -104,15 +104,15 @@ class FlickrUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUtility
             $news->setType(0);
             $news->setChannel($channel);
 
-            $cat = $this->getCategory($channel->getType());
+            $cat = $this->getCategory($channel->getType(), null, $channel);
 
             $news->addCategory($cat);
 
-            $subcat = $this->getCategory($channel->getTitle() . "@Flickr", $cat);
+            $subcat = $this->getCategory($channel->getTitle() . "@Flickr", $cat, $channel);
             $news->addCategory($subcat);
 
             $news->setObjectId($newsId);
-            if(!$news->getPathSegment()) $news->setPathSegment($this->getSlug($news->getUid(),$news->getTitle()));
+            if(!$news->getPathSegment()) $news->setPathSegment($this->getSlug($news->getUid(),$news->getTitle(), $channel));
 
             $news->setLink("https://www.flickr.com/photos/" . $channel->getObjectId() . "/albums/" . $entry->id);
 
@@ -121,7 +121,7 @@ class FlickrUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUtility
                 $news->setDescription($entry->description->_content);
             }
 
-            $news->setPid($this->getStoragePid());
+            $news->setPid($channel->getPid());
 
             if ($new) {
                 $this->newsRepository->add($news);

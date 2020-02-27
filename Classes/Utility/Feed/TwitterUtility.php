@@ -153,15 +153,15 @@ class TwitterUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUtility
                 $news->setType(0);
                 $news->setChannel($channel);
 
-                $cat = $this->getCategory($channel->getType());
+                $cat = $this->getCategory($channel->getType(), null, $channel);
 
                 $news->addCategory($cat);
 
-                $subcat = $this->getCategory($channel->getTitle() . "@Twitter", $cat);
+                $subcat = $this->getCategory($channel->getTitle() . "@Twitter", $cat, $channel);
                 $news->addCategory($subcat);
 
                 $news->setObjectId($newsId);
-                if(!$news->getPathSegment()) $news->setPathSegment($this->getSlug($news->getUid(),$news->getTitle()));
+                if(!$news->getPathSegment()) $news->setPathSegment($this->getSlug($news->getUid(),$news->getTitle(), $channel));
 
                 $news->setLink("https://www.twitter.com/" . $entry["user"]["screen_name"] . "/status/" . $entry["id_str"]);
                 $news->setAuthor($entry["user"]["name"]);
@@ -176,7 +176,7 @@ class TwitterUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUtility
                     $news->setDescription($entry["text"]);
                 }
 
-                $news->setPid($this->getStoragePid());
+                $news->setPid($channel->getPid());
 
                 if ($new) {
                     $this->newsRepository->add($news);
