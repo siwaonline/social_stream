@@ -27,3 +27,9 @@ $GLOBALS['TYPO3_CONF_VARS']['LOG']['Socialstream']['SocialStream']['writerConfig
         )
     )
 );
+
+$extbaseObjectContainer = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Extbase\Object\Container\Container::class);
+
+$extbaseObjectContainer->registerImplementation(\GeorgRinger\News\Domain\Model\News::class, \Socialstream\SocialStream\Domain\Model\News::class);
+
+unset($extbaseObjectContainer);
