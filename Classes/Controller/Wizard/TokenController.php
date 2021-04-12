@@ -19,6 +19,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Socialstream\SocialStream\Utility\Token\GooglephotosUtility;
 use Socialstream\SocialStream\Utility\Token\YoutubeUtility;
+use TYPO3\CMS\Backend\Routing\UriBuilder;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Database\ConnectionPool;
@@ -138,20 +139,14 @@ class TokenController extends \TYPO3\CMS\Backend\Controller\Wizard\AbstractWizar
         $this->configurationManager = $this->objectManager->get(\Socialstream\SocialStream\Configuration\ConfigurationManager::class);
         $this->configurationManager->getConcreteConfigurationManager()->setCurrentPageId($pid);
         $this->settings = $this->configurationManager->getConfiguration(\TYPO3\CMS\Extbase\Configuration\ConfigurationManager::CONFIGURATION_TYPE_SETTINGS, 'Socialstream');
-        /*
-        $this->objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
-        $this->configurationManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Configuration\\ConfigurationManager');
-        $this->settings = $this->configurationManager->getConfiguration(\TYPO3\CMS\Extbase\Configuration\ConfigurationManager::CONFIGURATION_TYPE_SETTINGS, 'Socialstream');
-        */
 
         $this->settings["storagePid"] = $this->P['pid'];
 
 
-        $redirectUrl = BackendUtility::getModuleUrl(
+        $uriBuilder = GeneralUtility::makeInstance(UriBuilder::class);
+        $redirectUrl = $uriBuilder->buildUriFromRoute(
             'wizard_token',
-            array("P" => $this->P),
-            false,
-            true
+            ["P" => $this->P]
         );
 
         if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') {

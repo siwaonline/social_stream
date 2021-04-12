@@ -117,7 +117,7 @@ class BaseUtility
      */
     public static function initTSFE($id = 1, $type = 0)
     {
-        /** @var ObjectManager\ $objectManager */
+        /** @var ObjectManager $objectManager */
         $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
 
         if (!$_SERVER['HTTP_HOST']) $_SERVER['HTTP_HOST'] = "http://localhost";

@@ -17,6 +17,7 @@ namespace Socialstream\SocialStream\Nodes;
 
 use TYPO3\CMS\Backend\Form\AbstractNode;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Utility\RootlineUtility;
 use TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 
@@ -28,18 +29,18 @@ class EidNode extends AbstractNode
     public function render()
     {
         $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-        $page = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\Page\\PageRepository');
 
-        $rootLine = $page->getRootLine($this->data['databaseRow']['pid']);
+        $rootline = GeneralUtility::makeInstance(RootlineUtility::class, $this->data['databaseRow']['pid']);
+        $rootlinePages = $rootline->get();
 
-        foreach ($rootLine as $level) {
+        foreach ($rootlinePages as $level) {
             if ($level['is_siteroot']) {
                 $root = $level;
             }
         }
 
         if (!$root) {
-            array_pop($rootLine);
+            array_pop($rootlinePages);
         }
 
         $http = isset($_SERVER['HTTPS']) ? "https" : "http";

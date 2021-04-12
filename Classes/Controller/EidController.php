@@ -35,15 +35,13 @@ class EidController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
      */
     public function __construct()
     {
-        parent::__construct();
-
         $this->objectManager = GeneralUtility::makeInstance(ObjectManager::class);
         $this->configurationManager = $this->objectManager->get(ConfigurationManager::class);
 
         $feUserObj = EidUtility::initFeUser();
         $pageId = GeneralUtility::_GET('id') ?: 1;
         $typoScriptFrontendController = GeneralUtility::makeInstance(
-            'TYPO3\\CMS\\Frontend\\Controller\\TypoScriptFrontendController',
+            \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController::class,
             $GLOBALS['TYPO3_CONF_VARS'],
             $pageId,
             0,
