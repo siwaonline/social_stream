@@ -6,6 +6,16 @@ namespace Socialstream\SocialStream\Utility;
 use Socialstream\SocialStream\Domain\Model\Channel;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
+use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
+use TYPO3\CMS\Core\Context\Context;
+use TYPO3\CMS\Core\Http\ServerRequest;
+use TYPO3\CMS\Core\Http\ServerRequestFactory;
+use TYPO3\CMS\Core\Routing\PageArguments;
+use TYPO3\CMS\Core\Site\Entity\NullSite;
+use TYPO3\CMS\Core\Site\Entity\Site;
+use TYPO3\CMS\Core\Site\Entity\SiteLanguage;
+use TYPO3\CMS\Core\Site\SiteFinder;
+
 
 /***************************************************************
  *
@@ -44,7 +54,7 @@ class BaseUtility
 
     /**
      * @var \TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager
-     * @inject
+     * @TYPO3\CMS\Extbase\Annotation\Inject
      */
     protected $persistenceManager;
 
@@ -52,7 +62,7 @@ class BaseUtility
      * newsRepository
      *
      * @var \Socialstream\SocialStream\Domain\Repository\NewsRepository
-     * @inject
+     * @TYPO3\CMS\Extbase\Annotation\Inject
      */
     protected $newsRepository = NULL;
 
@@ -60,7 +70,7 @@ class BaseUtility
      * categoryRepository
      *
      * @var \GeorgRinger\News\Domain\Repository\CategoryRepository
-     * @inject
+     * @TYPO3\CMS\Extbase\Annotation\Inject
      */
     protected $categoryRepository = NULL;
 
@@ -103,25 +113,35 @@ class BaseUtility
 
     /**
      * @param int $id
-     * @param int $typeNum
+     * @param int $type
      */
-    public static function initTSFE($id = 1, $typeNum = 0)
+    public static function initTSFE($id = 1, $type = 0)
     {
-        \TYPO3\CMS\Frontend\Utility\EidUtility::initTCA();
-        if (!is_object($GLOBALS['TT'])) {
-            $GLOBALS['TT'] = new \TYPO3\CMS\Core\TimeTracker\TimeTracker();
-            $GLOBALS['TT']->start();
+        /** @var ObjectManager\ $objectManager */
+        $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
+
+        if (!$_SERVER['HTTP_HOST']) $_SERVER['HTTP_HOST'] = "http://localhost";
+        if (!$_SERVER['REQUEST_URI']) $_SERVER['REQUEST_URI'] = "/";
+        $request = $GLOBALS['TYPO3_REQUEST'] ?? ServerRequestFactory::fromGlobals();
+        $site = $request->getAttribute('site');
+        if (!$site instanceof Site) {
+            $sites = GeneralUtility::makeInstance(SiteFinder::class)->getAllSites();
+            $site = reset($sites);
+            if (!$site instanceof Site) {
+                $site = new NullSite();
+            }
         }
-        $GLOBALS['TSFE'] = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\Controller\\TypoScriptFrontendController',
-            $GLOBALS['TYPO3_CONF_VARS'], $id, $typeNum);
-        $GLOBALS['TSFE']->sys_page = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\Page\\PageRepository');
-        $GLOBALS['TSFE']->sys_page->init(TRUE);
-        $GLOBALS['TSFE']->connectToDB();
-        $GLOBALS['TSFE']->initFEuser();
-        $GLOBALS['TSFE']->determineId();
-        $GLOBALS['TSFE']->initTemplate();
-        $GLOBALS['TSFE']->rootLine = $GLOBALS['TSFE']->sys_page->getRootLine($id, '');
-        $GLOBALS['TSFE']->getConfigArray();
+        $language = $request->getAttribute('language');
+        if (!$language instanceof SiteLanguage) {
+            $language = $site->getDefaultLanguage();
+        }
+        $GLOBALS['TSFE'] = GeneralUtility::makeInstance(
+            TypoScriptFrontendController::class,
+            GeneralUtility::makeInstance(Context::class),
+            $site,
+            $language,
+            $request->getAttribute('routing', new PageArguments((int)$id, (string)$type, []))
+        );
     }
 
     /**

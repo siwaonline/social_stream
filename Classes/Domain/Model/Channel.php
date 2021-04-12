@@ -128,7 +128,7 @@ class Channel extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
      * news
      *
      * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\Socialstream\SocialStream\Domain\Model\News>
-     * @cascade remove
+     * @TYPO3\CMS\Extbase\Annotation\ORM\Cascade("remove")
      */
     protected $news = null;
     

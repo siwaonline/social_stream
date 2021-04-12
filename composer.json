@@ -17,7 +17,8 @@
   "require": {
     "typo3/cms-core": "^10.4",
     "georgringer/news": ">=8.5.0",
-    "google/photos-library": "1.4.0"
+    "google/photos-library": "^1.4.0",
+    "sabre/dav": "^3.2.3"
   },
   "version": "4.0.0",
   "config": {
