@@ -63,10 +63,10 @@ class FacebookinvolveUtility extends \Socialstream\SocialStream\Utility\Feed\Fee
      */
     public function getFeed(\Socialstream\SocialStream\Domain\Model\Channel $channel, $limit = 100)
     {
-        $url = $channel->getObjectId() + (str_contains($channel->getObjectId(), '?') ? '&' : '?') + 'token=' + $channel->getToken();
+        $url = $this->settings['involeAPIUrl'] . '/api/feed/facebook/' .  $channel->getObjectId() . (str_contains($channel->getObjectId(), '?') ? '&' : '?') . 'token=' . $channel->getToken();
         $elem = $this->getElems($url);
 
-        foreach ($elem->data as $entry) {
+        foreach ($elem as $entry) {
             if ($entry->title || $entry->text) {
                 $hash = md5($entry->createdAt);
                 
@@ -95,19 +95,20 @@ class FacebookinvolveUtility extends \Socialstream\SocialStream\Utility\Feed\Fee
                 if ($entry->title) {
                     $news->setTitle($entry->title);
                 }
-
-                if(!$news->getPathSegment()) {
-                    $news->setPathSegment($this->getSlug($news->getUid(),$news->getTitle(), $channel));
-                }
-
-                if ($entry->message) {
-                    $news->setBodytext($entry->message);
+                
+                if ($entry->text) {
+                    $news->setBodytext($entry->text);
                 } else {
                     if ($entry->title) {
                         $news->setBodytext($entry->title);
                     }
                 }
 
+                if(!$news->getPathSegment()) {
+                    $slugText = $news->getBodytext() ? substr($news->getBodytext(), 0, 25) : $news->getTitle();
+                    $news->setPathSegment($this->getSlug($news->getUid(),$slugText, $channel));
+                }
+                
                 $news->setPid($channel->getPid());
 
                 if ($new) {
@@ -116,8 +117,6 @@ class FacebookinvolveUtility extends \Socialstream\SocialStream\Utility\Feed\Fee
                     $this->newsRepository->update($news);
                 }
                 $this->persistenceManager->persistAll();
-                debug($news);
-                exit;
 
 
                 $imageUrl = '';
@@ -141,8 +140,6 @@ class FacebookinvolveUtility extends \Socialstream\SocialStream\Utility\Feed\Fee
                         $this->processNewsMedia($news, $media['media_url']);
                     }
                 }
-                debug($news);
-                exit;
 
                 $this->newsRepository->update($news);
                 $this->persistenceManager->persistAll();
