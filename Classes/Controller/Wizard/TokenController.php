@@ -26,6 +26,7 @@ use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Backend\Template\ModuleTemplate;
 
 use Socialstream\SocialStream\Utility\Token\TokenUtility;
+use TYPO3\CMS\Core\Http\HtmlResponse;
 
 /**
  * Script Class for rendering the Table Wizard
@@ -87,11 +88,10 @@ class TokenController extends \TYPO3\CMS\Backend\Controller\Wizard\AbstractWizar
      * @param ResponseInterface $response
      * @return ResponseInterface
      */
-    public function mainAction(ServerRequestInterface $request, ResponseInterface $response)
+    public function mainAction(ServerRequestInterface $request)
     {
         $this->main($request);
-        $response->getBody()->write($this->moduleTemplate->renderContent());
-        return $response;
+        return new HtmlResponse($this->moduleTemplate->renderContent());
     }
 
     /**

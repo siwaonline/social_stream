@@ -33,5 +33,7 @@ module.tx_socialstream {
         webdavuser = {$module.tx_socialstream.settings.webdavuser}
         webdavpw = {$module.tx_socialstream.settings.webdavpw}
         involeAPIUrl = {$module.tx_socialstream.settings.webdavpw}
+        involeFBAppId = {$module.tx_socialstream.settings.involeFBAppId}
+        involeFBAppSecret = {$module.tx_socialstream.settings.involeFBAppSecret}
     }
 }
