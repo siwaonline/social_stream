@@ -28,6 +28,7 @@ namespace Socialstream\SocialStream\Command;
  ***************************************************************/
 
 use Socialstream\SocialStream\Domain\Model\Channel;
+use Socialstream\SocialStream\Domain\Repository\ChannelRepository;
 use Socialstream\SocialStream\Utility\BaseUtility;
 use Socialstream\SocialStream\Utility\Feed\FeedUtility;
 use TYPO3\CMS\Core\Mail\MailMessage;
@@ -35,8 +36,10 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use TYPO3\CMS\Core\Cache\CacheManager;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
+use TYPO3\CMS\Extbase\Object\ObjectManager;
 
 /**
  * GetFeedCommandController
@@ -79,7 +82,7 @@ class GetFeedCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
+        $this->objectManager = GeneralUtility::makeInstance(ObjectManager::class);
         $this->configurationManager = $this->objectManager->get(\Socialstream\SocialStream\Configuration\ConfigurationManager::class);
         $this->configurationManager->getConcreteConfigurationManager()->setCurrentPageId($input->getArgument('rootPage'));
         $this->settings = $this->configurationManager->getConfiguration(\TYPO3\CMS\Extbase\Configuration\ConfigurationManager::CONFIGURATION_TYPE_SETTINGS, 'Socialstream');
@@ -90,8 +93,8 @@ class GetFeedCommand extends Command
         */
 
         FeedUtility::initTSFE($input->getArgument('rootPage'));
-        $this->channelRepository = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Socialstream\\SocialStream\\Domain\\Repository\\ChannelRepository');
-        $this->cacheManager = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Cache\\CacheManager');
+        $this->channelRepository = $this->objectManager->get(ChannelRepository::class);
+        $this->cacheManager = $this->objectManager->get(CacheManager::class);
 
         $querySettings = $this->channelRepository->createQuery()->getQuerySettings();
 
