@@ -34,9 +34,7 @@ class FacebookinvolveUtility extends \Socialstream\SocialStream\Utility\Token\To
 {
     public function getAccessUrl($redirect)
     {
-        $url_parts = $this->splitRedirectUrl($redirect);
-        $url = "https://www.facebook.com/v2.12/dialog/oauth?client_id=" . $this->settings["fbappid"] . "&state=" . $url_parts["state"] . "&response_type=token&scope=manage_pages,user_posts&sdk=php-sdk-5.0.0&redirect_uri=".$url_parts["base"];
-        return $url;
+        return "https://stage4.involve.at/";
     }
     public function getTokenJavascript($accessUrl,$actualUrl){
         $script = '
