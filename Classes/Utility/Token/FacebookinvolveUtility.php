@@ -38,9 +38,8 @@ class FacebookinvolveUtility extends \Socialstream\SocialStream\Utility\Token\To
 //        $url = "https://www.facebook.com/v2.12/dialog/oauth?client_id=" . $this->settings["fbappid"] . "&state=" . $url_parts["state"] . "&response_type=token&scope=manage_pages,user_posts&sdk=php-sdk-5.0.0&redirect_uri=".$url_parts["base"];
 //        return $url;
 
-//        $callback_url = 'https://stage4.involve.at/login/3?callback_url=https://sandboxv8.local.siwa.vpn/typo3conf/ext/social_stream/Redirect.php';
-
-        $callback_url = 'https://stage4.involve.at/login/3?callback_url=' . $url_parts["base"] . '&state=' . $url_parts["state"];
+//        $callback_url = 'https://stage4.involve.at/login/3?callback_url=' . $url_parts["base"] . '?page=' . str_replace("?",";",urldecode($url_parts["state"]));
+        $callback_url = 'https://stage4.involve.at/login/3?callback_url=' . $url_parts["base"] . '?page=' . $url_parts["state"];
         return $callback_url;
     }
     public function getTokenJavascript($accessUrl,$actualUrl){
@@ -58,6 +57,9 @@ class FacebookinvolveUtility extends \Socialstream\SocialStream\Utility\Token\To
     }
 
     public function retrieveToken($url){
+//        var_dump("retrieve");
+//        var_dump($url);
+//        exit;
         $parts = parse_url($url);
         parse_str($parts['query'], $params);
 

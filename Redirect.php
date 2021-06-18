@@ -25,6 +25,12 @@ if ($params == "") {
 
     parse_str($params, $parts);
 
+    // Only needed for the Involve Facebook Stream
+    if(array_key_exists("page", $parts)){
+        $parts["state"] = $parts["page"];
+        unset($parts["page"]);
+    }
+
     if (array_key_exists("state", $parts)) {
         $state = $parts["state"];
         $state = urldecode($state);
