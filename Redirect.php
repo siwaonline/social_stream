@@ -42,6 +42,19 @@ if ($params == "") {
         $url .= "&expires_in=" . $parts["expires_in"];
     }
 
+    // Facebook Involve Stream
+    if(array_key_exists("api_url", $parts)){
+        $encoded = base64_decode($parts["api_url"]);
+        parse_str(explode("?", $request)[1], $encodedParams);
+        $token = $encodedParams["api_url"];
+
+        $prefix = "&";
+        if(substr($url, -1) === "?"){
+            $prefix = "";
+        }
+        $url .= $prefix . "access_token=" . $token;
+    }
+
     header('Location: ' . $url);
 }
 
