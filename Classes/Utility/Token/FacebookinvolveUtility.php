@@ -39,7 +39,9 @@ class FacebookinvolveUtility extends \Socialstream\SocialStream\Utility\Token\To
 //        return $url;
 
 //        $callback_url = 'https://stage4.involve.at/login/3?callback_url=' . $url_parts["base"] . '?page=' . str_replace("?",";",urldecode($url_parts["state"]));
-        $callback_url = 'https://stage4.involve.at/login/3?callback_url=' . $url_parts["base"] . '?page=' . $url_parts["state"];
+        $callback_url = 'https://stage4.involve.at/login/3?callback_url=' . urlencode($url_parts["base"] . '?page=' . urldecode(urldecode($url_parts["state"])));
+//        var_dump($callback_url);
+//        exit;
         return $callback_url;
     }
     public function getTokenJavascript($accessUrl,$actualUrl){
