@@ -37,7 +37,6 @@ if ($params == "") {
         $isInvolve = true;
     }
 
-
     if(!$isInvolve){
         if (array_key_exists("state", $parts)) {
             $state = $parts["state"];
@@ -56,15 +55,19 @@ if ($params == "") {
             $url .= "&expires_in=" . $parts["expires_in"];
         }
     }else{
-//        var_dump($url);
-        $cleanParams = str_replace('?api_url=' . $parts["api_url"], '', $params);
-        $cleanParams = str_replace('&api_url=' . $parts["api_url"], '', $params);
-        $cleanParams = str_replace(",", "&", $cleanParams);
-        $cleanParams = str_replace(get_string_between($cleanParams, "&P[returnUrl]=", "&P["), urlencode(get_string_between($cleanParams, "&P[returnUrl]=", "&P[")), $cleanParams);
-//        $url .= urldecode($cleanParams);
+        $api_url = $parts["api_url"];
+        unset($parts["api_url"]);
+//        $parts["route"] = urlencode(explode("=", $parts["state"])[1]);
+        $parts["route"] = explode("=", $parts["state"])[1];
+        unset($parts["state"]);
 
-        if(array_key_exists("api_url", $parts)){
-            $encoded = base64_decode($parts["api_url"]);
+        $state = http_build_query($parts);
+        $state = urldecode($state);
+//        $state = str_replace(get_string_between($state, "&P[returnUrl]=", "&P["), urlencode(get_string_between($state, "&P[returnUrl]=", "&P[")), $state);
+        $url .= $state;
+
+        if($api_url){
+            $encoded = base64_decode($api_url);
             parse_str(explode("?", $encoded)[1], $encodedParams);
             $token = $encodedParams["token"];
 
@@ -76,8 +79,6 @@ if ($params == "") {
         }
     }
 
-//    var_dump($url);
-//    exit;
     header('Location: ' . $url);
 }
 
