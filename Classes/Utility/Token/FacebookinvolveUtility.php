@@ -35,8 +35,9 @@ class FacebookinvolveUtility extends \Socialstream\SocialStream\Utility\Token\To
     public function getAccessUrl($redirect)
     {
         $url_parts = $this->splitRedirectUrl($redirect);
+        $url_parts["state"] = str_replace(",","&",$url_parts["state"]);
 
-        $callback_url = 'https://stage4.involve.at/login/3?callback_url=' . urlencode($url_parts["base"] . '?page=' . str_replace(",","&", $url_parts["state"]));
+        $callback_url = 'https://stage4.involve.at/login/3?callback_url=' . urlencode($url_parts["base"] . '?page=' . urlencode($url_parts["state"]));
         return $callback_url;
     }
     public function getTokenJavascript($accessUrl,$actualUrl){
@@ -55,23 +56,18 @@ class FacebookinvolveUtility extends \Socialstream\SocialStream\Utility\Token\To
     }
 
     public function retrieveToken($url){
-//        var_dump("retrieve");
-//        var_dump($url);
-//        exit;
         $parts = parse_url($url);
         parse_str($parts['query'], $params);
 
         if(!$params["access_token"]){
             return false;
         }else{
-            $token = file_get_contents("https://graph.facebook.com/oauth/access_token?grant_type=fb_exchange_token&client_id=" . $this->settings["fbappid"] . "&client_secret=" . $this->settings["fbappsecret"] . "&fb_exchange_token=" . $params["access_token"]);
-            return $token;
+            return $params["access_token"];
         }
     }
 
     public function getValues($tokenString){
-        $json = json_decode($tokenString);
-        return array("tk" => $json->access_token, "exp" => time() + $json->expires_in);
+        return array("tk" => $tokenString, "exp" => time() + $json->expires_in);
     }
 
 }

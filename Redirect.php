@@ -31,9 +31,7 @@ if ($params == "") {
 
     parse_str($params, $parts);
     // Only needed for the Involve Facebook Stream
-    if(array_key_exists("page", $parts)){
-        $parts["state"] = $parts["page"];
-        unset($parts["page"]);
+    if(array_key_exists("api_url", $parts)){
         $isInvolve = true;
     }
 
@@ -54,16 +52,14 @@ if ($params == "") {
         if (array_key_exists("expires_in", $parts)) {
             $url .= "&expires_in=" . $parts["expires_in"];
         }
+
+        header('Location: ' . $url);
     }else{
         $api_url = $parts["api_url"];
         unset($parts["api_url"]);
-//        $parts["route"] = urlencode(explode("=", $parts["state"])[1]);
-        $parts["route"] = explode("=", $parts["state"])[1];
-        unset($parts["state"]);
 
-        $state = http_build_query($parts);
-        $state = urldecode($state);
-//        $state = str_replace(get_string_between($state, "&P[returnUrl]=", "&P["), urlencode(get_string_between($state, "&P[returnUrl]=", "&P[")), $state);
+        $state = str_replace('page=', "", $params);
+        $state = str_replace('&api_url=' . $api_url, "", $state);
         $url .= $state;
 
         if($api_url){
@@ -77,9 +73,14 @@ if ($params == "") {
             }
             $url .= $prefix . "access_token=" . $token;
         }
-    }
 
-    header('Location: ' . $url);
+        // header( Location: <url> ) doesn't work - results in an Logout - not quite sure why I suspect there are some cookie-issues
+        // those sketchy lines below do the trick so I guess I'll keep it this way
+        echo '
+        <script>
+            window.location.replace("' . $url . '");
+        </script>';
+    }
 }
 
 function get_string_between($string, $start, $end)
