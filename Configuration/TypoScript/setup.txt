@@ -32,5 +32,6 @@ module.tx_socialstream {
         webdavpw = {$module.tx_socialstream.settings.webdavpw}
 
         involveAPIUrl = {$module.tx_socialstream.settings.involveAPIUrl}
+        involveAppId = {$module.tx_socialstream.settings.involveAppId}
     }
 }

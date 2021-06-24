@@ -64,14 +64,18 @@ if ($params == "") {
 
         if($api_url){
             $encoded = base64_decode($api_url);
-            parse_str(explode("?", $encoded)[1], $encodedParams);
+            $encodedArray = explode("?", $encoded);
+            parse_str($encodedArray[1], $encodedParams);
             $token = $encodedParams["token"];
+
+            $paths = explode('/', $encodedArray[0]);
+            $objectId = $paths[count($paths) - 1];
 
             $prefix = "&";
             if(substr($url, -1) === "?"){
                 $prefix = "";
             }
-            $url .= $prefix . "access_token=" . $token;
+            $url .= $prefix . "access_token=" . $token . "&object_id=" . $objectId;
         }
 
         // header( Location: <url> ) doesn't work - results in an Logout - not quite sure why I suspect there are some cookie-issues

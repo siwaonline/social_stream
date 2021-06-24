@@ -39,7 +39,7 @@ class FacebookinvolveUtility extends \Socialstream\SocialStream\Utility\Token\To
         $url_parts = $this->splitRedirectUrl($redirect);
         $url_parts["state"] = str_replace(",","&",$url_parts["state"]);
 
-        $callback_url = $this->settings['involveAPIUrl'] . '/login/' . $objectId . '?callback_url=' . urlencode($url_parts["base"] . '?page=' . urlencode($url_parts["state"]));
+        $callback_url = $this->settings['involveAPIUrl'] . '/login/' . $this->settings['involveAppId'] . '?callback_url=' . urlencode($url_parts["base"] . '?page=' . urlencode($url_parts["state"]));
         return $callback_url;
     }
     public function getTokenJavascript($accessUrl,$actualUrl){
@@ -65,6 +65,17 @@ class FacebookinvolveUtility extends \Socialstream\SocialStream\Utility\Token\To
             return false;
         }else{
             return $params["access_token"];
+        }
+    }
+
+    public function retrieveObjectId($url){
+        $parts = parse_url($url);
+        parse_str($parts['query'], $params);
+
+        if(!$params["object_id"]){
+            return false;
+        }else{
+            return $params["object_id"];
         }
     }
 
