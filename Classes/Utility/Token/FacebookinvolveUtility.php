@@ -2,6 +2,8 @@
 namespace Socialstream\SocialStream\Utility\Token;
 
 
+    use Socialstream\SocialStream\Domain\Model\Channel;
+
     /***************************************************************
      *
      *  Copyright notice
@@ -32,12 +34,12 @@ namespace Socialstream\SocialStream\Utility\Token;
  */
 class FacebookinvolveUtility extends \Socialstream\SocialStream\Utility\Token\TokenUtility
 {
-    public function getAccessUrl($redirect)
+    public function getAccessUrl($redirect, $objectId)
     {
         $url_parts = $this->splitRedirectUrl($redirect);
         $url_parts["state"] = str_replace(",","&",$url_parts["state"]);
 
-        $callback_url = 'https://stage4.involve.at/login/3?callback_url=' . urlencode($url_parts["base"] . '?page=' . urlencode($url_parts["state"]));
+        $callback_url = $this->settings['involveAPIUrl'] . '/login/' . $objectId . '?callback_url=' . urlencode($url_parts["base"] . '?page=' . urlencode($url_parts["state"]));
         return $callback_url;
     }
     public function getTokenJavascript($accessUrl,$actualUrl){

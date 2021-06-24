@@ -28,6 +28,8 @@ namespace Socialstream\SocialStream\Hooks;
  ***************************************************************/
 
 use Socialstream\SocialStream\Utility\Feed\FeedUtility;
+use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * ChannelProcessDatamap
@@ -52,7 +54,14 @@ class ChannelProcessDatamap
             if ($channel) {
                 if ($channel->getObjectId() && $channel->getToken() || $channel->getType() === "youtube" && $channel->getToken()) {
 
-                    $utility = FeedUtility::getUtility($channel->getType());
+                    $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('pages');
+                    $pageRes = $queryBuilder->select("pid")->from("pages")->where($queryBuilder->expr()->eq('uid', $reference->checkValue_currentRecord["pid"]))->setMaxResults(1)->execute()->fetchAll();
+                    foreach ($pageRes as $page) {
+                        $pid = $page['pid'];
+                    }
+                    if ($pid <= 0) $pid = $reference->checkValue_currentRecord["pid"];
+
+                    $utility = FeedUtility::getUtility($channel->getType(), $pid);
                     $channel = $utility->getChannel($channel, 1);
 
                     if ($channel) {
