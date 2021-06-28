@@ -2,6 +2,8 @@
 namespace Socialstream\SocialStream\Utility\Token;
 
 
+    use Socialstream\SocialStream\Domain\Model\Channel;
+
     /***************************************************************
      *
      *  Copyright notice
@@ -32,11 +34,16 @@ namespace Socialstream\SocialStream\Utility\Token;
  */
 class FacebookinvolveUtility extends \Socialstream\SocialStream\Utility\Token\TokenUtility
 {
-    public function getAccessUrl($redirect)
+    public function getAccessUrl($redirect, $objectId)
     {
-        return "https://stage4.involve.at/";
+        $url_parts = $this->splitRedirectUrl($redirect);
+        $url_parts["state"] = str_replace(",","&",$url_parts["state"]);
+
+        $callback_url = $this->settings['involveAPIUrl'] . '/login/' . $this->settings['involveAppId'] . '?callback_url=' . urlencode($url_parts["base"] . '?page=' . urlencode($url_parts["state"]));
+        return $callback_url;
     }
     public function getTokenJavascript($accessUrl,$actualUrl){
+
         $script = '
 <script>
     var hash = window.location.hash;
@@ -57,14 +64,23 @@ class FacebookinvolveUtility extends \Socialstream\SocialStream\Utility\Token\To
         if(!$params["access_token"]){
             return false;
         }else{
-            $token = file_get_contents("https://graph.facebook.com/oauth/access_token?grant_type=fb_exchange_token&client_id=" . $this->settings["fbappid"] . "&client_secret=" . $this->settings["fbappsecret"] . "&fb_exchange_token=" . $params["access_token"]);
-            return $token;
+            return $params["access_token"];
+        }
+    }
+
+    public function retrieveObjectId($url){
+        $parts = parse_url($url);
+        parse_str($parts['query'], $params);
+
+        if(!$params["object_id"]){
+            return false;
+        }else{
+            return $params["object_id"];
         }
     }
 
     public function getValues($tokenString){
-        $json = json_decode($tokenString);
-        return array("tk" => $json->access_token, "exp" => time() + $json->expires_in);
+        return array("tk" => $tokenString, "exp" => time() + $json->expires_in);
     }
 
 }

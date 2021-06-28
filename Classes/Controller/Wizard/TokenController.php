@@ -17,6 +17,7 @@ namespace Socialstream\SocialStream\Controller\Wizard;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Socialstream\SocialStream\Utility\Token\FacebookinvolveUtility;
 use Socialstream\SocialStream\Utility\Token\YoutubeUtility;
 use TYPO3\CMS\Core\Database\RelationHandler;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
@@ -157,9 +158,16 @@ class TokenController extends \TYPO3\CMS\Backend\Controller\Wizard\AbstractWizar
 
         $actualUrl = $base . $_SERVER['REQUEST_URI'];
 
-        $accessUrl = $utility->getAccessUrl($redirectUrl);
+        if($utility instanceof FacebookinvolveUtility){
+            $accessUrl = $utility->getAccessUrl($redirectUrl, $row["object_id"]);
+        }else{
+            $accessUrl = $utility->getAccessUrl($redirectUrl);
+        }
 
         $tokenString = $utility->retrieveToken($actualUrl);
+        if($utility instanceof FacebookinvolveUtility){
+            $objectId = $utility->retrieveObjectId($actualUrl);
+        }
 
         if (!$tokenString) {
             //header('Location: '.$accessUrl);
@@ -199,16 +207,31 @@ class TokenController extends \TYPO3\CMS\Backend\Controller\Wizard\AbstractWizar
     var selectorTkHidden = 'form[name=\"" . $this->P['formName'] . "\"] [name=\"" . $this->P['itemName'] . "\"]';
     var selectorExp = 'form[name=\"" . $this->P['formName'] . "\"] [data-formengine-input-name=\"" . str_replace("token", "expires", $this->P['itemName']) . "\"]';
     var selectorExpHidden = 'form[name=\"" . $this->P['formName'] . "\"] [name=\"" . str_replace("token", "expires", $this->P['itemName']) . "\"]';
+";
+          if($objectId){
+              $this->content .= "
+    var selectorObj = 'form[name=\"" . $this->P['formName'] . "\"] [data-formengine-input-name=\"" . str_replace("token", "object_id", $this->P['itemName']) . "\"]';
+    var selectorObjHidden = 'form[name=\"" . $this->P['formName'] . "\"] [name=\"" . str_replace("token", "object_id", $this->P['itemName']) . "\"]';
+";
+          }
+$this->content .= "
     if (window.opener && window.opener.document && window.opener.document.querySelector(selectorTk)){
         window.opener.document.querySelector(selectorTk).value = '" . $tk . "';
         window.opener.document.querySelector(selectorTkHidden).value = '" . $tk . "';
         window.opener.document.querySelector(selectorExp).value = '" . $exp . "';
         window.opener.document.querySelector(selectorExpHidden).value = '" . $exp . "';
+";
+          if($objectId){
+              $this->content .= "
+        window.opener.document.querySelector(selectorObj).value = '" . $objectId . "';
+        window.opener.document.querySelector(selectorObjHidden).value = '" . $objectId . "';
+";
+          }
+$this->content .= "
         close();
     } else {
         alert('Got Token, but cant write to window');
     }
-
 </script>
 ";
             }

@@ -55,10 +55,8 @@ module.tx_socialstream {
         # cat=social_stream_keys/keys/v; type=string; label= Webdav password
         webdavpw =
         # cat=social_stream_keys/keys/v; type=string; label= API URL for the Involve Facebook API
-        involeAPIUrl =
-        # cat=social_stream_keys/keys/v; type=string; label= App ID Involve Facebook API
-        involeFBAppId =
-        # cat=social_stream_keys/keys/v; type=string; label= App Secret Involve Facebook API
-        involeFBAppSecret =
+        involveAPIUrl =
+        # cat=social_stream_keys/keys/v; type=string; label= App ID for the Involve Facebook API
+        involveAppId =
     }
 }

@@ -283,6 +283,12 @@ class BaseUtility
                 }
             }
             $link = $imageUrl;
+        }else if($videoUrl && !$imageUrl){
+            if ($this->validateMediaAvailability($videoUrl)) {
+                if ($this->validateMediaSize($videoUrl)) {
+                    $mediaUrl = $videoUrl;
+                }
+            }
         }
 
         return array('link' => $link, 'media_url' => $mediaUrl);

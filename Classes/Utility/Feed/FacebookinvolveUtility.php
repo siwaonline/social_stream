@@ -42,7 +42,14 @@ class FacebookinvolveUtility extends \Socialstream\SocialStream\Utility\Feed\Fee
 
     public function getChannel(\Socialstream\SocialStream\Domain\Model\Channel $channel, $isProcessing = 0)
     {
-        // static
+        $url = $this->settings['involveAPIUrl'] . '/api/feed/facebook/' .  $channel->getObjectId() . (strpos($channel->getObjectId(), '?') !== false ? '&' : '?') . 'token=' . $channel->getToken();
+        $elem = $this->getElems($url);
+        if($elem && $elem[0]){
+            $entry = $elem[0];
+            if($entry->title && $channel->getTitle() !== $entry->title){
+                $channel->setTitle($entry->title);
+            }
+        }
         return $channel;
     }
 
@@ -54,12 +61,13 @@ class FacebookinvolveUtility extends \Socialstream\SocialStream\Utility\Feed\Fee
 
     public function getFeed(\Socialstream\SocialStream\Domain\Model\Channel $channel, $limit = 100)
     {
-        $url = $this->settings['involeAPIUrl'] . '/api/feed/facebook/' .  $channel->getObjectId() . (strpos($channel->getObjectId(), '?') !== false ? '&' : '?') . 'token=' . $channel->getToken();
+        $url = $this->settings['involveAPIUrl'] . '/api/feed/facebook/' .  $channel->getObjectId() . (strpos($channel->getObjectId(), '?') !== false ? '&' : '?') . 'token=' . $channel->getToken();
         $elem = $this->getElems($url);
 
         foreach ($elem as $entry) {
             if ($entry->title || $entry->text) {
                 $hash = md5($entry->createdAt);
+
 
                 $new = 0;
                 $news = $this->newsRepository->findHiddenById($hash, $channel->getUid(), 0);
