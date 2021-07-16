@@ -39,35 +39,35 @@ class Channel extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
      * @var string
      */
     protected $objectId = '';
-    
+
     /**
      * title
      *
      * @var string
      */
     protected $title = '';
-    
+
     /**
      * about
      *
      * @var string
      */
     protected $about = '';
-    
+
     /**
      * description
      *
      * @var string
      */
     protected $description = '';
-    
+
     /**
      * user
      *
      * @var bool
      */
     protected $user = false;
-    
+
     /**
      * type
      *
@@ -88,21 +88,21 @@ class Channel extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
      * @var bool
      */
     protected $videosync = '';
-    
+
     /**
      * link
      *
      * @var string
      */
     protected $link = '';
-    
+
     /**
      * image
      *
      * @var \TYPO3\CMS\Extbase\Domain\Model\FileReference
      */
     protected $image = null;
-    
+
     /**
      * token
      *
@@ -116,14 +116,14 @@ class Channel extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
      * @var string
      */
     protected $refreshToken = '';
-    
+
     /**
      * expires
      *
      * @var int
      */
     protected $expires = 0;
-    
+
     /**
      * news
      *
@@ -131,7 +131,7 @@ class Channel extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
      * @cascade remove
      */
     protected $news = null;
-    
+
     /**
      * __construct
      */
@@ -140,7 +140,7 @@ class Channel extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
         //Do not remove the next line: It would break the functionality
         $this->initStorageObjects();
     }
-    
+
     /**
      * Initializes all ObjectStorage properties
      * Do not modify this method!
@@ -153,7 +153,7 @@ class Channel extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     {
         $this->news = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
     }
-    
+
     /**
      * Returns the objectId
      *
@@ -163,7 +163,7 @@ class Channel extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     {
         return $this->objectId;
     }
-    
+
     /**
      * Sets the objectId
      *
@@ -174,7 +174,7 @@ class Channel extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     {
         $this->objectId = $objectId;
     }
-    
+
     /**
      * Returns the title
      *
@@ -184,7 +184,7 @@ class Channel extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     {
         return $this->title;
     }
-    
+
     /**
      * Sets the title
      *
@@ -195,7 +195,7 @@ class Channel extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     {
         $this->title = $title;
     }
-    
+
     /**
      * Returns the about
      *
@@ -205,7 +205,7 @@ class Channel extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     {
         return $this->about;
     }
-    
+
     /**
      * Sets the about
      *
@@ -216,7 +216,7 @@ class Channel extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     {
         $this->about = $about;
     }
-    
+
     /**
      * Returns the description
      *
@@ -226,7 +226,7 @@ class Channel extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     {
         return $this->description;
     }
-    
+
     /**
      * Sets the description
      *
@@ -237,7 +237,7 @@ class Channel extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     {
         $this->description = $description;
     }
-    
+
     /**
      * Returns the user
      *
@@ -247,7 +247,7 @@ class Channel extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     {
         return $this->user;
     }
-    
+
     /**
      * Sets the user
      *
@@ -258,7 +258,7 @@ class Channel extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     {
         $this->user = $user;
     }
-    
+
     /**
      * Returns the boolean state of user
      *
@@ -268,7 +268,7 @@ class Channel extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     {
         return $this->user;
     }
-    
+
     /**
      * Returns the type
      *
@@ -278,7 +278,7 @@ class Channel extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     {
         return $this->type;
     }
-    
+
     /**
      * Sets the type
      *
@@ -331,7 +331,7 @@ class Channel extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     {
         return $this->link;
     }
-    
+
     /**
      * Sets the link
      *
@@ -342,7 +342,7 @@ class Channel extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     {
         $this->link = $link;
     }
-    
+
     /**
      * Returns the image
      *
@@ -352,7 +352,7 @@ class Channel extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     {
         return $this->image;
     }
-    
+
     /**
      * Sets the image
      *
@@ -363,7 +363,7 @@ class Channel extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     {
         $this->image = $image;
     }
-    
+
     /**
      * Returns the token
      *
@@ -373,7 +373,7 @@ class Channel extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     {
         return $this->token;
     }
-    
+
     /**
      * Sets the token
      *
@@ -410,7 +410,7 @@ class Channel extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     {
         return $this->expires;
     }
-    
+
     /**
      * Sets the expires
      *
@@ -421,7 +421,7 @@ class Channel extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     {
         $this->expires = $expires;
     }
-    
+
     /**
      * Adds a News
      *
@@ -432,7 +432,7 @@ class Channel extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     {
         $this->news->attach($news);
     }
-    
+
     /**
      * Removes a News
      *
@@ -443,7 +443,7 @@ class Channel extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     {
         $this->news->detach($newsToRemove);
     }
-    
+
     /**
      * Returns the news
      *
@@ -453,7 +453,7 @@ class Channel extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     {
         return $this->news;
     }
-    
+
     /**
      * Sets the news
      *

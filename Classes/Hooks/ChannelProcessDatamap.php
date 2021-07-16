@@ -27,9 +27,11 @@ namespace Socialstream\SocialStream\Hooks;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use Socialstream\SocialStream\Domain\Repository\ChannelRepository;
 use Socialstream\SocialStream\Utility\Feed\FeedUtility;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Object\ObjectManager;
 
 /**
  * ChannelProcessDatamap
@@ -39,10 +41,11 @@ class ChannelProcessDatamap
 
     function processDatamap_postProcessFieldArray($status, $table, $id, &$fieldArray, &$reference)
     {
-        $objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
-        $channelRepository = $objectManager->get('Socialstream\\SocialStream\\Domain\\Repository\\ChannelRepository');
 
         if ($table == 'tx_socialstream_domain_model_channel') {
+            $objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(ObjectManager::class);
+            $channelRepository = $objectManager->get(ChannelRepository::class);
+
             if ($status == "update") {
                 $channel = $channelRepository->findHidden($id)->getFirst();
             } else {
