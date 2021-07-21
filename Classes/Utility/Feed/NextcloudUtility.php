@@ -28,11 +28,13 @@ namespace Socialstream\SocialStream\Utility\Feed;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use Socialstream\SocialStream\Domain\Model\News;
 use Socialstream\SocialStream\Utility\BaseUtility;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Messaging\FlashMessageService;
 use Sabre\HTTP;
 use Sabre\DAV\Sharing;
+use TYPO3\CMS\Extbase\Persistence\Generic\Typo3QuerySettings;
 
 /**
  * FacebookUtility
@@ -107,10 +109,16 @@ class NextcloudUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUtili
         $publicLinkuri = $this->getPublicUrlOfFolder($url);
 
 
+        $querySettings = new Typo3QuerySettings();
+        $querySettings->setStoragePageIds([ $channel->getPid() ]);
+        $this->newsRepository->setDefaultQuerySettings($querySettings);
+
         if ($publicLinkuri !== null) {
             $currentYear = date("Y");
             $url = $this->endsWith($url, '/') ? $url . $currentYear : $url . '/' . $currentYear;
             $dirs = $this->client->propFind($url, $this->properties, 1);
+
+            // persist news
             foreach ($dirs as $dirname => $dir) {
                 if ($dirname != '/remote.php/webdav' . $folderName . '/') {
                     if (!empty($dir['{DAV:}resourcetype']) && $dir['{DAV:}resourcetype']->getValue()[0] == '{DAV:}collection') {
@@ -127,6 +135,28 @@ class NextcloudUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUtili
                         }
                     }
                 }
+            }
+
+            // delete news which are not included in the folder
+            $newsToDelete = $this->newsRepository->findAllRaw();
+            foreach ($dirs as $dirname => $dir) {
+                if ($dirname != '/remote.php/webdav' . $folderName . '/') {
+                    if (!empty($dir['{DAV:}resourcetype']) && $dir['{DAV:}resourcetype']->getValue()[0] == '{DAV:}collection') {
+                        $objectId = $dir['{http://owncloud.org/ns}id'];
+                        $channelUid = $channel->getUid();
+
+                        $objectIdColumn = array_column($newsToDelete, 'object_id');
+                        $channelColumn = array_column($newsToDelete, 'channel');
+
+                        if(in_array($objectId, $objectIdColumn) && in_array($channelUid, $channelColumn)){
+                            $index = array_search($objectId, $objectIdColumn);
+                            array_splice($newsToDelete, $index, 1);
+                        }
+                    }
+                }
+            }
+            foreach($newsToDelete as $news){
+                $this->deleteNews($news['uid']);
             }
         }
 
@@ -305,4 +335,18 @@ class NextcloudUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUtili
         return $publicUrl;
     }
 
+    /**
+     * @param News|int $news
+     * @throws \TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException
+     */
+    function deleteNews($news){
+        if(is_numeric($news)){
+            $news = $this->newsRepository->findByUid($news);
+        }
+
+        if($news instanceof News){
+            $this->newsRepository->remove($news);
+            $this->persistenceManager->persistAll();
+        }
+    }
 }
