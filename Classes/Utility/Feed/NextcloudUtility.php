@@ -138,7 +138,7 @@ class NextcloudUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUtili
             }
 
             // delete news which are not included in the folder
-            $newsToDelete = $this->newsRepository->findAllRaw();
+            $newsToDelete = $this->newsRepository->findAllRawByCurrentYearFolder();
             foreach ($dirs as $dirname => $dir) {
                 if ($dirname != '/remote.php/webdav' . $folderName . '/') {
                     if (!empty($dir['{DAV:}resourcetype']) && $dir['{DAV:}resourcetype']->getValue()[0] == '{DAV:}collection') {
