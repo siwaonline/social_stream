@@ -43,7 +43,7 @@ class FacebookinvolveUtility extends \Socialstream\SocialStream\Utility\Feed\Fee
     public function getChannel(\Socialstream\SocialStream\Domain\Model\Channel $channel, $isProcessing = 0)
     {
         $url = $this->settings['involveAPIUrl'] . '/api/feed/facebook/' .  $channel->getObjectId() . (strpos($channel->getObjectId(), '?') !== false ? '&' : '?') . 'token=' . $channel->getToken();
-        $elem = $this->getElems($url);
+        $elem = $this->getElems($url, true);
         if($elem && $elem[0]){
             $entry = $elem[0];
             if($entry->title && $channel->getTitle() !== $entry->title){
@@ -62,7 +62,7 @@ class FacebookinvolveUtility extends \Socialstream\SocialStream\Utility\Feed\Fee
     public function getFeed(\Socialstream\SocialStream\Domain\Model\Channel $channel, $limit = 100)
     {
         $url = $this->settings['involveAPIUrl'] . '/api/feed/facebook/' .  $channel->getObjectId() . (strpos($channel->getObjectId(), '?') !== false ? '&' : '?') . 'token=' . $channel->getToken();
-        $elem = $this->getElems($url);
+        $elem = $this->getElems($url, true);
 
         foreach ($elem as $entry) {
             if ($entry->title || $entry->text) {

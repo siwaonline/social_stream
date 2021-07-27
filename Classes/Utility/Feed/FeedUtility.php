@@ -81,11 +81,11 @@ class FeedUtility extends \Socialstream\SocialStream\Utility\BaseUtility
      * @param $url
      * @return mixed
      */
-    public function getElems($url)
+    public function getElems($url, $associative = false)
     {
         $elems = file_get_contents($url);
         $elems = $this->clearString($elems);
-        return json_decode($elems);
+        return json_decode($elems, $associative);
     }
 
     /**
