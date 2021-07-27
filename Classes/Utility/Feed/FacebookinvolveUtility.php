@@ -42,11 +42,11 @@ class FacebookinvolveUtility extends \Socialstream\SocialStream\Utility\Feed\Fee
 
     public function getChannel(\Socialstream\SocialStream\Domain\Model\Channel $channel, $isProcessing = 0)
     {
-        $url = $this->settings['involveAPIUrl'] . '/api/feed/facebook/' .  $channel->getObjectId() . (strpos($channel->getObjectId(), '?') !== false ? '&' : '?') . 'token=' . $channel->getToken();
+        $url = $this->settings['involveAPIUrl'] . '/api/feed/facebook/' . $channel->getObjectId() . (strpos($channel->getObjectId(), '?') !== false ? '&' : '?') . 'token=' . $channel->getToken();
         $elem = $this->getElems($url, true);
-        if($elem && $elem[0]){
+        if ($elem && $elem[0]) {
             $entry = $elem[0];
-            if($entry->title && $channel->getTitle() !== $entry->title){
+            if ($entry->title && $channel->getTitle() !== $entry->title) {
                 $channel->setTitle($entry->title);
             }
         }
@@ -62,7 +62,18 @@ class FacebookinvolveUtility extends \Socialstream\SocialStream\Utility\Feed\Fee
     public function getFeed(\Socialstream\SocialStream\Domain\Model\Channel $channel, $limit = 100)
     {
         $url = $this->settings['involveAPIUrl'] . '/api/feed/facebook/' .  $channel->getObjectId() . (strpos($channel->getObjectId(), '?') !== false ? '&' : '?') . 'token=' . $channel->getToken();
-        $elem = $this->getElems($url);
+//        $url = 'https://feed-stream.involve.at/api/feed/facebook/46?token=VkadaI0Z8BeHIqFcJipA9GabjZPViUtawLUX2Dy1zm3bpajNWpdhtJzM95CE';
+
+        $requestFactory = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Http\RequestFactory::class);
+        $response = $requestFactory->request($url, 'GET');
+        if ($response->getStatusCode() === 200) {
+            if (strpos($response->getHeaderLine('Content-Type'), 'application/json') === 0) {
+                if ($response instanceof \GuzzleHttp\Psr7\Response) {
+                    $elem = json_decode($response->getBody()->getContents());
+                }
+            }
+        }
+
 
         foreach ($elem as $entry) {
             if ($entry->title || $entry->text) {
@@ -88,7 +99,7 @@ class FacebookinvolveUtility extends \Socialstream\SocialStream\Utility\Feed\Fee
                 $news->setDatetime(new \DateTime($entry->createdAt));
                 $news->setAuthor($entry->title);
 
-                if ($entry->permalink){
+                if ($entry->permalink) {
                     $news->setLink($entry->permalink);
                 }
                 if ($entry->title) {
@@ -96,7 +107,8 @@ class FacebookinvolveUtility extends \Socialstream\SocialStream\Utility\Feed\Fee
                 }
 
                 if ($entry->text) {
-                    $news->setBodytext($entry->text);
+                    $entryText = preg_replace('/[\x{10000}-\x{10FFFF}]/u', "\xEF\xBF\xBD", $entry->text);
+                    $news->setBodytext($entryText);
                 } else {
                     if ($entry->title) {
                         $news->setBodytext($entry->title);
