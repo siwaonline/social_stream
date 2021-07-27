@@ -62,7 +62,7 @@ class FacebookinvolveUtility extends \Socialstream\SocialStream\Utility\Feed\Fee
     public function getFeed(\Socialstream\SocialStream\Domain\Model\Channel $channel, $limit = 100)
     {
         $url = $this->settings['involveAPIUrl'] . '/api/feed/facebook/' .  $channel->getObjectId() . (strpos($channel->getObjectId(), '?') !== false ? '&' : '?') . 'token=' . $channel->getToken();
-        $elem = $this->getElems($url, true);
+        $elem = $this->getElems($url);
 
         foreach ($elem as $entry) {
             if ($entry->title || $entry->text) {
