@@ -62,7 +62,6 @@ class FacebookinvolveUtility extends \Socialstream\SocialStream\Utility\Feed\Fee
     public function getFeed(\Socialstream\SocialStream\Domain\Model\Channel $channel, $limit = 100)
     {
         $url = $this->settings['involveAPIUrl'] . '/api/feed/facebook/' .  $channel->getObjectId() . (strpos($channel->getObjectId(), '?') !== false ? '&' : '?') . 'token=' . $channel->getToken();
-//        $url = 'https://feed-stream.involve.at/api/feed/facebook/46?token=VkadaI0Z8BeHIqFcJipA9GabjZPViUtawLUX2Dy1zm3bpajNWpdhtJzM95CE';
 
         $requestFactory = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Http\RequestFactory::class);
         $response = $requestFactory->request($url, 'GET');
@@ -107,9 +106,7 @@ class FacebookinvolveUtility extends \Socialstream\SocialStream\Utility\Feed\Fee
                 }
 
                 if ($entry->text) {
-                    // UTF-8 formatting Problems with characters/emojis - with this it can be saved into the DB
-                    $entryText = preg_replace('/[\x{10000}-\x{10FFFF}]/u', "\xEF\xBF\xBD", $entry->text);
-                    $news->setBodytext($entryText);
+                    $news->setBodytext($entry->text);
                 } else {
                     if ($entry->title) {
                         $news->setBodytext($entry->title);
