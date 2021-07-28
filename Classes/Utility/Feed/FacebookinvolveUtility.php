@@ -107,6 +107,7 @@ class FacebookinvolveUtility extends \Socialstream\SocialStream\Utility\Feed\Fee
                 }
 
                 if ($entry->text) {
+                    // UTF-8 formatting Problems with characters/emojis - with this it can be saved into the DB
                     $entryText = preg_replace('/[\x{10000}-\x{10FFFF}]/u', "\xEF\xBF\xBD", $entry->text);
                     $news->setBodytext($entryText);
                 } else {
