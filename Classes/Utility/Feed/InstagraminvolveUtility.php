@@ -28,16 +28,14 @@ namespace Socialstream\SocialStream\Utility\Feed;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use \TYPO3\CMS\Extbase\Utility\LocalizationUtility;
-use \TYPO3\CMS\Core\Messaging\AbstractMessage;
 use \TYPO3\CMS\Core\Messaging\FlashMessageService;
 use \TYPO3\CMS\Core\Messaging\FlashMessage;
 use \TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
- * FacebookUtility
+ * InstagramUtility
  */
-class FacebookinvolveUtility extends BaseInvolveUtility
+class InstagraminvolveUtility extends BaseInvolveUtility
 {
-    protected $apiUrl = '/api/feed/facebook/';
+    protected $apiUrl = '/api/feed/instagram/';
 }

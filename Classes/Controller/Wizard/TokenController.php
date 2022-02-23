@@ -17,13 +17,10 @@ namespace Socialstream\SocialStream\Controller\Wizard;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Socialstream\SocialStream\Utility\Token\FacebookinvolveUtility;
+use Socialstream\SocialStream\Utility\Token\BaseInvolveUtility;
 use Socialstream\SocialStream\Utility\Token\YoutubeUtility;
-use TYPO3\CMS\Core\Database\RelationHandler;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Core\Utility\HttpUtility;
-use TYPO3\CMS\Core\Utility\MathUtility;
 
 use Socialstream\SocialStream\Utility\Token\TokenUtility;
 
@@ -158,14 +155,14 @@ class TokenController extends \TYPO3\CMS\Backend\Controller\Wizard\AbstractWizar
 
         $actualUrl = $base . $_SERVER['REQUEST_URI'];
 
-        if($utility instanceof FacebookinvolveUtility){
+        if($utility instanceof BaseInvolveUtility){
             $accessUrl = $utility->getAccessUrl($redirectUrl, $row["object_id"]);
         }else{
             $accessUrl = $utility->getAccessUrl($redirectUrl);
         }
 
         $tokenString = $utility->retrieveToken($actualUrl);
-        if($utility instanceof FacebookinvolveUtility){
+        if($utility instanceof BaseInvolveUtility){
             $objectId = $utility->retrieveObjectId($actualUrl);
         }
 
