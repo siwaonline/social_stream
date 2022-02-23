@@ -151,6 +151,7 @@ class BaseUtility
             'facebookevent' => 'Facebook Event',
             'facebookinvolve' => 'Facebook Involve Stream',
             'instagram' => 'Instagram',
+            'instagraminvolve' => 'Instagram Involve Stream',
             'youtube' => 'YouTube',
             'twitter' => 'Twitter',
             'nextcloud' => 'Nextcloud',
