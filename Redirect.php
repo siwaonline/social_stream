@@ -77,11 +77,12 @@ if ($params == "") {
                 $prefix = "";
             }
             $url .= $prefix . "access_token=" . $token . "&object_id=" . $objectId;
+
+            $url = urldecode($url);
         }
 
         // header( Location: <url> ) doesn't work - results in an Logout - not quite sure why I suspect there are some cookie-issues
         // those sketchy lines below do the trick so I guess I'll keep it this way
-
 
         echo '
         <script>

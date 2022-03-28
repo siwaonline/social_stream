@@ -20,6 +20,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Socialstream\SocialStream\Utility\Token\BaseInvolveUtility;
 use Socialstream\SocialStream\Utility\Token\GooglephotosUtility;
 use Socialstream\SocialStream\Utility\Token\YoutubeUtility;
+use TYPO3\CMS\Backend\Routing\UriBuilder;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Database\ConnectionPool;
@@ -148,12 +149,11 @@ class TokenController extends \TYPO3\CMS\Backend\Controller\Wizard\AbstractWizar
         $this->settings["storagePid"] = $this->P['pid'];
 
 
-        $redirectUrl = BackendUtility::getModuleUrl(
-            'wizard_token',
-            array("P" => $this->P),
-            false,
-            true
-        );
+        /** @var UriBuilder $backendUriBuilder */
+        $backendUriBuilder = GeneralUtility::makeInstance(\TYPO3\CMS\Backend\Routing\UriBuilder::class);
+        $redirectUrl = $backendUriBuilder->buildUriFromRoute('wizard_token', [
+            "P" => $this->P
+        ], UriBuilder::ABSOLUTE_URL);
 
         if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') {
             $base = 'https' . '://' . $_SERVER['SERVER_NAME'];
