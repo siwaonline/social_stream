@@ -1,6 +1,6 @@
 <?php
 
-namespace Socialstream\SocialStream\Controller;
+namespace Socialstream\SocialStream\Command;
 
 /***************************************************************
  *
@@ -30,6 +30,10 @@ namespace Socialstream\SocialStream\Controller;
 use Socialstream\SocialStream\Domain\Model\Channel;
 use Socialstream\SocialStream\Utility\BaseUtility;
 use Socialstream\SocialStream\Utility\Feed\FeedUtility;
+use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
 use TYPO3\CMS\Core\Mail\MailMessage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
@@ -37,7 +41,7 @@ use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 /**
  * GetFeedCommandController
  */
-class GetFeedCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\CommandController
+class GetFeedCommand extends Command
 {
     /**
      * channelRepository
@@ -64,11 +68,28 @@ class GetFeedCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\Command
     protected $settings = [];
 
     /**
-     * @param int $rootPage
-     * @param string $storagePid
+     * Configure the command by defining the name, options and arguments
      */
-    public function getFeedCommand($rootPage = 1, $storagePid = null)
+    protected function configure()
     {
+        $this->setDescription('Show entries from the sys_log database table of the last 24 hours.');
+        $this->setHelp('Prints a list of recent sys_log entries.' . LF . 'If you want to get more detailed information, use the --verbose option.');
+
+        $this->addArgument('rootPage', InputArgument::OPTIONAL, 'Root Page Uid', 1);
+        $this->addArgument('storagePid', InputArgument::OPTIONAL, 'Storage Page Uid', null);
+    }
+
+    /**
+     * Executes the command for showing sys_log entries
+     *
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     */
+    protected function execute(InputInterface $input, OutputInterface $output)
+    {
+        $rootPage = $input->getArgument('rootPage');
+        $storagePid = $input->getArgument('storagePid');
+
         $this->objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
         $this->configurationManager = $this->objectManager->get(\Socialstream\SocialStream\Configuration\ConfigurationManager::class);
         $this->configurationManager->getConcreteConfigurationManager()->setCurrentPageId($rootPage);
@@ -131,5 +152,7 @@ class GetFeedCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\Command
             }
         }
         $this->cacheManager->flushCachesByTag('tx_news');
+
+        return 0;
     }
 }
