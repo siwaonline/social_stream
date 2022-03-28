@@ -145,7 +145,9 @@ class BaseUtility
         return array(
             'facebook' => 'Facebook',
             'facebookevent' => 'Facebook Event',
+            'facebookinvolve' => 'Facebook Involve Stream',
             'instagram' => 'Instagram',
+            'instagraminvolve' => 'Instagram Involve Stream',
             'youtube' => 'YouTube',
             'twitter' => 'Twitter',
             'flickr' => 'Flickr',
