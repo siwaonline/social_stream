@@ -29,7 +29,8 @@ namespace Socialstream\SocialStream\Domain\Repository;
 /**
  * The repository for News
  */
-class NewsRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
+//class NewsRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
+class NewsRepository extends \GeorgRinger\News\Domain\Repository\NewsRepository
 {
     public function findHiddenById($objectId,$channel,$split=0) {
         if($split) {

@@ -28,15 +28,16 @@ namespace Socialstream\SocialStream\Command;
  ***************************************************************/
 
 use Socialstream\SocialStream\Domain\Model\Channel;
+use Socialstream\SocialStream\Domain\Repository\ChannelRepository;
 use Socialstream\SocialStream\Utility\BaseUtility;
 use Socialstream\SocialStream\Utility\Feed\FeedUtility;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use TYPO3\CMS\Core\Cache\CacheManager;
 use TYPO3\CMS\Core\Mail\MailMessage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 
 /**
  * GetFeedCommandController
@@ -72,11 +73,10 @@ class GetFeedCommand extends Command
      */
     protected function configure()
     {
-        $this->setDescription('Show entries from the sys_log database table of the last 24 hours.');
-        $this->setHelp('Prints a list of recent sys_log entries.' . LF . 'If you want to get more detailed information, use the --verbose option.');
+        $this->setDescription('Gets all Social Stream Feeds.');
 
-        $this->addArgument('rootPage', InputArgument::OPTIONAL, 'Root Page Uid', 1);
-        $this->addArgument('storagePid', InputArgument::OPTIONAL, 'Storage Page Uid', null);
+        $this->addArgument('rootPage', InputArgument::REQUIRED, 'rootPage');
+        $this->addArgument('storagePid', InputArgument::OPTIONAL, 'storagePid', 291);
     }
 
     /**
@@ -87,8 +87,8 @@ class GetFeedCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $rootPage = $input->getArgument('rootPage');
-        $storagePid = $input->getArgument('storagePid');
+        $rootPage = intval($input->getArgument('rootPage'));
+        $storagePid = intval($input->getArgument('storagePid'));
 
         $this->objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
         $this->configurationManager = $this->objectManager->get(\Socialstream\SocialStream\Configuration\ConfigurationManager::class);
@@ -100,9 +100,8 @@ class GetFeedCommand extends Command
         );
         */
 
-        FeedUtility::initTSFE($rootPage);
-        $this->channelRepository = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Socialstream\\SocialStream\\Domain\\Repository\\ChannelRepository');
-        $this->cacheManager = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Cache\\CacheManager');
+        $this->channelRepository = $this->objectManager->get(ChannelRepository::class);
+        $this->cacheManager = $this->objectManager->get(CacheManager::class);
 
         $querySettings = $this->channelRepository->createQuery()->getQuerySettings();
 

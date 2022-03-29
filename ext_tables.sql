@@ -2,6 +2,7 @@
 # Table structure for table 'tx_news_domain_model_news'
 #
 CREATE TABLE tx_news_domain_model_news (
+	bodytext text,
 
   datetimeend int(11) DEFAULT '0' NOT NULL,
 	object_id varchar(255) DEFAULT '' NOT NULL,

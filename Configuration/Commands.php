@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'yourext:dothings' => [
-        'class' => \Socialstream\SocialStream\Command\GetFeedCommand::class,
+    'socialstream:getfeed' => [
+        'class' => \Socialstream\SocialStream\Command\GetFeedCommand::class
     ],
 ];

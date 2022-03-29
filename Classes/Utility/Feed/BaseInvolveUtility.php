@@ -28,9 +28,11 @@ namespace Socialstream\SocialStream\Utility\Feed;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use Socialstream\SocialStream\Domain\Repository\NewsRepository;
 use \TYPO3\CMS\Core\Messaging\FlashMessageService;
 use \TYPO3\CMS\Core\Messaging\FlashMessage;
 use \TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Object\ObjectManager;
 
 /**
  * InstagramUtility
@@ -52,6 +54,8 @@ class BaseInvolveUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUti
             $entry = $elem[0];
             if ($entry->title && $channel->getTitle() !== $entry->title) {
                 $channel->setTitle($entry->title);
+            }else if($entry->source){
+                $channel->setTitle($entry->source);
             }
         }
         return $channel;
@@ -87,7 +91,6 @@ class BaseInvolveUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUti
             }
         }
 
-
         foreach ($elem as $entry) {
             if ($entry->title || $entry->text) {
                 $this->persistNewsFromEntry($channel, $entry);
@@ -109,10 +112,10 @@ class BaseInvolveUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUti
         $news->setType(0);
         $news->setChannel($channel);
 
-        $cat = $this->getCategory($channel->getType(), null);
+        $cat = $this->getCategory($channel->getType(), null, $channel);
         $news->addCategory($cat);
 
-        $subcat = $this->getCategory($channel->getTitle(), $cat);
+        $subcat = $this->getCategory($channel->getTitle(), $cat, $channel);
         $news->addCategory($subcat);
 
         $news->setDatetime(new \DateTime($entry->createdAt));
@@ -140,6 +143,7 @@ class BaseInvolveUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUti
         } else {
             $this->newsRepository->update($news);
         }
+
         $this->persistenceManager->persistAll();
 
 
