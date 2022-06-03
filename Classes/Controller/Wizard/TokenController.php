@@ -17,6 +17,7 @@ namespace Socialstream\SocialStream\Controller\Wizard;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Socialstream\SocialStream\Utility\Token\BaseInvolveUtility;
 use Socialstream\SocialStream\Utility\Token\GooglephotosUtility;
 use Socialstream\SocialStream\Utility\Token\YoutubeUtility;
 use TYPO3\CMS\Backend\Routing\UriBuilder;
@@ -53,6 +54,11 @@ class TokenController extends \TYPO3\CMS\Backend\Controller\Wizard\AbstractWizar
      * @var ModuleTemplate
      */
     protected $moduleTemplate;
+
+    /**
+     * @var string
+     */
+    protected $content = '';
 
 
     /**
@@ -134,14 +140,12 @@ class TokenController extends \TYPO3\CMS\Backend\Controller\Wizard\AbstractWizar
             return;
         }
 
-        TokenUtility::initTSFE($pid, 0);
         $this->objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
         $this->configurationManager = $this->objectManager->get(\Socialstream\SocialStream\Configuration\ConfigurationManager::class);
         $this->configurationManager->getConcreteConfigurationManager()->setCurrentPageId($pid);
         $this->settings = $this->configurationManager->getConfiguration(\TYPO3\CMS\Extbase\Configuration\ConfigurationManager::CONFIGURATION_TYPE_SETTINGS, 'Socialstream');
 
         $this->settings["storagePid"] = $this->P['pid'];
-
 
         $uriBuilder = GeneralUtility::makeInstance(UriBuilder::class);
         $redirectUrl = $uriBuilder->buildUriFromRoute(
@@ -164,9 +168,16 @@ class TokenController extends \TYPO3\CMS\Backend\Controller\Wizard\AbstractWizar
 
         $actualUrl = $base . $_SERVER['REQUEST_URI'];
 
-        $accessUrl = $utility->getAccessUrl($redirectUrl);
+        if($utility instanceof BaseInvolveUtility){
+            $accessUrl = $utility->getAccessUrl($redirectUrl, $row["object_id"]);
+        }else{
+            $accessUrl = $utility->getAccessUrl($redirectUrl);
+        }
 
         $tokenString = $utility->retrieveToken($actualUrl);
+        if($utility instanceof BaseInvolveUtility){
+            $objectId = $utility->retrieveObjectId($actualUrl);
+        }
 
         if (!$tokenString) {
             //header('Location: '.$accessUrl);
@@ -175,9 +186,9 @@ class TokenController extends \TYPO3\CMS\Backend\Controller\Wizard\AbstractWizar
             $res = $utility->getValues($tokenString);
             $tk = $res["tk"];
             $exp = $res["exp"];
-            $rf_tk = $res['rf_tk'];
-
-            $this->content .= "
+            if ($utility instanceof YoutubeUtility) {
+                $rf_tk = $res["rf_tk"];
+                $this->content .= "
 <script>
     var selectorTk = 'form[name=\"" . $this->P['formName'] . "\"] [data-formengine-input-name=\"" . $this->P['itemName'] . "\"]';
     var selectorTkHidden = 'form[name=\"" . $this->P['formName'] . "\"] [name=\"" . $this->P['itemName'] . "\"]';
@@ -188,21 +199,52 @@ class TokenController extends \TYPO3\CMS\Backend\Controller\Wizard\AbstractWizar
     if (window.opener && window.opener.document && window.opener.document.querySelector(selectorTk)){
         window.opener.document.querySelector(selectorTk).value = '" . $tk . "';
         window.opener.document.querySelector(selectorTkHidden).value = '" . $tk . "';
-        if(window.opener.document.querySelector(selectorTk) && window.opener.document.querySelector(selectorRfTkHidden)){
-            window.opener.document.querySelector(selectorRfTk).value = '" . $rf_tk . "';
-            window.opener.document.querySelector(selectorRfTkHidden).value = '" . $rf_tk . "';
-        }
-        if(window.opener.document.querySelector(selectorExp) && window.opener.document.querySelector(selectorExpHidden)){
-            window.opener.document.querySelector(selectorExp).value = '" . $exp . "';
-            window.opener.document.querySelector(selectorExpHidden).value = '" . $exp . "';
-        }
+        window.opener.document.querySelector(selectorRfTk).value = '" . $rf_tk . "';
+        window.opener.document.querySelector(selectorRfTkHidden).value = '" . $rf_tk . "';
+        window.opener.document.querySelector(selectorExp).value = '" . $exp . "';
+        window.opener.document.querySelector(selectorExpHidden).value = '" . $exp . "';
         close();
     } else {
-        alert('Got Token, but cant write to window');
+        alert('Got Token, but cant write to window - Youtube');
     }
 
 </script>
 ";
+            } else {
+                $this->content .= "
+<script>
+    var selectorTk = 'form[name=\"" . $this->P['formName'] . "\"] [data-formengine-input-name=\"" . $this->P['itemName'] . "\"]';
+    var selectorTkHidden = 'form[name=\"" . $this->P['formName'] . "\"] [name=\"" . $this->P['itemName'] . "\"]';
+    var selectorExp = 'form[name=\"" . $this->P['formName'] . "\"] [data-formengine-input-name=\"" . str_replace("token", "expires", $this->P['itemName']) . "\"]';
+    var selectorExpHidden = 'form[name=\"" . $this->P['formName'] . "\"] [name=\"" . str_replace("token", "expires", $this->P['itemName']) . "\"]';
+";
+                if($objectId){
+                    $this->content .= "
+    var selectorObj = 'form[name=\"" . $this->P['formName'] . "\"] [data-formengine-input-name=\"" . str_replace("token", "object_id", $this->P['itemName']) . "\"]';
+    var selectorObjHidden = 'form[name=\"" . $this->P['formName'] . "\"] [name=\"" . str_replace("token", "object_id", $this->P['itemName']) . "\"]';
+";
+                }
+                $this->content .= "
+    if (window.opener && window.opener.document && window.opener.document.querySelector(selectorTk)){
+        window.opener.document.querySelector(selectorTk).value = '" . $tk . "';
+        window.opener.document.querySelector(selectorTkHidden).value = '" . $tk . "';
+        window.opener.document.querySelector(selectorExp).value = '" . $exp . "';
+        window.opener.document.querySelector(selectorExpHidden).value = '" . $exp . "';
+";
+                if($objectId){
+                    $this->content .= "
+        window.opener.document.querySelector(selectorObj).value = '" . $objectId . "';
+        window.opener.document.querySelector(selectorObjHidden).value = '" . $objectId . "';
+";
+                }
+                $this->content .= "
+        close();
+    } else {
+        alert('Got Token, but cant write to window');
+    }
+</script>
+";
+            }
         }
         // Build the <body> for the module
         $this->moduleTemplate->setContent($this->content);

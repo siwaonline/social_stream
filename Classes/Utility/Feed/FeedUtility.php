@@ -56,14 +56,8 @@ class FeedUtility extends \Socialstream\SocialStream\Utility\BaseUtility
     {
         parent::__construct();
         if ($pid) {
-            //$this->initTSFE($pid, 0);
             $this->initSettings($pid);
         }
-    }
-
-    public static function initTSFE($id = 1, $typeNum = 0)
-    {
-        parent::initTSFE($id, $typeNum);
     }
 
     public function initSettings($pid)

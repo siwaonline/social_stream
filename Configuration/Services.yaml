@@ -1,0 +1,7 @@
+services:
+
+    Socialstream\SocialStream\Command\GetFeedCommand:
+      tags:
+        - name: 'console.command'
+          command: 'socialstream:getfeed'
+          description: 'Crawls the feed and saves news'

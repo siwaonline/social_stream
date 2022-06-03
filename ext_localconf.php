@@ -30,4 +30,11 @@ $extbaseObjectContainer = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\
 
 $extbaseObjectContainer->registerImplementation(\GeorgRinger\News\Domain\Model\News::class, \Socialstream\SocialStream\Domain\Model\News::class);
 
+$GLOBALS['TYPO3_CONF_VARS']['SYS']['Objects'][\TYPO3\CMS\Extbase\Configuration\BackendConfigurationManager::class] = [
+    'className' => \Socialstream\SocialStream\Configuration\BackendConfigurationManager::class
+];
+$GLOBALS['TYPO3_CONF_VARS']['SYS']['Objects'][\TYPO3\CMS\Extbase\Configuration\ConfigurationManager::class] = [
+    'className' => \Socialstream\SocialStream\Configuration\ConfigurationManager::class
+];
+
 unset($extbaseObjectContainer);

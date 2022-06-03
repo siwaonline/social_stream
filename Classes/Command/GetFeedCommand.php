@@ -38,6 +38,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use TYPO3\CMS\Core\Cache\CacheManager;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Configuration\ConfigurationManager;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 
@@ -80,19 +81,14 @@ class GetFeedCommand extends Command
         $this->addArgument('storagePid', InputArgument::REQUIRED, 'storagePid');
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-        $this->configurationManager = $this->objectManager->get(\Socialstream\SocialStream\Configuration\ConfigurationManager::class);
+        $this->configurationManager = $this->objectManager->get(ConfigurationManager::class);
         $this->configurationManager->getConcreteConfigurationManager()->setCurrentPageId($input->getArgument('rootPage'));
-        $this->settings = $this->configurationManager->getConfiguration(\TYPO3\CMS\Extbase\Configuration\ConfigurationManager::CONFIGURATION_TYPE_SETTINGS, 'Socialstream');
-        /*
-        $this->settings = $this->configurationManager->getConfiguration(
-            ConfigurationManagerInterface::CONFIGURATION_TYPE_SETTINGS
-        );
-        */
+        $this->settings = $this->configurationManager->getConfiguration(ConfigurationManager::CONFIGURATION_TYPE_SETTINGS, 'Socialstream');
 
-        FeedUtility::initTSFE($input->getArgument('rootPage'));
+
         $this->channelRepository = $this->objectManager->get(ChannelRepository::class);
         $this->cacheManager = $this->objectManager->get(CacheManager::class);
 
@@ -123,6 +119,7 @@ class GetFeedCommand extends Command
                 $ch = $utility->getChannel($channel);
                 $this->channelRepository->update($ch);
                 $utility->getFeed($channel, $utility->settings["limitPosts"]);
+
                 BaseUtility::log(__CLASS__, 'info', "Finished crawling " . ucfirst($channel->getType()) . " - " . ($channel->getTitle() ? $channel->getTitle() : $channel->getObjectId()) . " successfully.");
             } catch (\Exception $e) {
                 if ($this->settings['sysmail'] && $this->settings['sendermail']) {
@@ -141,8 +138,12 @@ class GetFeedCommand extends Command
 
                 BaseUtility::log(__CLASS__, 'error', $e->getMessage());
                 BaseUtility::log(__CLASS__, 'info', "Finished crawling " . ucfirst($channel->getType()) . " - " . ($channel->getTitle() ? $channel->getTitle() : $channel->getObjectId()) . " with an error.");
+
+                return Command::FAILURE;
             }
         }
         $this->cacheManager->flushCachesByTag('tx_news');
+
+        return Command::SUCCESS;
     }
 }

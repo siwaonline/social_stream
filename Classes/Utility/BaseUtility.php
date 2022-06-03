@@ -5,7 +5,9 @@ namespace Socialstream\SocialStream\Utility;
 
 use Socialstream\SocialStream\Domain\Model\Channel;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Configuration\ConfigurationManager;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
+use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Http\ServerRequest;
@@ -82,7 +84,7 @@ class BaseUtility
     public function __construct()
     {
         $this->objectManager = GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
-        $this->persistenceManager = GeneralUtility::makeInstance("TYPO3\\CMS\\Extbase\\Persistence\\Generic\\PersistenceManager");
+        $this->persistenceManager = $this->objectManager->get("TYPO3\\CMS\\Extbase\\Persistence\\Generic\\PersistenceManager");
         $this->newsRepository = $this->objectManager->get("Socialstream\\SocialStream\\Domain\\Repository\\NewsRepository");
         $this->categoryRepository = $this->objectManager->get("GeorgRinger\\News\\Domain\\Repository\\CategoryRepository");
 
@@ -117,9 +119,6 @@ class BaseUtility
      */
     public static function initTSFE($id = 1, $type = 0)
     {
-        /** @var ObjectManager $objectManager */
-        $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-
         if (!$_SERVER['HTTP_HOST']) $_SERVER['HTTP_HOST'] = "http://localhost";
         if (!$_SERVER['REQUEST_URI']) $_SERVER['REQUEST_URI'] = "/";
         $request = $GLOBALS['TYPO3_REQUEST'] ?? ServerRequestFactory::fromGlobals();
@@ -140,7 +139,8 @@ class BaseUtility
             GeneralUtility::makeInstance(Context::class),
             $site,
             $language,
-            $request->getAttribute('routing', new PageArguments((int)$id, (string)$type, []))
+            $request->getAttribute('routing', new PageArguments((int)$id, (string)$type, [])),
+            GeneralUtility::makeInstance(FrontendUserAuthentication::class)
         );
     }
 
@@ -149,10 +149,9 @@ class BaseUtility
      */
     public function initSettings($pid)
     {
-        $this->objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
-        //$this->configurationManager = $this->objectManager->get('TYPO3\\CMS\\Extbase\\Configuration\\ConfigurationManager');
-        //$this->settings = $this->configurationManager->getConfiguration(\TYPO3\CMS\Extbase\Configuration\ConfigurationManager::CONFIGURATION_TYPE_SETTINGS, 'Socialstream');
-        $this->configurationManager = $this->objectManager->get(\Socialstream\SocialStream\Configuration\ConfigurationManager::class);
+        $this->objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(ObjectManager::class);
+        /** @var ConfigurationManager configurationManager */
+        $this->configurationManager = $this->objectManager->get(ConfigurationManager::class);
         $this->configurationManager->getConcreteConfigurationManager()->setCurrentPageId($pid);
         $this->settings = $this->configurationManager->getConfiguration(\TYPO3\CMS\Extbase\Configuration\ConfigurationManager::CONFIGURATION_TYPE_SETTINGS, 'Socialstream');
     }
@@ -167,6 +166,7 @@ class BaseUtility
             'facebookevent' => 'Facebook Event',
             'facebookinvolve' => 'Facebook Involve Feed',
             'instagram' => 'Instagram',
+            'instagraminvolve' => 'Instagram Involve Stream',
             'youtube' => 'YouTube',
             'twitter' => 'Twitter',
             'flickr' => 'Flickr',
@@ -184,11 +184,10 @@ class BaseUtility
      */
     public static function getType($key)
     {
-        $type = self::getTypes()[$key];
-        if (!$type) {
+        if (!key_exists($key, self::getTypes())) {
             return $key;
         } else {
-            return $type;
+            return self::getTypes()[$key];
         }
     }
 
