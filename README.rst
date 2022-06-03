@@ -15,6 +15,16 @@ Issue Tracking at https://github.com/siwaonline/social_stream/issues.
 
 -----------------------------------------------------------------------------
 
+Installation
+=============================================================================
+Please make sure the PHP Extension bcmath is installed. If you are using a docker
+environment this can be done with the following command run inside of the container
+
+``
+docker-php-ext-install bcmath
+``
+-----------------------------------------------------------------------------
+
 Configuration
 =============================================================================
 
