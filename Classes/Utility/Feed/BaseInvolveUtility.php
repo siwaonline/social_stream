@@ -118,6 +118,8 @@ class BaseInvolveUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUti
         $news->setDatetime(new \DateTime($entry->createdAt));
         $news->setAuthor($entry->title);
 
+        if(!$news->getPathSegment()) $news->setPathSegment($this->getSlug($news->getUid(),$news->getTitle(), $channel));
+
         if ($entry->permalink) {
             $news->setLink($entry->permalink);
         }
