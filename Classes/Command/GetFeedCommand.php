@@ -133,7 +133,11 @@ class GetFeedCommand extends Command
 
                     /** @var MailMessage $email */
                     $email = GeneralUtility::makeInstance(MailMessage::class);
-                    $email->setFrom($this->settings['sendermail'])->setTo($this->settings['sysmail'])->setSubject('Social Stream failed crawling channel: [' . $channel->getUid() . "] " . $channel->getTitle())->setBody($errorEmailContent, 'text/html')->send();
+                    $email->setFrom($this->settings['sendermail'])
+                        ->setTo($this->settings['sysmail'])
+                        ->setSubject('Social Stream failed crawling channel: [' . $channel->getUid() . "] " . $channel->getTitle())
+                        ->html($errorEmailContent)
+                        ->send();
                 }
 
                 BaseUtility::log(__CLASS__, 'error', $e->getMessage());
