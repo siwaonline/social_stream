@@ -120,7 +120,7 @@ class NextcloudUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUtili
                         $globalDirectoryId = $dir['{http://owncloud.org/ns}id'];
                         $oldestTimestamp = $this->findOldestTimestamp($files);
                         foreach ($files as $filename => $file) {
-                            if ($this->startsWith($file['{DAV:}getcontenttype'], 'image')) {
+                            if (key_exists('{DAV:}getcontenttype', $file) && $this->startsWith($file['{DAV:}getcontenttype'], 'image')) {
                                 $this->createNewsBlog($filename, $channel, $dirname, $directoryId, $globalDirectoryId, $publicLinkuri, $oldestTimestamp, $folderName);
                                 break;
                             }
@@ -150,7 +150,7 @@ class NextcloudUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUtili
         $comments = $this->client->propFind($url, $this->properties, 1);
         $comment = null;
         foreach ($comments as $c) {
-            if ($c['{http://owncloud.org/ns}message']) {
+            if (key_exists('{http://owncloud.org/ns}message', $c) && $c['{http://owncloud.org/ns}message'] && key_exists('{http://owncloud.org/ns}creationDateTime', $c)) {
                 if (empty($comment)) {
                     $comment['crdate'] = $c['{http://owncloud.org/ns}creationDateTime'];
                     $comment['text'] = $c['{http://owncloud.org/ns}message'];
@@ -171,7 +171,8 @@ class NextcloudUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUtili
             $linkuri = $urlArray[0] . 'index.php/apps/gallery' . $urlArray[1];
         }
         $folderName = $this->endsWith($folderName, '/') ? $folderName : $folderName.'/';
-        $linkuri.='#'.end(explode($folderName, $dirname));
+        $tmpArr = explode($folderName, $dirname);
+        $linkuri.='#'.end($tmpArr);
         $dirArray = explode('/', $dirname);
 
         $new = 0;
