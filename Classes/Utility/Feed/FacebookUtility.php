@@ -31,6 +31,7 @@ namespace Socialstream\SocialStream\Utility\Feed;
 use Sabre\Xml\Element\KeyValue;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Messaging\FlashMessageService;
+use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 
 /**
  * FacebookUtility
@@ -45,6 +46,7 @@ class FacebookUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUtilit
         if ($this->get_http_response_code($url) == 200) {
             $elem = $this->getElems($url);
 
+            // @extensionScannerIgnoreLine
             $channel->setObjectId($elem->id);
             $channel->setTitle($elem->name);
             if ($elem->about) $channel->setAbout($elem->about);
@@ -61,8 +63,7 @@ class FacebookUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUtilit
         } else {
             if ($isProcessing !== 0) {
                 $msg = "Fehler: Channel konnte nicht gecrawlt werden. Object Id oder Token falsch.";
-                $this->objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
-                $this->addFlashMessage($msg, '', FlashMessage::ERROR, $this->objectManager->get(FlashMessageService::class));
+                $this->addFlashMessage($msg, '', ContextualFeedbackSeverity::ERROR, GeneralUtility::makeInstance(FlashMessageService::class));
                 return false;
             }
         }
@@ -97,6 +98,7 @@ class FacebookUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUtilit
         foreach ($elem->data as $entry) {
             if ($entry->name || $entry->message) {
                 $new = 0;
+                // @extensionScannerIgnoreLine
                 $news = $this->newsRepository->findHiddenById($entry->id, $channel->getUid(), 1);
                 if (!$news) {
                     $news = new \Socialstream\SocialStream\Domain\Model\News();
@@ -109,10 +111,12 @@ class FacebookUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUtilit
                 $news->addCategory($cat);
                 $subcat = $this->getCategory($channel->getTitle(), $cat, $channel);
                 $news->addCategory($subcat);
+                // @extensionScannerIgnoreLine
                 $id = explode("_", $entry->id);
                 if ($id[1]) {
                     $news->setObjectId($id[1]);
                 } else {
+                    // @extensionScannerIgnoreLine
                     $news->setObjectId($entry->id);
                 }
                 $news->setDatetime(new \DateTime($entry->created_time));

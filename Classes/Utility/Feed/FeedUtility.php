@@ -35,6 +35,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\DataHandling\SlugHelper;
 use TYPO3\CMS\Core\DataHandling\Model\RecordStateFactory;
+use TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder;
 
 /**
  * FeedUtility
@@ -142,7 +143,7 @@ class FeedUtility extends \Socialstream\SocialStream\Utility\BaseUtility
      */
     protected function getStorage()
     {
-        $storageRepository = $this->objectManager->get('TYPO3\\CMS\\Core\\Resource\\StorageRepository');
+        $storageRepository = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Resource\StorageRepository::class);
         return $storageRepository->findByUid($this->settings["storage"]);
     }
 
@@ -383,7 +384,7 @@ class FeedUtility extends \Socialstream\SocialStream\Utility\BaseUtility
      */
     public function sendTokenInfoMail(\Socialstream\SocialStream\Domain\Model\Channel $channel, $sysmail, $sendermail = "")
     {
-        $uriBuilder = $this->objectManager->get('TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder');
+        $uriBuilder = GeneralUtility::makeInstance(UriBuilder::class);
         $uriBuilder->initializeObject();
         $uriBuilder->setCreateAbsoluteUri(1);
         $url = explode("?", $uriBuilder->buildBackendUri())[0];
@@ -414,6 +415,7 @@ class FeedUtility extends \Socialstream\SocialStream\Utility\BaseUtility
     {
         $message = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Messaging\\FlashMessage', $txt, $head, $type, TRUE);
         $messageQueue = $obj->getMessageQueueByIdentifier();
+        // @extensionScannerIgnoreLine
         $messageQueue->addMessage($message);
     }
 

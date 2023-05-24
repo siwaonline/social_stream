@@ -29,6 +29,7 @@ namespace Socialstream\SocialStream\Utility\Feed;
 
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Messaging\FlashMessageService;
+use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 
 /**
  * TwitterUtility
@@ -80,8 +81,7 @@ class TwitterUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUtility
         }else{
             if ($isProcessing !== 0) {
                 $msg = "Fehler: Channel konnte nicht gecrawlt werden. Object Id oder Token falsch.";
-                $this->objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
-                $this->addFlashMessage($msg, '', FlashMessage::ERROR,$this->objectManager->get(FlashMessageService::class));
+                $this->addFlashMessage($msg, '', ContextualFeedbackSeverity::ERROR, GeneralUtility::makeInstance(FlashMessageService::class));
                 return false;
             }
         }

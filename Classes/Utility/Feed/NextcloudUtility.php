@@ -89,8 +89,6 @@ class NextcloudUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUtili
 
     public function getFeed(\Socialstream\SocialStream\Domain\Model\Channel $channel, $limit = 100)
     {
-        include 'sabre-dav/autoload.php';
-
         $this->baseUri = $this->endsWith($this->settings['webdavrooturl'], '/') ? $this->settings['webdavrooturl'] : $this->settings['webdavrooturl'] . '/';
         $webdavuri = $this->baseUri . 'remote.php/webdav';
         $settings = array(

@@ -3,10 +3,13 @@
 namespace Socialstream\SocialStream\Utility;
 
 
+use GeorgRinger\News\Domain\Repository\CategoryRepository;
 use Socialstream\SocialStream\Domain\Model\Channel;
+use Socialstream\SocialStream\Domain\Repository\NewsRepository;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManager;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
+use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 use TYPO3\CMS\Core\Context\Context;
@@ -83,10 +86,9 @@ class BaseUtility
 
     public function __construct()
     {
-        $this->objectManager = GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
-        $this->persistenceManager = $this->objectManager->get("TYPO3\\CMS\\Extbase\\Persistence\\Generic\\PersistenceManager");
-        $this->newsRepository = $this->objectManager->get("Socialstream\\SocialStream\\Domain\\Repository\\NewsRepository");
-        $this->categoryRepository = $this->objectManager->get("GeorgRinger\\News\\Domain\\Repository\\CategoryRepository");
+        $this->persistenceManager = GeneralUtility::makeInstance(PersistenceManager::class);
+        $this->newsRepository = GeneralUtility::makeInstance(NewsRepository::class);
+        $this->categoryRepository = GeneralUtility::makeInstance(CategoryRepository::class);
 
         $querySettings = $this->newsRepository->createQuery()->getQuerySettings();
         $querySettings->setRespectStoragePage(FALSE);
@@ -149,9 +151,8 @@ class BaseUtility
      */
     public function initSettings($pid)
     {
-        $this->objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(ObjectManager::class);
         /** @var ConfigurationManager configurationManager */
-        $this->configurationManager = $this->objectManager->get(ConfigurationManager::class);
+        $this->configurationManager = GeneralUtility::makeInstance(ConfigurationManager::class);
         $this->configurationManager->getConcreteConfigurationManager()->setCurrentPageId($pid);
         $this->settings = $this->configurationManager->getConfiguration(\TYPO3\CMS\Extbase\Configuration\ConfigurationManager::CONFIGURATION_TYPE_SETTINGS, 'Socialstream');
     }

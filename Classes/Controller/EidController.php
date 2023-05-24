@@ -8,6 +8,7 @@ use TYPO3\CMS\Core\Mail\MailMessage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManager;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
+use TYPO3\CMS\Fluid\View\StandaloneView;
 use TYPO3\CMS\Frontend\Utility\EidUtility;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -35,11 +36,10 @@ class EidController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
      */
     public function __construct()
     {
-        $this->objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-        $this->configurationManager = $this->objectManager->get(ConfigurationManager::class);
+        $this->configurationManager = GeneralUtility::makeInstance(ConfigurationManager::class);
 
-        $feUserObj = EidUtility::initFeUser();
-        $pageId = GeneralUtility::_GET('id') ?: 1;
+//        $feUserObj = EidUtility::initFeUser();
+        $pageId = $request->getQueryParams()['id'] ?: 1;
         $typoScriptFrontendController = GeneralUtility::makeInstance(
             \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController::class,
             $GLOBALS['TYPO3_CONF_VARS'],
@@ -48,10 +48,11 @@ class EidController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
             true
         );
         $GLOBALS['TSFE'] = $typoScriptFrontendController;
-        $typoScriptFrontendController->fe_user = $feUserObj;
+//        $typoScriptFrontendController->fe_user = $feUserObj;
+        // @extensionScannerIgnoreLine
         $typoScriptFrontendController->id = $pageId;
         $typoScriptFrontendController->determineId();
-        $typoScriptFrontendController->initTemplate();
+//        $typoScriptFrontendController->initTemplate();
         $typoScriptFrontendController->getConfigArray();
         $typoScriptService = GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Service\\TypoScriptService');
         $pluginConfiguration = $typoScriptService->convertTypoScriptArrayToPlainArray($typoScriptFrontendController->tmpl->setup['module.']['tx_socialstream.']);
@@ -70,11 +71,11 @@ class EidController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
     public function generateTokenAction(ServerRequestInterface $request, ResponseInterface $response)
     {
         /** @var \TYPO3\CMS\Fluid\View\StandaloneView $emailView */
-        $authorizationView = $this->objectManager->get('TYPO3\\CMS\\Fluid\\View\\StandaloneView');
+        $authorizationView = GeneralUtility::makeInstance(StandaloneView::class);
 
         $authorizationView->setFormat('html');
 
-        if ($channelID = GeneralUtility::_GET('channel')) {
+        if ($channelID = $request->getQueryParams()['channel']) {
             $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tx_socialstream_domain_model_channel');
             $statement = $queryBuilder
                 ->select('uid', 'token', 'type')
@@ -92,14 +93,14 @@ class EidController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
                     if (empty($result['token'])) {
                         $http = isset($_SERVER['HTTPS']) ? "https" : "http";
                         $host = $_SERVER["HTTP_HOST"];
-                        if ($access_token = GeneralUtility::_GET('access_token')) {
+                        if ($access_token = $request->getQueryParams()['access_token']) {
                             $statement = $queryBuilder
                                 ->update('tx_socialstream_domain_model_channel')
                                 ->where(
                                     $queryBuilder->expr()->eq('uid', $queryBuilder->createNamedParameter($channelID, \PDO::PARAM_INT))
                                 )
                                 ->set('token', $access_token);
-                            if ($expires_in = GeneralUtility::_GET('expires_in')) {
+                            if ($expires_in = $request->getQueryParams()['expires_in']) {
                                 $statement = $statement->set('expires', time() + $expires_in);
                             }
                             if ($statement->execute()) {
@@ -112,7 +113,7 @@ class EidController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
                                     $this->sendTokenGeneratedMail($channel);
                                 }
                             }
-                        } else if ($code = GeneralUtility::_GET('code')) {
+                        } else if ($code = $request->getQueryParams()['code']) {
                             $base = $http . "://" . $host;
 
                             $oauth2 = new OAuth2([
@@ -220,7 +221,7 @@ class EidController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
     {
         if ($this->settings['sysmail'] && $this->settings['sendermail']) {
             /** @var \TYPO3\CMS\Fluid\View\StandaloneView $tokenGeneratedEmailView */
-            $tokenGeneratedEmailView = $this->objectManager->get('TYPO3\\CMS\\Fluid\\View\\StandaloneView');
+            $tokenGeneratedEmailView = GeneralUtility::makeInstance(StandaloneView::class);
             $tokenGeneratedEmailView->setFormat('html');
             $templatePathAndFilename = 'EXT:social_stream/Resources/Private/Templates/Email/TokenGenerated.html';
             $tokenGeneratedEmailView->setTemplatePathAndFilename($templatePathAndFilename);

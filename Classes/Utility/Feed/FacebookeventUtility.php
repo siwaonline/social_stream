@@ -40,6 +40,7 @@ class FacebookeventUtility extends \Socialstream\SocialStream\Utility\Feed\Faceb
 
         foreach ($elem->data as $entry) {
             $new = 0;
+            // @extensionScannerIgnoreLine
             $news = $this->newsRepository->findHiddenById($entry->id,$channel->getUid());
             if (!$news) {
                 $news = new \Socialstream\SocialStream\Domain\Model\News();
@@ -52,10 +53,12 @@ class FacebookeventUtility extends \Socialstream\SocialStream\Utility\Feed\Faceb
             $news->addCategory($cat);
             $subcat = $this->getCategory($channel->getTitle(),$cat, $channel);
             $news->addCategory($subcat);
+            // @extensionScannerIgnoreLine
             $id = explode("_",$entry->id);
             if($id[1]){
                 $news->setObjectId($id[1]);
             }else{
+                // @extensionScannerIgnoreLine
                 $news->setObjectId($entry->id);
             }
             $news->setDatetime(new \DateTime($entry->start_time));

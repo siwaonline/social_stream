@@ -20,6 +20,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\RootlineUtility;
 use TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
+use TYPO3\CMS\Fluid\View\StandaloneView;
 
 /**
  * Script Class for rendering the Table Wizard
@@ -28,8 +29,6 @@ class EidNode extends AbstractNode
 {
     public function render()
     {
-        $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-
         $rootline = GeneralUtility::makeInstance(RootlineUtility::class, $this->data['databaseRow']['pid']);
         $rootlinePages = $rootline->get();
 
@@ -48,7 +47,7 @@ class EidNode extends AbstractNode
         $url = $http . "://" . $host . "/?id=" . $root["uid"] . "&eID=generate_token&channel=" . $this->data['databaseRow']['uid'];
 
         /** @var \TYPO3\CMS\Fluid\View\StandaloneView $tcaView */
-        $tcaView = $objectManager->get('TYPO3\\CMS\\Fluid\\View\\StandaloneView');
+        $tcaView = GeneralUtility::makeInstance(StandaloneView::class);
         $tcaView->setFormat('html');
         $templatePathAndFilename = 'EXT:social_stream/Resources/Private/Backend/Templates/Channel/EidUrl.html';
         $tcaView->setTemplatePathAndFilename($templatePathAndFilename);

@@ -53,7 +53,7 @@ class TokenController extends \TYPO3\CMS\Backend\Controller\Wizard\AbstractWizar
      *
      * @var ModuleTemplate
      */
-    protected $moduleTemplate;
+    protected ModuleTemplate $moduleTemplate;
 
     /**
      * @var string
@@ -69,8 +69,8 @@ class TokenController extends \TYPO3\CMS\Backend\Controller\Wizard\AbstractWizar
         //parent::__construct();
         $this->moduleTemplate = GeneralUtility::makeInstance(ModuleTemplate::class);
         $this->getLanguageService()->includeLLFile('EXT:lang/locallang_wizards.xlf');
-        $GLOBALS['SOBE'] = $this;
 
+        // @extensionScannerIgnoreLine
         $this->init();
     }
 
@@ -97,7 +97,7 @@ class TokenController extends \TYPO3\CMS\Backend\Controller\Wizard\AbstractWizar
     public function mainAction(ServerRequestInterface $request)
     {
         $this->main($request);
-        return new HtmlResponse($this->moduleTemplate->renderContent());
+        return new HtmlResponse($this->moduleTemplate->render());
     }
 
     /**
@@ -140,8 +140,7 @@ class TokenController extends \TYPO3\CMS\Backend\Controller\Wizard\AbstractWizar
             return;
         }
 
-        $this->objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
-        $this->configurationManager = $this->objectManager->get(\Socialstream\SocialStream\Configuration\ConfigurationManager::class);
+        $this->configurationManager = GeneralUtility::makeInstance(\Socialstream\SocialStream\Configuration\ConfigurationManager::class);
         $this->configurationManager->getConcreteConfigurationManager()->setCurrentPageId($pid);
         $this->settings = $this->configurationManager->getConfiguration(\TYPO3\CMS\Extbase\Configuration\ConfigurationManager::CONFIGURATION_TYPE_SETTINGS, 'Socialstream');
 

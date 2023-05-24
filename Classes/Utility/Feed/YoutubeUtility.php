@@ -34,6 +34,7 @@ use Socialstream\SocialStream\Domain\Model\News;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Messaging\FlashMessageService;
 use TYPO3\CMS\Core\Resource\OnlineMedia\Helpers\YouTubeHelper;
+use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 
 /**
  * YoutubeUtility
@@ -52,6 +53,7 @@ class YoutubeUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUtility
             $youtubeChannel = $response->items[0];
             if ($youtubeChannel->kind === "youtube#channel") {
                 if ($youtubeChannel->snippet) {
+                    // @extensionScannerIgnoreLine
                     $channel->setTitle($youtubeChannel->snippet->title);
                     $channel->setDescription($youtubeChannel->snippet->description);
                     $channel->setLink("https://www.youtube.com/" . $youtubeChannel->snippet->customUrl);
@@ -140,6 +142,7 @@ class YoutubeUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUtility
                                     $createTime = new \DateTime($playlistItem->snippet->publishedAt);
                                     $news->setDatetime($createTime);
 
+                                    // @extensionScannerIgnoreLine
                                     $news->setTitle($playlistItem->snippet->title);
 
                                     $news->setType(0);
@@ -239,7 +242,7 @@ class YoutubeUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUtility
                 if ($isProcessing == 0) {
                     throw new Exception($err);
                 } else {
-                    $this->addFlashMessage($err, '', FlashMessage::ERROR, $objectManager->get(FlashMessageService::class));
+                    $this->addFlashMessage($err, '', ContextualFeedbackSeverity::ERROR, $objectManager->get(FlashMessageService::class));
                 }
             } else {
                 return json_decode($response);
@@ -248,7 +251,7 @@ class YoutubeUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUtility
             if ($isProcessing == 0) {
                 throw new Exception("No Object ID or Google API Key - Type: " . $channel->getType());
             } else {
-                $this->addFlashMessage("No Object ID or Google API Key - Type: " . $channel->getType(), '', FlashMessage::ERROR, $objectManager->get(FlashMessageService::class));
+                $this->addFlashMessage("No Object ID or Google API Key - Type: " . $channel->getType(), '', ContextualFeedbackSeverity::ERROR, $objectManager->get(FlashMessageService::class));
             }
         }
         return false;

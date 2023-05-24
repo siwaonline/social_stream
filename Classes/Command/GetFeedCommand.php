@@ -41,6 +41,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManager;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
+use TYPO3\CMS\Fluid\View\StandaloneView;
 
 /**
  * GetFeedCommandController
@@ -83,14 +84,13 @@ class GetFeedCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $this->objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-        $this->configurationManager = $this->objectManager->get(ConfigurationManager::class);
+        $this->configurationManager = GeneralUtility::makeInstance(ConfigurationManager::class);
         $this->configurationManager->getConcreteConfigurationManager()->setCurrentPageId($input->getArgument('rootPage'));
         $this->settings = $this->configurationManager->getConfiguration(ConfigurationManager::CONFIGURATION_TYPE_SETTINGS, 'Socialstream');
 
 
-        $this->channelRepository = $this->objectManager->get(ChannelRepository::class);
-        $this->cacheManager = $this->objectManager->get(CacheManager::class);
+        $this->channelRepository = GeneralUtility::makeInstance(ChannelRepository::class);
+        $this->cacheManager = GeneralUtility::makeInstance(CacheManager::class);
 
         $querySettings = $this->channelRepository->createQuery()->getQuerySettings();
 
@@ -124,7 +124,7 @@ class GetFeedCommand extends Command
             } catch (\Exception $e) {
                 if ($this->settings['sysmail'] && $this->settings['sendermail']) {
                     /** @var \TYPO3\CMS\Fluid\View\StandaloneView $emailView */
-                    $errorEmailView = $this->objectManager->get('TYPO3\\CMS\\Fluid\\View\\StandaloneView');
+                    $errorEmailView = GeneralUtility::makeInstance(StandaloneView::class);
                     $errorEmailView->setFormat('html');
                     $templatePathAndFilename = 'EXT:social_stream/Resources/Private/Templates/Email/Error.html';
                     $errorEmailView->setTemplatePathAndFilename($templatePathAndFilename);

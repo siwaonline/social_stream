@@ -29,6 +29,7 @@ namespace Socialstream\SocialStream\Utility\Feed;
 
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Messaging\FlashMessageService;
+use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 
 /**
  * FlickrUtility
@@ -49,6 +50,7 @@ class FlickrUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUtility
             $channel->setLink($elem->person->profileurl->_content);
 
             if ($isProcessing == 0) {
+                // @extensionScannerIgnoreLine
                 $imageUrl = "http://farm" . $elem->person->iconfarm . ".staticflickr.com/" . $elem->person->iconserver . "/buddyicons/" . $elem->person->id . ".jpg";
                 if ($this->exists($imageUrl)) {
                     $this->processChannelMedia($channel, $imageUrl);
@@ -57,9 +59,7 @@ class FlickrUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUtility
         }else{
             if ($isProcessing !== 0) {
                 $msg = "Fehler: Channel konnte nicht gecrawlt werden. Object Id oder Token falsch.";
-                //$this->addFlashMessage($msg, '', AbstractMessage::ERROR);
-                $this->objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
-                $this->addFlashMessage($msg, '', FlashMessage::ERROR,$this->objectManager->get(FlashMessageService::class));
+                $this->addFlashMessage($msg, '', ContextualFeedbackSeverity::ERROR, GeneralUtility::makeInstance(FlashMessageService::class));
                 return false;
             }
         }
@@ -81,10 +81,12 @@ class FlickrUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUtility
 
             $new = 0;
 
+            // @extensionScannerIgnoreLine
             $id = explode("_",$entry->id);
             if($id[0]){
                 $newsId = $id[0];
             }else{
+                // @extensionScannerIgnoreLine
                 $newsId = $entry->id;
             }
 
@@ -99,6 +101,7 @@ class FlickrUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUtility
             $createTime->setTimestamp($entry->date_create);
             $news->setDatetime($createTime);
 
+            // @extensionScannerIgnoreLine
             $news->setTitle($entry->title->_content);
 
             $news->setType(0);
@@ -114,6 +117,7 @@ class FlickrUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUtility
             $news->setObjectId($newsId);
             if(!$news->getPathSegment()) $news->setPathSegment($this->getSlug($news->getUid(),$news->getTitle(), $channel));
 
+            // @extensionScannerIgnoreLine
             $news->setLink("https://www.flickr.com/photos/" . $channel->getObjectId() . "/albums/" . $entry->id);
 
             if ($entry->description) {

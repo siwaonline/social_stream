@@ -285,7 +285,7 @@ return array(
                     'FIELD:image:REQ:TRUE'
                 )
             ),
-            'config' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::getFileFieldTCAConfig(
+            'config' => [
                 'image',
                 array(
                     'appearance' => array(
@@ -326,7 +326,7 @@ return array(
                     'maxitems' => 1
                 ),
                 $GLOBALS['TYPO3_CONF_VARS']['GFX']['imagefile_ext']
-            ),
+            ],
         ),
         'token' => array(
             'exclude' => 1,

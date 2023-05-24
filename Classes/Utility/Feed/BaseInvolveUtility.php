@@ -50,7 +50,9 @@ class BaseInvolveUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUti
         $elem = $this->getElems($url, true);
         if ($elem && $elem[0]) {
             $entry = $elem[0];
+            // @extensionScannerIgnoreLine
             if ($entry->title && $channel->getTitle() !== $entry->title) {
+                // @extensionScannerIgnoreLine
                 $channel->setTitle($entry->title);
             }
         }
@@ -89,6 +91,7 @@ class BaseInvolveUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUti
 
 
         foreach ($elem as $entry) {
+            // @extensionScannerIgnoreLine
             if ($entry->title || $entry->text) {
                 $this->persistNewsFromEntry($channel, $entry);
             }
@@ -116,6 +119,7 @@ class BaseInvolveUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUti
         $news->addCategory($subcat);
 
         $news->setDatetime(new \DateTime($entry->createdAt));
+        // @extensionScannerIgnoreLine
         $news->setAuthor($entry->title);
 
         if(!$news->getPathSegment()) $news->setPathSegment($this->getSlug($news->getUid(),$news->getTitle(), $channel));
@@ -123,14 +127,18 @@ class BaseInvolveUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUti
         if ($entry->permalink) {
             $news->setLink($entry->permalink);
         }
+        // @extensionScannerIgnoreLine
         if ($entry->title) {
+            // @extensionScannerIgnoreLine
             $news->setTitle($entry->title);
         }
 
         if ($entry->text) {
             $news->setBodytext($entry->text);
         } else {
+            // @extensionScannerIgnoreLine
             if ($entry->title) {
+                // @extensionScannerIgnoreLine
                 $news->setBodytext($entry->title);
             }
         }
