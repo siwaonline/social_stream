@@ -1,11 +1,9 @@
 <?php
-if (!defined('TYPO3_MODE')) {
+if (!defined('TYPO3')) {
 	die('Access denied.');
 }
 
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile('social_stream', 'Configuration/TypoScript', 'Social Stream');
-
-$GLOBALS['TCA']['tx_socialstream_domain_model_channel']['ctrl']['security']['ignorePageTypeRestriction'];
 
 $iconRegistry = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Imaging\\IconRegistry');
 $iconRegistry->registerIcon('extensions-social-stream-empty', 'TYPO3\\CMS\\Core\\Imaging\\IconProvider\\BitmapIconProvider', array("source" => 'EXT:social_stream/Resources/Public/Icons/socialstream_domain_model_channel_empty.svg',));
