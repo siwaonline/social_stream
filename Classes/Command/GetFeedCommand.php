@@ -31,6 +31,7 @@ use Socialstream\SocialStream\Domain\Model\Channel;
 use Socialstream\SocialStream\Domain\Repository\ChannelRepository;
 use Socialstream\SocialStream\Utility\BaseUtility;
 use Socialstream\SocialStream\Utility\Feed\FeedUtility;
+use TYPO3\CMS\Core\Core\Bootstrap;
 use TYPO3\CMS\Core\Mail\MailMessage;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -84,6 +85,8 @@ class GetFeedCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
+        Bootstrap::initializeBackendAuthentication();
+
         $this->configurationManager = GeneralUtility::makeInstance(ConfigurationManager::class);
 //        $this->configurationManager->getConcreteConfigurationManager()->setCurrentPageId($input->getArgument('rootPage'));
         $this->settings = $this->configurationManager->getConfiguration(ConfigurationManager::CONFIGURATION_TYPE_SETTINGS, 'Socialstream');

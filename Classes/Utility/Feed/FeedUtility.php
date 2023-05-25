@@ -262,6 +262,7 @@ class FeedUtility extends \Socialstream\SocialStream\Utility\BaseUtility
 
             $storage = $this->getStorage();
 
+            $image = null;
             if ((!$folder->hasFile($imageName) && $imageName) || ($storage->getFileInFolder($imageName, $folder)->getSize() <= 0 && $folder->hasFile($imageName) && $imageName)) {
                 if (file_exists($this->settings["tmp"] . $imageName)) {
                     unlink($this->settings["tmp"] . $imageName);
