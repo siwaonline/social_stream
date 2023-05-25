@@ -77,7 +77,7 @@ class GooglephotosUtility extends \Socialstream\SocialStream\Utility\Token\Token
                     'clientId' => $this->settings["googlephotosclientid"],
                     'clientSecret' => $this->settings["googlephotosclientsecret"],
                     'authorizationUri' => 'https://accounts.google.com/o/oauth2/v2/auth',
-                    'redirectUri' => $base . "/typo3conf/ext/social_stream/Redirect.php",
+                    'redirectUri' => $base . "/_assets/b8acd56a12fa390388e961cc3b76df2c/Redirect.php",
                     'tokenCredentialUri' => 'https://www.googleapis.com/oauth2/v4/token',
                     'scope' => ['https://www.googleapis.com/auth/photoslibrary.readonly', 'https://www.googleapis.com/auth/photoslibrary.sharing'],
                     'state' => 'offline'
