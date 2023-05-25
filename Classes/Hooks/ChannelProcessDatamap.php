@@ -37,17 +37,27 @@ use TYPO3\CMS\Core\Database\ConnectionPool;
  */
 class ChannelProcessDatamap
 {
+    private $channelRepository;
+
+    /**
+     * Inject the product repository
+     *
+     * @param ChannelRepository $channelRepository
+     */
+    public function injectProductRepository(ChannelRepository $channelRepository)
+    {
+        $this->channelRepository = $channelRepository;
+    }
+
 
     function processDatamap_postProcessFieldArray($status, $table, $id, &$fieldArray, &$reference)
     {
-        $channelRepository = GeneralUtility::makeInstance(ChannelRepository::class);
-
         if (array_key_exists('hidden', $fieldArray)) {
             return;
         } else {
             if ($table == 'tx_socialstream_domain_model_channel') {
                 if ($status == "update") {
-                    $channel = $channelRepository->findHidden($id)->getFirst();
+                    $channel = $this->channelRepository->findHidden($id)->getFirst();
                 } else {
                     $channel = new \Socialstream\SocialStream\Domain\Model\Channel();
                 }

@@ -21,6 +21,7 @@ use Socialstream\SocialStream\Utility\Token\BaseInvolveUtility;
 use Socialstream\SocialStream\Utility\Token\GooglephotosUtility;
 use Socialstream\SocialStream\Utility\Token\YoutubeUtility;
 use TYPO3\CMS\Backend\Routing\UriBuilder;
+use TYPO3\CMS\Backend\Template\ModuleTemplateFactory;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Database\ConnectionPool;
@@ -28,11 +29,12 @@ use TYPO3\CMS\Backend\Template\ModuleTemplate;
 
 use Socialstream\SocialStream\Utility\Token\TokenUtility;
 use TYPO3\CMS\Core\Http\HtmlResponse;
+use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 
 /**
  * Script Class for rendering the Table Wizard
  */
-class TokenController extends \TYPO3\CMS\Backend\Controller\Wizard\AbstractWizardController
+class TokenController extends ActionController
 {
     /**
      * Wizard parameters, coming from FormEngine linking to the wizard.
@@ -49,27 +51,17 @@ class TokenController extends \TYPO3\CMS\Backend\Controller\Wizard\AbstractWizar
     public $doClose;
 
     /**
-     * ModuleTemplate object
-     *
-     * @var ModuleTemplate
-     */
-    protected ModuleTemplate $moduleTemplate;
-
-    /**
      * @var string
      */
     protected $content = '';
 
-
+    protected ModuleTemplate $moduleTempalte;
     /**
      * Constructor
      */
-    public function __construct()
+    public function __construct(
+        private readonly ModuleTemplateFactory $moduleTemplateFactory)
     {
-        //parent::__construct();
-        $this->moduleTemplate = GeneralUtility::makeInstance(ModuleTemplate::class);
-        $this->getLanguageService()->includeLLFile('EXT:lang/locallang_wizards.xlf');
-
         // @extensionScannerIgnoreLine
         $this->init();
     }
@@ -96,8 +88,10 @@ class TokenController extends \TYPO3\CMS\Backend\Controller\Wizard\AbstractWizar
      */
     public function mainAction(ServerRequestInterface $request)
     {
+        $this->moduleTemplate = $this->moduleTemplateFactory->create($request);
+
         $this->main($request);
-        return new HtmlResponse($this->moduleTemplate->render());
+        return new HtmlResponse($this->moduleTemplate->renderContent());
     }
 
     /**
@@ -117,9 +111,9 @@ class TokenController extends \TYPO3\CMS\Backend\Controller\Wizard\AbstractWizar
             $this->moduleTemplate->setContent("Bitte speichern Sie zuerst.");
             return;
         }
-        if (!$this->checkEditAccess($this->P['table'], $this->P['uid'])) {
-            throw new \RuntimeException('Wizard Error: No access', 1349692692);
-        }
+//        if (!$this->checkEditAccess($this->P['table'], $this->P['uid'])) {
+//            throw new \RuntimeException('Wizard Error: No access', 1349692692);
+//        }
         // First, check the references by selecting the record:
         $row = BackendUtility::getRecord($this->P['table'], $this->P['uid']);
         if (!is_array($row)) {
@@ -141,7 +135,7 @@ class TokenController extends \TYPO3\CMS\Backend\Controller\Wizard\AbstractWizar
         }
 
         $this->configurationManager = GeneralUtility::makeInstance(\Socialstream\SocialStream\Configuration\ConfigurationManager::class);
-        $this->configurationManager->getConcreteConfigurationManager()->setCurrentPageId($pid);
+//        $this->configurationManager->getConcreteConfigurationManager()->setCurrentPageId($pid);
         $this->settings = $this->configurationManager->getConfiguration(\TYPO3\CMS\Extbase\Configuration\ConfigurationManager::CONFIGURATION_TYPE_SETTINGS, 'Socialstream');
 
         $this->settings["storagePid"] = $this->P['pid'];

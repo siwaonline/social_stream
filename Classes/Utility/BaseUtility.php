@@ -153,7 +153,7 @@ class BaseUtility
     {
         /** @var ConfigurationManager configurationManager */
         $this->configurationManager = GeneralUtility::makeInstance(ConfigurationManager::class);
-        $this->configurationManager->getConcreteConfigurationManager()->setCurrentPageId($pid);
+//        $this->configurationManager->getConcreteConfigurationManager()->setCurrentPageId($pid);
         $this->settings = $this->configurationManager->getConfiguration(\TYPO3\CMS\Extbase\Configuration\ConfigurationManager::CONFIGURATION_TYPE_SETTINGS, 'Socialstream');
     }
 

@@ -32,10 +32,11 @@ namespace Socialstream\SocialStream\Utility\Token;
  */
 class TokenUtility extends \Socialstream\SocialStream\Utility\BaseUtility
 {
+
     /**
-     * __construct
+     * @param int $pid
      */
-    public function __construct($pid)
+    public function __construct(int $pid = 0)
     {
         parent::__construct();
         $this->initSettings($pid);

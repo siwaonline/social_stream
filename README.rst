@@ -69,6 +69,8 @@ After you saved, you have to get your Access Token - click on the button.
 
 The PopUp redirects you to your Social Media Page - you have to log in and accept the plugin.
 
+Redirect Path: /_assets/b8acd56a12fa390388e961cc3b76df2c/Redirect.php
+
 Use the eID Controller for external persons
 -----------------------------------------------------------------------------
 

@@ -89,7 +89,6 @@ class BaseInvolveUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUti
             }
         }
 
-
         foreach ($elem as $entry) {
             // @extensionScannerIgnoreLine
             if ($entry->title || $entry->text) {
@@ -100,7 +99,6 @@ class BaseInvolveUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUti
 
     function persistNewsFromEntry($channel, $entry){
         $hash = md5($entry->createdAt);
-
 
         $new = 0;
         $news = $this->newsRepository->findHiddenById($hash, $channel->getUid(), 0);
@@ -133,16 +131,15 @@ class BaseInvolveUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUti
             $news->setTitle($entry->title);
         }
 
-        if ($entry->text) {
-            $news->setBodytext($entry->text);
-        } else {
+//        if ($entry->text) {
+//            $news->setBodytext($entry->text);
+//        } else {
             // @extensionScannerIgnoreLine
             if ($entry->title) {
                 // @extensionScannerIgnoreLine
                 $news->setBodytext($entry->title);
             }
-        }
-
+//        }
 
         $news->setPid($channel->getPid());
 
@@ -151,6 +148,7 @@ class BaseInvolveUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUti
         } else {
             $this->newsRepository->update($news);
         }
+
         $this->persistenceManager->persistAll();
 
         $imageUrl = '';

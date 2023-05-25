@@ -26,13 +26,14 @@ $GLOBALS['TYPO3_CONF_VARS']['LOG']['Socialstream']['SocialStream']['writerConfig
     )
 );
 
-// TODO remove if not necessary
+// @TODO remove if not necessary
 //$extbaseObjectContainer = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Extbase\Object\Container\Container::class);
 //$extbaseObjectContainer->registerImplementation(\GeorgRinger\News\Domain\Model\News::class, \Socialstream\SocialStream\Domain\Model\News::class);
 
-$GLOBALS['TYPO3_CONF_VARS']['SYS']['Objects'][\TYPO3\CMS\Extbase\Configuration\BackendConfigurationManager::class] = [
-    'className' => \Socialstream\SocialStream\Configuration\BackendConfigurationManager::class
-];
+// @TODO check
+//$GLOBALS['TYPO3_CONF_VARS']['SYS']['Objects'][\TYPO3\CMS\Extbase\Configuration\BackendConfigurationManager::class] = [
+//    'className' => \Socialstream\SocialStream\Configuration\BackendConfigurationManager::class
+//];
 $GLOBALS['TYPO3_CONF_VARS']['SYS']['Objects'][\TYPO3\CMS\Extbase\Configuration\ConfigurationManager::class] = [
     'className' => \Socialstream\SocialStream\Configuration\ConfigurationManager::class
 ];

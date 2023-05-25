@@ -85,7 +85,7 @@ class GetFeedCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->configurationManager = GeneralUtility::makeInstance(ConfigurationManager::class);
-        $this->configurationManager->getConcreteConfigurationManager()->setCurrentPageId($input->getArgument('rootPage'));
+//        $this->configurationManager->getConcreteConfigurationManager()->setCurrentPageId($input->getArgument('rootPage'));
         $this->settings = $this->configurationManager->getConfiguration(ConfigurationManager::CONFIGURATION_TYPE_SETTINGS, 'Socialstream');
 
 
@@ -122,6 +122,7 @@ class GetFeedCommand extends Command
 
                 BaseUtility::log(__CLASS__, 'info', "Finished crawling " . ucfirst($channel->getType()) . " - " . ($channel->getTitle() ? $channel->getTitle() : $channel->getObjectId()) . " successfully.");
             } catch (\Exception $e) {
+                throw $e;
                 if ($this->settings['sysmail'] && $this->settings['sendermail']) {
                     /** @var \TYPO3\CMS\Fluid\View\StandaloneView $emailView */
                     $errorEmailView = GeneralUtility::makeInstance(StandaloneView::class);
