@@ -79,7 +79,7 @@ class BaseInvolveUtility extends \Socialstream\SocialStream\Utility\Token\TokenU
     }
 
     public function getValues($tokenString){
-        return array("tk" => $tokenString, "exp" => time() + $json->expires_in);
+        return array("tk" => $tokenString, "exp" => time() + (60*60*24*365));
     }
 
 }
