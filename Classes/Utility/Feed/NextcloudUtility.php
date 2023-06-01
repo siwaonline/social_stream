@@ -110,7 +110,9 @@ class NextcloudUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUtili
             $url = $this->endsWith($url, '/') ? $url . $currentYear : $url . '/' . $currentYear;
             $dirs = $this->client->propFind($url, $this->properties, 1);
             foreach ($dirs as $dirname => $dir) {
-                if ($dirname != '/remote.php/webdav' . $folderName . '/') {
+                if ($dirname != '/remote.php/webdav' . $folderName . '/' &&
+                    rtrim($dirname, '/') != parse_url($url, PHP_URL_PATH)
+                ) {
                     if (!empty($dir['{DAV:}resourcetype']) && $dir['{DAV:}resourcetype']->getValue()[0] == '{DAV:}collection') {
                         $fileurl = $this->baseUri . substr($dirname, 1);
                         $files = $this->client->propFind($fileurl, $this->properties, 1);
