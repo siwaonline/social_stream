@@ -104,6 +104,7 @@ class NextcloudUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUtili
         $url = str_replace(" ", "%20", $webdavuri . $folderName);
         $publicLinkuri = $this->getPublicUrlOfFolder($url);
 
+        $folderDepth = $this->settings['webdavdepth'] ?? 1;
 
         if ($publicLinkuri !== null) {
             $currentYear = date("Y");
@@ -115,7 +116,7 @@ class NextcloudUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUtili
                 ) {
                     if (!empty($dir['{DAV:}resourcetype']) && $dir['{DAV:}resourcetype']->getValue()[0] == '{DAV:}collection') {
                         $fileurl = $this->baseUri . substr($dirname, 1);
-                        $files = $this->client->propFind($fileurl, $this->properties, 1);
+                        $files = $this->client->propFind($fileurl, $this->properties, $folderDepth);
                         $directoryId = $dir['{http://owncloud.org/ns}fileid'];
                         $globalDirectoryId = $dir['{http://owncloud.org/ns}id'];
                         $oldestTimestamp = $this->findOldestTimestamp($files);
@@ -129,8 +130,6 @@ class NextcloudUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUtili
                 }
             }
         }
-
-
     }
 
     function findOldestTimestamp($files)
