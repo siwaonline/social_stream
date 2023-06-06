@@ -33,6 +33,7 @@ module.tx_socialstream {
         webdavuser = {$module.tx_socialstream.settings.webdavuser}
         webdavpw = {$module.tx_socialstream.settings.webdavpw}
         webdavdepth = {$module.tx_socialstream.settings.webdavdepth}
+        webdavtimestampoffset = {$module.tx_socialstream.settings.webdavtimestampoffset}
 
         involveAPIUrl = {$module.tx_socialstream.settings.involveAPIUrl}
         involveAppId = {$module.tx_socialstream.settings.involveAppId}

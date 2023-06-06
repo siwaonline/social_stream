@@ -60,9 +60,11 @@ module.tx_socialstream {
         webdavpw =
         # cat=social_stream_keys/keys/w; type=int; label= Webdav Folder Depth
         webdavdepth = 3
-        # cat=social_stream_keys/keys/x; type=string; label= API URL for the Involve Facebook API
+        # cat=social_stream_keys/keys/x; type=string; label= Webdav Date Offset (to get last modified folder)
+        webdavtimestampoffset = -1 day
+        # cat=social_stream_keys/keys/y; type=string; label= API URL for the Involve Facebook API
         involveAPIUrl =
-        # cat=social_stream_keys/keys/y; type=string; label= App ID for the Involve Facebook API
+        # cat=social_stream_keys/keys/z; type=string; label= App ID for the Involve Facebook API
         involveAppId =
     }
 }

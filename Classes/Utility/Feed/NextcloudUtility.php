@@ -105,6 +105,7 @@ class NextcloudUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUtili
         $publicLinkuri = $this->getPublicUrlOfFolder($url);
 
         $folderDepth = $this->settings['webdavdepth'] ?? 1;
+        $timestampOffset = $this->settings['webdavtimestampoffset'] ?? '-1 day';
 
         if ($publicLinkuri !== null) {
             $currentYear = date("Y");
@@ -114,7 +115,12 @@ class NextcloudUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUtili
                 if ($dirname != '/remote.php/webdav' . $folderName . '/' &&
                     rtrim($dirname, '/') != parse_url($url, PHP_URL_PATH)
                 ) {
-                    if (!empty($dir['{DAV:}resourcetype']) && $dir['{DAV:}resourcetype']->getValue()[0] == '{DAV:}collection') {
+                    if (
+                        !empty($dir['{DAV:}resourcetype'])
+                        && $dir['{DAV:}resourcetype']->getValue()[0] == '{DAV:}collection'
+                        && strtotime($dir['{DAV:}getlastmodified']) >= strtotime($timestampOffset)
+                    ) {
+                        var_dump("sync");
                         $fileurl = $this->baseUri . substr($dirname, 1);
                         $files = $this->client->propFind($fileurl, $this->properties, $folderDepth);
                         $directoryId = $dir['{http://owncloud.org/ns}fileid'];
