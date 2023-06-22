@@ -176,13 +176,9 @@ class NextcloudUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUtili
 
     function createNewsBlog($filename, $channel, $dirname, $directoryId, $globalDirectoryId, $linkuri, $oldestTimestamp, $folderName)
     {
-        $urlArray = explode('index.php', $linkuri);
-        if (sizeof($urlArray) == 2) {
-            $linkuri = $urlArray[0] . 'index.php/apps/gallery' . $urlArray[1];
-        }
         $folderName = $this->endsWith($folderName, '/') ? $folderName : $folderName.'/';
         $tmpArr = explode($folderName, $dirname);
-        $linkuri.='#'.end($tmpArr);
+        $linkuri.='?path='.end($tmpArr) . '#view-grid';
         $dirArray = explode('/', $dirname);
 
         $new = 0;
