@@ -38,18 +38,20 @@ class Label
      */
     public function getPageLabel(&$parameters, $parentObject)
     {
-        if(key_exists('uid', $parameters['row'])){
-            $record = \TYPO3\CMS\Backend\Utility\BackendUtility::getRecord($parameters['table'], $parameters['row']['uid']);
-            if(!is_array($record)){
-                $record = [];
+        if(is_array($parameters) && key_exists('row', $parameters) && is_array($parameters['row'])){
+            if(key_exists('uid', $parameters['row'])){
+                $record = \TYPO3\CMS\Backend\Utility\BackendUtility::getRecord($parameters['table'], $parameters['row']['uid']);
+                if(!is_array($record)){
+                    $record = [];
+                }
+                $newTitle = key_exists('type', $record) ? ucfirst($record['type']) . " - " : "";
+                if(key_exists('title', $record) && $record['title']) {
+                    $newTitle .= $record['title'];
+                }else{
+                    $newTitle .= key_exists('object_id', $record) ? $record['object_id'] : '';
+                }
+                $parameters['title'] = $newTitle;
             }
-            $newTitle = key_exists('type', $record) ? ucfirst($record['type']) . " - " : "";
-            if(key_exists('title', $record) && $record['title']) {
-                $newTitle .= $record['title'];
-            }else{
-                $newTitle .= key_exists('object_id', $record) ? $record['object_id'] : '';
-            }
-            $parameters['title'] = $newTitle;
         }
     }
 
