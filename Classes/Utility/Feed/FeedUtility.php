@@ -312,7 +312,7 @@ class FeedUtility extends \Socialstream\SocialStream\Utility\BaseUtility
                 }
             }
 
-            if ($image) {
+            if (isset($image) && $image) {
                 $data = array();
                 $data['sys_file_reference']['NEW12345'] = array(
                     'uid_local' => $image,
