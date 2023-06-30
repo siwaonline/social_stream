@@ -120,16 +120,16 @@ class NextcloudUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUtili
                     'archiv' => false,
                     'timestamp' => $timestampOffset
                 ],
-//                [
-//                    'url' => $this->endsWith($url, '/') ? $url . 'Archiv' : $url . '/Archiv', // archiv
-//                    'archiv' => true,
-//                    'timestamp' => $timestampOffset
-//                ],
-//                [
-//                    'url' => $this->endsWith($url, '/') ? $url . (intval($currentYear) - 1) : $url . '/' . (intval($currentYear) - 1), // this year
-//                    'archiv' => false,
-//                    'timestamp' => $timestampOffset
-//                ]
+                [
+                    'url' => $this->endsWith($url, '/') ? $url . 'Archiv' : $url . '/Archiv', // archiv
+                    'archiv' => true,
+                    'timestamp' => $timestampOffset
+                ],
+                [
+                    'url' => $this->endsWith($url, '/') ? $url . (intval($currentYear) - 1) : $url . '/' . (intval($currentYear) - 1), // this year
+                    'archiv' => false,
+                    'timestamp' => $timestampOffset
+                ]
             ];
 
 
