@@ -168,27 +168,23 @@ class NextcloudUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUtili
             foreach($urls as $urlData){
                 $dataToDelete = $urlData['data'];
                 try{
-                    foreach($newsData as $data){
-                        $dataToDelete = $data;
-
-                        foreach ($dirs as $dirname => $dir) {
-                            if ($dirname != '/remote.php/webdav' . $folderName . '/') {
-                                if (!empty($dir['{DAV:}resourcetype']) && $dir['{DAV:}resourcetype']->getValue()[0] == '{DAV:}collection') {
-                                    $objectId = $dir['{http://owncloud.org/ns}id'];
-                                    $channelUid = $channel->getUid();
-                                    $objectIdColumn = array_column($dataToDelete, 'object_id');
-                                    $channelColumn = array_column($dataToDelete, 'channel');
-                                    if(in_array($objectId, $objectIdColumn) && in_array($channelUid, $channelColumn)){
-                                        $index = array_search($objectId, $objectIdColumn);
-                                        array_splice($dataToDelete, $index, 1);
-                                    }
+                    foreach ($dirs as $dirname => $dir) {
+                        if ($dirname != '/remote.php/webdav' . $folderName . '/') {
+                            if (!empty($dir['{DAV:}resourcetype']) && $dir['{DAV:}resourcetype']->getValue()[0] == '{DAV:}collection') {
+                                $objectId = $dir['{http://owncloud.org/ns}id'];
+                                $channelUid = $channel->getUid();
+                                $objectIdColumn = array_column($dataToDelete, 'object_id');
+                                $channelColumn = array_column($dataToDelete, 'channel');
+                                if(in_array($objectId, $objectIdColumn) && in_array($channelUid, $channelColumn)){
+                                    $index = array_search($objectId, $objectIdColumn);
+                                    array_splice($dataToDelete, $index, 1);
                                 }
                             }
                         }
+                    }
 
-                        foreach($dataToDelete as $news){
-                            $this->deleteNews($news['uid']);
-                        }
+                    foreach($dataToDelete as $news){
+                        $this->deleteNews($news['uid']);
                     }
                 }catch (HTTP\ClientHttpException $e){
                     if($e->getCode() === 404){
