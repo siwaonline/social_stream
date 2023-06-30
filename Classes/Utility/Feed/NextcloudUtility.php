@@ -154,15 +154,15 @@ class NextcloudUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUtili
             $urls = [
                 [
                     'url' => $this->endsWith($url, '/') ? $url . $currentYear : $url . '/' . $currentYear, // this year
-                    'data' => $this->newsRepository->findAllRawByCurrentYearFolder()
+                    'data' => $this->newsRepository->findAllRawByCurrentYearFolder($channel)
                 ],
                 [
                     'url' => $this->endsWith($url, '/') ? $url . 'Archiv' : $url . '/Archiv', // archiv
-                    'data' => $this->newsRepository->findAllRawByArchivFolder()
+                    'data' => $this->newsRepository->findAllRawByArchivFolder($channel)
                 ],
                 [
                     'url' => $this->endsWith($url, '/') ? $url . (intval($currentYear) - 1) : $url . '/' . (intval($currentYear) - 1), // this year
-                    'data' => $this->newsRepository->findAllRawByLastYearFolder()
+                    'data' => $this->newsRepository->findAllRawByLastYearFolder($channel)
                 ]
             ];
             foreach($urls as $urlData){

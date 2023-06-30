@@ -41,35 +41,54 @@ class NewsRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
         $query = $this->createQuery();
         $query->getQuerySettings()->setIgnoreEnableFields(TRUE);
         $query->matching(
-            $query->equals('object_id', $id),
-            $query->equals('channel', $channel)
+            $query->logicalAnd(
+                [
+                    $query->equals('object_id', $id),
+                    $query->equals('channel', $channel)
+                ]
+            )
         );
         return $query->execute()->getFirst();
     }
-    public function findAllRawByCurrentYearFolder(){
+    public function findAllRawByCurrentYearFolder($channel){
         $query = $this->createQuery();
 
         $query->matching(
-            $query->like('link', '%' . date('Y') . '/%')
+            $query->logicalAnd(
+                [
+                    $query->like('link', '%' . date('Y') . '/%'),
+                    $query->equals('channel', $channel)
+                ]
+            )
         );
 
         return $query->execute(true);
     }
-    public function findAllRawByArchivFolder(){
+    public function findAllRawByArchivFolder($channel){
         $query = $this->createQuery();
 
         $query->matching(
-            $query->like('link', '%' . 'Archiv' . '/%')
+            $query->logicalAnd(
+                [
+                    $query->like('link', '%' . 'Archiv' . '/%'),
+                    $query->equals('channel', $channel)
+                ]
+            )
         );
 
         return $query->execute(true);
     }
 
-    public function findAllRawByLastYearFolder(){
+    public function findAllRawByLastYearFolder($channel){
         $query = $this->createQuery();
 
         $query->matching(
-            $query->like('link', '%' . (intval(date("Y")) - 1) . '/%')
+            $query->logicalAnd(
+                [
+                    $query->like('link', '%' . (intval(date("Y")) - 1) . '/%'),
+                    $query->equals('channel', $channel)
+                ]
+            )
         );
 
         return $query->execute(true);
