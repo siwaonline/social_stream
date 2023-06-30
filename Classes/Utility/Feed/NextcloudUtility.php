@@ -28,6 +28,7 @@ namespace Socialstream\SocialStream\Utility\Feed;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use Socialstream\SocialStream\Domain\Model\News;
 use Socialstream\SocialStream\Utility\BaseUtility;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Messaging\FlashMessageService;
@@ -109,28 +110,114 @@ class NextcloudUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUtili
 
         if ($publicLinkuri !== null) {
             $currentYear = date("Y");
-            $url = $this->endsWith($url, '/') ? $url . $currentYear : $url . '/' . $currentYear;
-            $dirs = $this->client->propFind($url, $this->properties, 1);
-            foreach ($dirs as $dirname => $dir) {
-                if ($dirname != '/remote.php/webdav' . $folderName . '/' &&
-                    rtrim($dirname, '/') != parse_url($url, PHP_URL_PATH)
-                ) {
-                    if (
-                        !empty($dir['{DAV:}resourcetype'])
-                        && $dir['{DAV:}resourcetype']->getValue()[0] == '{DAV:}collection'
-                        && strtotime($dir['{DAV:}getlastmodified']) >= strtotime($timestampOffset)
-                    ) {
-                        $fileurl = $this->baseUri . substr($dirname, 1);
-                        $files = $this->client->propFind($fileurl, $this->properties, $folderDepth);
-                        $directoryId = $dir['{http://owncloud.org/ns}fileid'];
-                        $globalDirectoryId = $dir['{http://owncloud.org/ns}id'];
-                        $oldestTimestamp = $this->findOldestTimestamp($files);
-                        foreach ($files as $filename => $file) {
-                            if (key_exists('{DAV:}getcontenttype', $file) && $this->startsWith($file['{DAV:}getcontenttype'], 'image')) {
-                                $this->createNewsBlog($filename, $channel, $dirname, $directoryId, $globalDirectoryId, $publicLinkuri, $oldestTimestamp, $folderName);
-                                break;
+
+            // urls
+            $urls = [
+                [
+                    'url' => $this->endsWith($url, '/') ? $url . $currentYear : $url . '/' . $currentYear, // this year
+                    'archiv' => false,
+                    'timestamp' => $timestampOffset
+                ],
+                [
+                    'url' => $this->endsWith($url, '/') ? $url . 'Archiv' : $url . '/Archiv', // archiv
+                    'archiv' => true,
+                    'timestamp' => $timestampOffset
+                ],
+                [
+                    'url' => $this->endsWith($url, '/') ? $url . (intval($currentYear) - 1) : $url . '/' . (intval($currentYear) - 1), // this year
+                    'archiv' => false,
+                    'timestamp' => $timestampOffset
+                ]
+            ];
+
+
+            foreach($urls as $urlData){
+                try{
+                    $dirs = $this->client->propFind($urlData['url'], $this->properties, $folderDepth);
+                    foreach ($dirs as $dirname => $dir) {
+                        $this->checkGalleryFolderAndCreateNews($urlData['url'], $dir, $dirname, $channel, $publicLinkuri, $folderName, $folderDepth, $urlData['timestamp'], $urlData['archiv']);
+                    }
+                }catch (HTTP\ClientHttpException $e){
+                    if($e->getCode() === 404){
+                        BaseUtility::log(__CLASS__, 'error', $e->getMessage() . ' - ' . $urlData['url']);
+                    }else{
+                        throw $e;
+                    }
+                }
+            }
+
+
+            // delete old data
+            // urls
+            $urls = [
+                [
+                    'url' => $this->endsWith($url, '/') ? $url . $currentYear : $url . '/' . $currentYear, // this year
+                    'data' => $this->newsRepository->findAllRawByCurrentYearFolder()
+                ],
+                [
+                    'url' => $this->endsWith($url, '/') ? $url . 'Archiv' : $url . '/Archiv', // archiv
+                    'data' => $this->newsRepository->findAllRawByArchivFolder()
+                ],
+                [
+                    'url' => $this->endsWith($url, '/') ? $url . (intval($currentYear) - 1) : $url . '/' . (intval($currentYear) - 1), // this year
+                    'data' => $this->newsRepository->findAllRawByLastYearFolder()
+                ]
+            ];
+            foreach($urls as $urlData){
+                $dataToDelete = $urlData['data'];
+                try{
+                    $dirs = $this->client->propFind($urlData['url'], $this->properties, $folderDepth);
+                    foreach ($dirs as $dirname => $dir) {
+                        if ($dirname != '/remote.php/webdav' . $folderName . '/') {
+                            if (!empty($dir['{DAV:}resourcetype']) && $dir['{DAV:}resourcetype']->getValue()[0] == '{DAV:}collection') {
+                                $objectId = $dir['{http://owncloud.org/ns}id'];
+                                $channelUid = $channel->getUid();
+                                $objectIdColumn = array_column($dataToDelete, 'object_id');
+                                $channelColumn = array_column($dataToDelete, 'channel');
+                                if(in_array($objectId, $objectIdColumn) && in_array($channelUid, $channelColumn)){
+                                    $index = array_search($objectId, $objectIdColumn);
+                                    array_splice($dataToDelete, $index, 1);
+                                }
                             }
                         }
+                    }
+
+                    foreach($dataToDelete as $news){
+                        $this->deleteNews($news['uid']);
+                    }
+                }catch (HTTP\ClientHttpException $e){
+                    if($e->getCode() === 404){
+                        BaseUtility::log(__CLASS__, 'error', $e->getMessage() . ' - ' . $urlData['url']);
+                    }else{
+                        throw $e;
+                    }
+                }
+            }
+        }
+    }
+
+
+
+    private function checkGalleryFolderAndCreateNews($url, $dir, $dirname, $channel, $publicLinkuri, $folderName, $folderDepth, $timestampOffset = -1, $archiv = false) {
+        $regex = '/\B(\/[a-zA-Z0-9]*\/[a-zA-Z0-9]*\/)\B/';
+        if ($dirname != '/remote.php/webdav' . $folderName . '/' &&
+            rtrim($dirname, '/') != parse_url($url, PHP_URL_PATH)
+            && preg_match($regex, substr($dirname, strlen('/remote.php/webdav' . $folderName)))// check only the first level of folder as images nested deeper can already be found
+        ) {
+            if (
+                !empty($dir['{DAV:}resourcetype'])
+                && $dir['{DAV:}resourcetype']->getValue()[0] == '{DAV:}collection'
+                && strtotime($dir['{DAV:}getlastmodified']) >= strtotime($timestampOffset)
+            ) {
+                $fileurl = $this->baseUri . substr($dirname, 1);
+                $files = $this->client->propFind($fileurl, $this->properties, $folderDepth);
+                $directoryId = $dir['{http://owncloud.org/ns}fileid'];
+                $globalDirectoryId = $dir['{http://owncloud.org/ns}id'];
+                $oldestTimestamp = $this->findOldestTimestamp($files);
+                foreach ($files as $filename => $file) {
+                    if (key_exists('{DAV:}getcontenttype', $file) && $this->startsWith($file['{DAV:}getcontenttype'], 'image')) {
+                        $this->createNewsBlog($filename, $channel, $dirname, $directoryId, $globalDirectoryId, $publicLinkuri, $oldestTimestamp, $folderName, $archiv);
+                        break;
                     }
                 }
             }
@@ -168,7 +255,7 @@ class NextcloudUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUtili
         return $comment;
     }
 
-    function createNewsBlog($filename, $channel, $dirname, $directoryId, $globalDirectoryId, $linkuri, $oldestTimestamp, $folderName)
+    function createNewsBlog($filename, $channel, $dirname, $directoryId, $globalDirectoryId, $linkuri, $oldestTimestamp, $folderName, $archiv)
     {
         $folderName = $this->endsWith($folderName, '/') ? $folderName : $folderName.'/';
         $tmpArr = explode($folderName, $dirname);
@@ -187,6 +274,9 @@ class NextcloudUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUtili
         $news->setObjectId($globalDirectoryId);
         $news->setLink($linkuri);
         $news->setTitle(urldecode($dirArray[sizeof($dirArray) - 2]));
+        if($archiv) {
+            $this->addArchiveCategory($news);
+        }
 
         $bodytext = $this->getDirectoryComment($directoryId);
         if (!empty($bodytext)) {
@@ -308,4 +398,30 @@ class NextcloudUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUtili
         return $publicUrl;
     }
 
+    /**
+     * @param News|int $news
+     * @throws \TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException
+     */
+    function deleteNews($news){
+        if(is_numeric($news)){
+            $news = $this->newsRepository->findByUid($news);
+        }
+
+        if($news instanceof News){
+            $this->newsRepository->remove($news);
+            $this->persistenceManager->persistAll();
+        }
+    }
+
+    function addArchiveCategory($news) {
+        if($this->settings && is_array($this->settings) && key_exists('webdavarchivecategory', $this->settings)){
+            $categoryUid = intval($this->settings['webdavarchivecategory']);
+            if($categoryUid){
+                $category = $this->categoryRepository->findByUid($categoryUid);
+                if($category){
+                    $news->addCategory($category);
+                }
+            }
+        }
+    }
 }

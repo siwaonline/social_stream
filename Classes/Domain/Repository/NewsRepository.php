@@ -46,4 +46,34 @@ class NewsRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
         );
         return $query->execute()->getFirst();
     }
+
+    public function findAllRawByCurrentYearFolder(){
+        $query = $this->createQuery();
+
+        $query->matching(
+            $query->like('link', '%' . date('Y') . '/%')
+        );
+
+        return $query->execute(true);
+    }
+
+    public function findAllRawByArchivFolder(){
+        $query = $this->createQuery();
+
+        $query->matching(
+            $query->like('link', '%' . 'Archiv' . '/%')
+        );
+
+        return $query->execute(true);
+    }
+
+    public function findAllRawByLastYearFolder(){
+        $query = $this->createQuery();
+
+        $query->matching(
+            $query->like('link', '%' . (intval(date("Y")) - 1) . '/%')
+        );
+
+        return $query->execute(true);
+    }
 }
