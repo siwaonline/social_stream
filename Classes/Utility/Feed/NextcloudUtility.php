@@ -149,32 +149,53 @@ class NextcloudUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUtili
                 }
             }
 
-
-            $newsData = [
-                $this->newsRepository->findAllRawByCurrentYearFolder(),
-                $this->newsRepository->findAllRawByArchivFolder(),
-                $this->newsRepository->findAllRawByLastYearFolder()
+            // delete old data
+            // urls
+            $urls = [
+                [
+                    'url' => $this->endsWith($url, '/') ? $url . $currentYear : $url . '/' . $currentYear, // this year
+                    'data' => $this->newsRepository->findAllRawByCurrentYearFolder()
+                ],
+                [
+                    'url' => $this->endsWith($url, '/') ? $url . 'Archiv' : $url . '/Archiv', // archiv
+                    'data' => $this->newsRepository->findAllRawByArchivFolder()
+                ],
+                [
+                    'url' => $this->endsWith($url, '/') ? $url . (intval($currentYear) - 1) : $url . '/' . (intval($currentYear) - 1), // this year
+                    'data' => $this->newsRepository->findAllRawByLastYearFolder()
+                ]
             ];
-            foreach($newsData as $data){
-                $dataToDelete = $data;
+            foreach($urls as $urlData){
+                $dataToDelete = $urlData['data'];
+                try{
+                    foreach($newsData as $data){
+                        $dataToDelete = $data;
 
-                foreach ($dirs as $dirname => $dir) {
-                    if ($dirname != '/remote.php/webdav' . $folderName . '/') {
-                        if (!empty($dir['{DAV:}resourcetype']) && $dir['{DAV:}resourcetype']->getValue()[0] == '{DAV:}collection') {
-                            $objectId = $dir['{http://owncloud.org/ns}id'];
-                            $channelUid = $channel->getUid();
-                            $objectIdColumn = array_column($dataToDelete, 'object_id');
-                            $channelColumn = array_column($dataToDelete, 'channel');
-                            if(in_array($objectId, $objectIdColumn) && in_array($channelUid, $channelColumn)){
-                                $index = array_search($objectId, $objectIdColumn);
-                                array_splice($dataToDelete, $index, 1);
+                        foreach ($dirs as $dirname => $dir) {
+                            if ($dirname != '/remote.php/webdav' . $folderName . '/') {
+                                if (!empty($dir['{DAV:}resourcetype']) && $dir['{DAV:}resourcetype']->getValue()[0] == '{DAV:}collection') {
+                                    $objectId = $dir['{http://owncloud.org/ns}id'];
+                                    $channelUid = $channel->getUid();
+                                    $objectIdColumn = array_column($dataToDelete, 'object_id');
+                                    $channelColumn = array_column($dataToDelete, 'channel');
+                                    if(in_array($objectId, $objectIdColumn) && in_array($channelUid, $channelColumn)){
+                                        $index = array_search($objectId, $objectIdColumn);
+                                        array_splice($dataToDelete, $index, 1);
+                                    }
+                                }
                             }
                         }
-                    }
-                }
 
-                foreach($dataToDelete as $news){
-                    $this->deleteNews($news['uid']);
+                        foreach($dataToDelete as $news){
+                            $this->deleteNews($news['uid']);
+                        }
+                    }
+                }catch (HTTP\ClientHttpException $e){
+                    if($e->getCode() === 404){
+                        BaseUtility::log(__CLASS__, 'error', $e->getMessage() . ' - ' . $urlData['url']);
+                    }else{
+                        throw $e;
+                    }
                 }
             }
         }
