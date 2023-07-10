@@ -198,7 +198,7 @@ class NextcloudUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUtili
     }
 
     private function checkGalleryFolderAndCreateNews($url, $dir, $dirname, $channel, $publicLinkuri, $folderName, $folderDepth, $timestampOffset = -1, $archiv) {
-        $regex = '/\B(\/[a-zA-Z0-9%]*\/[a-zA-Z0-9%]*\/)\B/';
+        $regex = '/\B(\/[a-zA-Z0-9-%]*\/[a-zA-Z0-9-%]*\/)\B/';
 
         if ($dirname != '/remote.php/webdav' . $folderName . '/' &&
             rtrim($dirname, '/') != parse_url($url, PHP_URL_PATH)
