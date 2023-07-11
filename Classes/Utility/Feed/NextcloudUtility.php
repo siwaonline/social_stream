@@ -168,6 +168,7 @@ class NextcloudUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUtili
             foreach($urls as $urlData){
                 $dataToDelete = $urlData['data'];
                 try{
+                    $dirs = $this->client->propFind($urlData['url'], $this->properties, $folderDepth);
                     foreach ($dirs as $dirname => $dir) {
                         if ($dirname != '/remote.php/webdav' . $folderName . '/') {
                             if (!empty($dir['{DAV:}resourcetype']) && $dir['{DAV:}resourcetype']->getValue()[0] == '{DAV:}collection') {
