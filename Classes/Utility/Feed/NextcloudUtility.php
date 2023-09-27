@@ -120,16 +120,16 @@ class NextcloudUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUtili
                     'archiv' => false,
                     'timestamp' => $timestampOffset
                 ],
-                [
-                    'url' => $this->endsWith($url, '/') ? $url . 'Archiv' : $url . '/Archiv', // archiv
-                    'archiv' => true,
-                    'timestamp' => $timestampOffset
-                ],
-                [
-                    'url' => $this->endsWith($url, '/') ? $url . (intval($currentYear) - 1) : $url . '/' . (intval($currentYear) - 1), // this year
-                    'archiv' => false,
-                    'timestamp' => $timestampOffset
-                ]
+//                [
+//                    'url' => $this->endsWith($url, '/') ? $url . 'Archiv' : $url . '/Archiv', // archiv
+//                    'archiv' => true,
+//                    'timestamp' => $timestampOffset
+//                ],
+//                [
+//                    'url' => $this->endsWith($url, '/') ? $url . (intval($currentYear) - 1) : $url . '/' . (intval($currentYear) - 1), // this year
+//                    'archiv' => false,
+//                    'timestamp' => $timestampOffset
+//                ]
             ];
 
 
@@ -156,14 +156,14 @@ class NextcloudUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUtili
                     'url' => $this->endsWith($url, '/') ? $url . $currentYear : $url . '/' . $currentYear, // this year
                     'data' => $this->newsRepository->findAllRawByCurrentYearFolder($channel)
                 ],
-                [
-                    'url' => $this->endsWith($url, '/') ? $url . 'Archiv' : $url . '/Archiv', // archiv
-                    'data' => $this->newsRepository->findAllRawByArchivFolder($channel)
-                ],
-                [
-                    'url' => $this->endsWith($url, '/') ? $url . (intval($currentYear) - 1) : $url . '/' . (intval($currentYear) - 1), // this year
-                    'data' => $this->newsRepository->findAllRawByLastYearFolder($channel)
-                ]
+//                [
+//                    'url' => $this->endsWith($url, '/') ? $url . 'Archiv' : $url . '/Archiv', // archiv
+//                    'data' => $this->newsRepository->findAllRawByArchivFolder($channel)
+//                ],
+//                [
+//                    'url' => $this->endsWith($url, '/') ? $url . (intval($currentYear) - 1) : $url . '/' . (intval($currentYear) - 1), // this year
+//                    'data' => $this->newsRepository->findAllRawByLastYearFolder($channel)
+//                ]
             ];
             foreach($urls as $urlData){
                 $dataToDelete = $urlData['data'];
