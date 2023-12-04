@@ -44,10 +44,8 @@ class NewsRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
         $query->getQuerySettings()->setIgnoreEnableFields(TRUE);
         $query->matching(
             $query->logicalAnd(
-                [
-                    $query->equals('object_id', $id),
-                    $query->equals('channel', $channel)
-                ]
+                $query->equals('object_id', $id),
+                $query->equals('channel', $channel)
             )
         );
         return $query->execute()->getFirst();
@@ -59,10 +57,8 @@ class NewsRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
 
         $query->matching(
             $query->logicalAnd(
-                [
-                    $query->like('link', '%' . date('Y') . '/%'),
-                    $query->equals('channel', $channel)
-                ]
+                $query->like('link', '%' . date('Y') . '/%'),
+                $query->equals('channel', $channel)
             )
         );
 
@@ -75,10 +71,8 @@ class NewsRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
 
         $query->matching(
             $query->logicalAnd(
-                [
-                    $query->like('link', '%' . 'Archiv' . '/%'),
-                    $query->equals('channel', $channel)
-                ]
+                $query->like('link', '%' . 'Archiv' . '/%'),
+                $query->equals('channel', $channel)
             )
         );
 
@@ -91,10 +85,8 @@ class NewsRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
 
         $query->matching(
             $query->logicalAnd(
-                [
-                    $query->like('link', '%' . (intval(date("Y")) - 1) . '/%'),
-                    $query->equals('channel', $channel)
-                ]
+                $query->like('link', '%' . (intval(date("Y")) - 1) . '/%'),
+                $query->equals('channel', $channel)
             )
         );
 
