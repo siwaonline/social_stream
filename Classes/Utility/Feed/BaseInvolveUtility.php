@@ -28,6 +28,7 @@ namespace Socialstream\SocialStream\Utility\Feed;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use GuzzleHttp\Exception\ClientException;
 use \TYPO3\CMS\Core\Messaging\FlashMessageService;
 use \TYPO3\CMS\Core\Messaging\FlashMessage;
 use \TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -80,20 +81,25 @@ class BaseInvolveUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUti
         $url = $this->settings['involveAPIUrl'] . $this->apiUrl .  $channel->getObjectId() . (strpos($channel->getObjectId(), '?') !== false ? '&' : '?') . 'token=' . $channel->getToken();
 
         $requestFactory = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Http\RequestFactory::class);
-        $response = $requestFactory->request($url, 'GET');
-        if ($response->getStatusCode() === 200) {
-            if (strpos($response->getHeaderLine('Content-Type'), 'application/json') === 0) {
-                if ($response instanceof \GuzzleHttp\Psr7\Response) {
-                    $elem = json_decode($response->getBody()->getContents());
+        try{
+            $response = $requestFactory->request($url, 'GET');
+
+            if ($response->getStatusCode() === 200) {
+                if (strpos($response->getHeaderLine('Content-Type'), 'application/json') === 0) {
+                    if ($response instanceof \GuzzleHttp\Psr7\Response) {
+                        $elem = json_decode($response->getBody()->getContents());
+                    }
                 }
             }
-        }
 
-        foreach ($elem as $entry) {
-            // @extensionScannerIgnoreLine
-            if ($entry->title || $entry->text) {
-                $this->persistNewsFromEntry($channel, $entry);
+            foreach ($elem as $entry) {
+                // @extensionScannerIgnoreLine
+                if ($entry->title || $entry->text) {
+                    $this->persistNewsFromEntry($channel, $entry);
+                }
             }
+        }catch (ClientException $exception){
+            // todo
         }
     }
 

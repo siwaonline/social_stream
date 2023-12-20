@@ -39,17 +39,6 @@ class ChannelProcessDatamap
 {
     private $channelRepository;
 
-    /**
-     * Inject the product repository
-     *
-     * @param ChannelRepository $channelRepository
-     */
-    public function injectProductRepository(ChannelRepository $channelRepository)
-    {
-        $this->channelRepository = $channelRepository;
-    }
-
-
     function processDatamap_postProcessFieldArray($status, $table, $id, &$fieldArray, &$reference)
     {
         if (array_key_exists('hidden', $fieldArray)) {
@@ -57,6 +46,7 @@ class ChannelProcessDatamap
         } else {
             if ($table == 'tx_socialstream_domain_model_channel') {
                 if ($status == "update") {
+                    $this->channelRepository = GeneralUtility::makeInstance(ChannelRepository::class);
                     $channel = $this->channelRepository->findHidden($id)->getFirst();
                 } else {
                     $channel = new \Socialstream\SocialStream\Domain\Model\Channel();

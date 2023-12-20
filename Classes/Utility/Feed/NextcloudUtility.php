@@ -391,8 +391,15 @@ class NextcloudUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUtili
         if ($err) {
             BaseUtility::log(__CLASS__, "error", "Folder " . end(explode('webdav', $dirname)) . " got CURL Error: " . $err);
         } else {
+            var_dump("err");
+            var_dump($err);
             $responseArray = json_decode($response);
-            $publicUrl = $responseArray->ocs->data[0]->url;
+            if($responseArray->ocs->data && $responseArray->ocs->data[0]->url){
+                var_dump("success");
+                $publicUrl = $responseArray->ocs->data[0]->url;
+            }else{
+                var_dump("error - " . $dirname);
+            }
         }
         curl_close($curl);
         return $publicUrl;
