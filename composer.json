@@ -20,7 +20,7 @@
     "google/photos-library": "^1.7.0",
     "sabre/dav": "^4.3.1"
   },
-  "version": "6.3.6",
+  "version": "6.3.8",s
   "config": {
     "vendor-dir": ".Build/vendor",
     "bin-dir": ".Build/bin"

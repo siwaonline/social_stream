@@ -39,6 +39,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use TYPO3\CMS\Core\Cache\CacheManager;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Configuration\BackendConfigurationManager;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManager;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
@@ -65,8 +66,7 @@ class GetFeedCommand extends Command
     protected $cacheManager = null;
 
     /**
-     * @var \TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface
-     * @TYPO3\CMS\Extbase\Annotation\Inject
+     * @var \TYPO3\CMS\Extbase\Configuration\BackendConfigurationManager
      */
     protected $configurationManager;
 
@@ -87,9 +87,9 @@ class GetFeedCommand extends Command
     {
         Bootstrap::initializeBackendAuthentication();
 
-        $this->configurationManager = GeneralUtility::makeInstance(ConfigurationManager::class);
-//        $this->configurationManager->getConcreteConfigurationManager()->setCurrentPageId($input->getArgument('rootPage'));
-        $this->settings = $this->configurationManager->getConfiguration(ConfigurationManager::CONFIGURATION_TYPE_SETTINGS, 'Socialstream');
+        $this->configurationManager = GeneralUtility::makeInstance(BackendConfigurationManager::class);
+        $extbaseFrameworkConfiguration = $this->configurationManager->getTypoScriptSetup();
+        $this->settings = $extbaseFrameworkConfiguration['module.']['tx_socialstream.']['settings.'];
 
 
         $this->channelRepository = GeneralUtility::makeInstance(ChannelRepository::class);

@@ -7,6 +7,7 @@ use GeorgRinger\News\Domain\Repository\CategoryRepository;
 use Socialstream\SocialStream\Domain\Model\Channel;
 use Socialstream\SocialStream\Domain\Repository\NewsRepository;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Configuration\BackendConfigurationManager;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManager;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
@@ -151,10 +152,9 @@ class BaseUtility
      */
     public function initSettings($pid)
     {
-        /** @var ConfigurationManager configurationManager */
-        $this->configurationManager = GeneralUtility::makeInstance(ConfigurationManager::class);
-//        $this->configurationManager->getConcreteConfigurationManager()->setCurrentPageId($pid);
-        $this->settings = $this->configurationManager->getConfiguration(\TYPO3\CMS\Extbase\Configuration\ConfigurationManager::CONFIGURATION_TYPE_SETTINGS, 'Socialstream');
+        $configurationManager = GeneralUtility::makeInstance(BackendConfigurationManager::class);
+        $extbaseFrameworkConfiguration = $configurationManager->getTypoScriptSetup();
+        $this->settings = $extbaseFrameworkConfiguration['module.']['tx_socialstream.']['settings.'];
     }
 
     /**

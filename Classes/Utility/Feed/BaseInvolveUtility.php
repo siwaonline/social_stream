@@ -98,7 +98,7 @@ class BaseInvolveUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUti
                     $this->persistNewsFromEntry($channel, $entry);
                 }
             }
-        }catch (ClientException $exception){
+        }catch (\Exception $exception){
             // todo
         }
     }
