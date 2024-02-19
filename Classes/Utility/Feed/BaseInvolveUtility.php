@@ -137,15 +137,16 @@ class BaseInvolveUtility extends \Socialstream\SocialStream\Utility\Feed\FeedUti
             $news->setTitle($entry->title);
         }
 
-//        if ($entry->text) {
-//            $news->setBodytext($entry->text);
-//        } else {
+        if ($entry->text) {
+            // @extensionScannerIgnoreLine
+            $news->setBodytext($entry->text);
+        } else {
             // @extensionScannerIgnoreLine
             if ($entry->title) {
                 // @extensionScannerIgnoreLine
                 $news->setBodytext($entry->title);
             }
-//        }
+        }
 
         $news->setPid($channel->getPid());
 
